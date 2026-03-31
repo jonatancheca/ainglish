@@ -76,68 +76,33 @@
                   />
                 </div>
 
-                <div class="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label class="mb-2 block text-sm font-black text-slate-700">Forma de cara</label>
-                    <select
-                      v-model="avatarDraft.faceShape"
-                      class="selector"
-                    >
-                      <option
-                        v-for="option in FACE_SHAPE_OPTIONS"
-                        :key="option.value"
-                        :value="option.value"
-                      >
-                        {{ option.label }}
-                      </option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="mb-2 block text-sm font-black text-slate-700">Color de ojos</label>
-                    <select
-                      v-model="avatarDraft.eyeColor"
-                      class="selector"
-                    >
-                      <option
-                        v-for="option in EYE_COLOR_OPTIONS"
-                        :key="option.value"
-                        :value="option.value"
-                      >
-                        {{ option.label }}
-                      </option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="mb-2 block text-sm font-black text-slate-700">Estilo de ojos</label>
-                    <select
-                      v-model="avatarDraft.eyeStyle"
-                      class="selector"
-                    >
-                      <option
-                        v-for="option in EYE_STYLE_OPTIONS"
-                        :key="option.value"
-                        :value="option.value"
-                      >
-                        {{ option.label }}
-                      </option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="mb-2 block text-sm font-black text-slate-700">Gafas</label>
-                    <select
-                      v-model="avatarDraft.glasses"
-                      class="selector"
-                    >
-                      <option
-                        v-for="option in GLASSES_OPTIONS"
-                        :key="option.value"
-                        :value="option.value"
-                      >
-                        {{ option.label }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
+                <AvatarOptionGroup
+                  label="Forma de cara"
+                  :options="FACE_SHAPE_OPTIONS"
+                  :model-value="avatarDraft.faceShape"
+                  @update:model-value="avatarDraft.faceShape = $event"
+                />
+
+                <AvatarOptionGroup
+                  label="Color de ojos"
+                  :options="EYE_COLOR_OPTIONS"
+                  :model-value="avatarDraft.eyeColor"
+                  @update:model-value="avatarDraft.eyeColor = $event"
+                />
+
+                <AvatarOptionGroup
+                  label="Estilo de ojos"
+                  :options="EYE_STYLE_OPTIONS"
+                  :model-value="avatarDraft.eyeStyle"
+                  @update:model-value="avatarDraft.eyeStyle = $event"
+                />
+
+                <AvatarOptionGroup
+                  label="Gafas"
+                  :options="GLASSES_OPTIONS"
+                  :model-value="avatarDraft.glasses"
+                  @update:model-value="avatarDraft.glasses = $event"
+                />
 
                 <button
                   type="submit"
@@ -149,53 +114,33 @@
               </template>
 
               <template v-else>
-                <div class="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label class="mb-2 block text-sm font-black text-slate-700">Pelo</label>
-                    <select
-                      v-model="avatarDraft.hair"
-                      class="selector"
-                    >
-                      <option
-                        v-for="option in HAIR_OPTIONS"
-                        :key="option.value"
-                        :value="option.value"
-                      >
-                        {{ option.label }}
-                      </option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="mb-2 block text-sm font-black text-slate-700">Ropa</label>
-                    <select
-                      v-model="avatarDraft.outfit"
-                      class="selector"
-                    >
-                      <option
-                        v-for="option in OUTFIT_OPTIONS"
-                        :key="option.value"
-                        :value="option.value"
-                      >
-                        {{ option.label }}
-                      </option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="mb-2 block text-sm font-black text-slate-700">Zapatos</label>
-                    <select
-                      v-model="avatarDraft.shoes"
-                      class="selector"
-                    >
-                      <option
-                        v-for="option in SHOES_OPTIONS"
-                        :key="option.value"
-                        :value="option.value"
-                      >
-                        {{ option.label }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
+                <AvatarOptionGroup
+                  label="Pelo"
+                  :options="HAIR_OPTIONS"
+                  :model-value="avatarDraft.hair"
+                  @update:model-value="avatarDraft.hair = $event"
+                />
+
+                <AvatarOptionGroup
+                  label="Color de pelo"
+                  :options="HAIR_COLOR_OPTIONS"
+                  :model-value="avatarDraft.hairColor"
+                  @update:model-value="avatarDraft.hairColor = $event"
+                />
+
+                <AvatarOptionGroup
+                  label="Ropa"
+                  :options="OUTFIT_OPTIONS"
+                  :model-value="avatarDraft.outfit"
+                  @update:model-value="avatarDraft.outfit = $event"
+                />
+
+                <AvatarOptionGroup
+                  label="Zapatos"
+                  :options="SHOES_OPTIONS"
+                  :model-value="avatarDraft.shoes"
+                  @update:model-value="avatarDraft.shoes = $event"
+                />
 
                 <div class="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500">
                   Tu personaje se guardará con tu perfil y aparecerá en inicio y en la ficha de usuario.
@@ -233,6 +178,7 @@ import {
   FACE_SHAPE_OPTIONS,
   GLASSES_OPTIONS,
   HAIR_OPTIONS,
+  HAIR_COLOR_OPTIONS,
   OUTFIT_OPTIONS,
   SHOES_OPTIONS,
   type CharacterAvatar,
@@ -273,8 +219,3 @@ function submitStep() {
 }
 </script>
 
-<style scoped>
-.selector {
-  @apply w-full rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 outline-none transition-colors focus:border-sky-400;
-}
-</style>

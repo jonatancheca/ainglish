@@ -42,7 +42,7 @@
           :class="hairFrontClass"
         ></div>
 
-        <div class="absolute left-1/2 top-14 flex -translate-x-1/2 gap-7">
+        <div class="absolute left-1/2 top-8 flex -translate-x-1/2 gap-7">
           <div class="relative flex h-5 w-5 items-center justify-center">
             <span :class="eyeBaseClass"></span>
             <span
@@ -79,6 +79,8 @@
           </div>
         </div>
 
+        <div class="absolute left-1/2 top-16 h-5 w-8 -translate-x-1/2 rounded-b-full border-b-4 border-slate-800"></div>
+
         <div
           v-if="avatar.glasses !== 'none'"
           class="absolute left-1/2 top-[3.35rem] flex -translate-x-1/2 items-center gap-1"
@@ -89,10 +91,7 @@
           <span class="h-6 w-6 rounded-full border-[3px]"></span>
         </div>
 
-        <div class="absolute bottom-10 left-1/2 h-2 w-3 -translate-x-1/2 rounded-full bg-rose-300"></div>
-        <div class="absolute bottom-7 left-1/2 h-3 w-10 -translate-x-1/2 rounded-b-full border-b-4 border-slate-800"></div>
-        <div class="absolute bottom-8 left-4 h-3 w-4 rounded-full bg-rose-200 opacity-80"></div>
-        <div class="absolute bottom-8 right-4 h-3 w-4 rounded-full bg-rose-200 opacity-80"></div>
+
       </div>
 
       <div class="relative -mt-2 flex flex-col items-center">
@@ -154,11 +153,11 @@ const sizeClasses = {
 } as const
 
 const hairPalette = {
-  'twin-tails': 'bg-amber-700',
-  bob: 'bg-orange-700',
-  bangs: 'bg-stone-800',
-  bun: 'bg-rose-700',
-  bald: 'bg-transparent border-transparent',
+  amber: 'bg-amber-700',
+  orange: 'bg-orange-700',
+  stone: 'bg-stone-800',
+  rose: 'bg-rose-700',
+  teal: 'bg-teal-600',
 } as const
 
 const eyePalette = {
@@ -191,7 +190,7 @@ const showTwinTails = computed(() => props.avatar.hair === 'twin-tails')
 const showBun = computed(() => props.avatar.hair === 'bun')
 const showBangs = computed(() => props.avatar.hair === 'bangs')
 
-const hairColorClass = computed(() => hairPalette[props.avatar.hair])
+const hairColorClass = computed(() => hairPalette[props.avatar.hairColor])
 const hairBackClass = computed(() => {
   if (props.avatar.hair === 'bald') return 'h-0 w-0'
   return `h-24 w-28 ${hairColorClass.value}`

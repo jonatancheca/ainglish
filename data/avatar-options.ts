@@ -3,6 +3,7 @@ export type EyeColor = 'midnight' | 'hazel' | 'emerald' | 'sky' | 'violet'
 export type EyeStyle = 'sparkle' | 'happy' | 'wink' | 'sleepy' | 'starry'
 export type GlassesStyle = 'none' | 'red' | 'blue'
 export type HairStyle = 'twin-tails' | 'bob' | 'bangs' | 'bun' | 'bald'
+export type HairColor = 'amber' | 'orange' | 'stone' | 'rose' | 'teal'
 export type OutfitStyle = 'tee-pants' | 'long-dress' | 'tee-skirt' | 'tee-jeans' | 'hoodie-shorts'
 export type ShoesStyle = 'sneakers' | 'boots' | 'sandals' | 'mary-janes' | 'rollers'
 
@@ -12,6 +13,7 @@ export interface CharacterAvatar {
   eyeStyle: EyeStyle
   glasses: GlassesStyle
   hair: HairStyle
+  hairColor: HairColor
   outfit: OutfitStyle
   shoes: ShoesStyle
 }
@@ -59,6 +61,14 @@ export const HAIR_OPTIONS: AvatarOption<HairStyle>[] = [
   { value: 'bald', label: 'Sin pelo' },
 ]
 
+export const HAIR_COLOR_OPTIONS: AvatarOption<HairColor>[] = [
+  { value: 'amber', label: 'Castaño' },
+  { value: 'orange', label: 'Naranja' },
+  { value: 'stone', label: 'Negro' },
+  { value: 'rose', label: 'Rosado' },
+  { value: 'teal', label: 'Turquesa' },
+]
+
 export const OUTFIT_OPTIONS: AvatarOption<OutfitStyle>[] = [
   { value: 'tee-pants', label: 'Camiseta y pantalón' },
   { value: 'long-dress', label: 'Vestido largo' },
@@ -82,6 +92,7 @@ export function createDefaultAvatar(): CharacterAvatar {
     eyeStyle: 'sparkle',
     glasses: 'none',
     hair: 'twin-tails',
+    hairColor: 'amber',
     outfit: 'tee-pants',
     shoes: 'sneakers',
   }
