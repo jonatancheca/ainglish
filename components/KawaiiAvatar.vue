@@ -109,10 +109,9 @@
         </div>
       </div>
 
-      <div class="relative -mt-2 flex flex-col items-center">
-        <div class="h-2 w-5 bg-amber-50 border-x-4 border-slate-800"></div>
+      <div class="relative -mt-5 flex flex-col items-center">
         <div
-          class="relative mt-1 border-4 border-slate-800"
+          class="relative border-4 border-slate-800"
           :class="outfitClass"
         >
           <div class="absolute -left-4 top-3 h-10 w-4 rounded-full border-4 border-slate-800 bg-amber-50"></div>

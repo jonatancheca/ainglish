@@ -8,20 +8,130 @@
     <div class="card flex flex-col items-center py-8 gap-3">
       <div class="rounded-[2rem] bg-slate-50 p-3">
         <KawaiiAvatar
-          :avatar="userStore.avatar"
+          :avatar="editing ? editDraft : userStore.avatar"
           size="md"
         />
       </div>
-      <h2 class="text-xl font-black text-slate-800">
-        {{ userStore.name }}
-      </h2>
+      <template v-if="!editing">
+        <h2 class="text-xl font-black text-slate-800">
+          {{ userStore.name || 'Sin nombre' }}
+        </h2>
+      </template>
+      <template v-else>
+        <input
+          v-model="editName"
+          type="text"
+          maxlength="30"
+          placeholder="Tu nombre"
+          class="w-52 text-center rounded-2xl border-2 border-slate-200 px-4 py-2 text-lg font-black text-slate-800 outline-none focus:border-sky-400"
+        />
+      </template>
       <div class="flex items-center gap-2">
         <LevelBadge :level="userStore.level" />
         <span class="text-sm font-bold text-slate-500">Nivel {{ userStore.level }}</span>
       </div>
+      <button
+        v-if="!editing"
+        class="text-sm font-bold text-sky-500 hover:text-sky-600 transition-colors"
+        @click="startEditing"
+      >
+        ✏️ Editar personaje
+      </button>
     </div>
 
-    <div class="card">
+    <!-- Edición del avatar -->
+    <div
+      v-if="editing"
+      class="card space-y-4"
+    >
+      <p class="text-sm font-black uppercase tracking-[0.25em] text-sky-500">
+        Editar look kawaii
+      </p>
+
+      <AvatarOptionGroup
+        label="Forma de cara"
+        :options="FACE_SHAPE_OPTIONS"
+        :model-value="editDraft.faceShape"
+        @update:model-value="editDraft.faceShape = $event"
+      />
+      <AvatarOptionGroup
+        label="Color de ojos"
+        :options="EYE_COLOR_OPTIONS"
+        :model-value="editDraft.eyeColor"
+        @update:model-value="editDraft.eyeColor = $event"
+      />
+      <AvatarOptionGroup
+        label="Estilo de ojos"
+        :options="EYE_STYLE_OPTIONS"
+        :model-value="editDraft.eyeStyle"
+        @update:model-value="editDraft.eyeStyle = $event"
+      />
+      <AvatarOptionGroup
+        label="Gafas"
+        :options="GLASSES_OPTIONS"
+        :model-value="editDraft.glasses"
+        @update:model-value="editDraft.glasses = $event"
+      />
+      <AvatarOptionGroup
+        label="Mofletes"
+        :options="CHEEK_STYLE_OPTIONS"
+        :model-value="editDraft.cheeks"
+        @update:model-value="editDraft.cheeks = $event"
+      />
+      <AvatarOptionGroup
+        v-if="editDraft.cheeks !== 'none'"
+        label="Color de mofletes"
+        :options="CHEEK_COLOR_OPTIONS"
+        :model-value="editDraft.cheekColor"
+        @update:model-value="editDraft.cheekColor = $event"
+      />
+      <AvatarOptionGroup
+        label="Pelo"
+        :options="HAIR_OPTIONS"
+        :model-value="editDraft.hair"
+        @update:model-value="editDraft.hair = $event"
+      />
+      <AvatarOptionGroup
+        label="Color de pelo"
+        :options="HAIR_COLOR_OPTIONS"
+        :model-value="editDraft.hairColor"
+        @update:model-value="editDraft.hairColor = $event"
+      />
+      <AvatarOptionGroup
+        label="Ropa"
+        :options="OUTFIT_OPTIONS"
+        :model-value="editDraft.outfit"
+        @update:model-value="editDraft.outfit = $event"
+      />
+      <AvatarOptionGroup
+        label="Zapatos"
+        :options="SHOES_OPTIONS"
+        :model-value="editDraft.shoes"
+        @update:model-value="editDraft.shoes = $event"
+      />
+
+      <div class="flex gap-3 pt-2">
+        <button
+          class="w-1/3 rounded-2xl border-2 border-slate-200 px-4 py-3 text-sm font-black text-slate-600 transition-colors hover:border-slate-300"
+          @click="cancelEditing"
+        >
+          Cancelar
+        </button>
+        <button
+          class="btn-primary w-2/3"
+          :disabled="!editName.trim()"
+          @click="saveEditing"
+        >
+          Guardar cambios ✨
+        </button>
+      </div>
+    </div>
+
+    <!-- Vista solo lectura del look -->
+    <div
+      v-else
+      class="card"
+    >
       <p class="text-sm font-black uppercase tracking-[0.25em] text-sky-500">
         Look kawaii
       </p>
@@ -186,9 +296,12 @@ import {
   FACE_SHAPE_OPTIONS,
   GLASSES_OPTIONS,
   CHEEK_STYLE_OPTIONS,
+  CHEEK_COLOR_OPTIONS,
   HAIR_OPTIONS,
+  HAIR_COLOR_OPTIONS,
   OUTFIT_OPTIONS,
   SHOES_OPTIONS,
+  type CharacterAvatar,
 } from '~/data/avatar-options'
 
 const userStore = useUserStore()
@@ -196,6 +309,27 @@ const progressStore = useProgressStore()
 const achievementsStore = useAchievementsStore()
 const router = useRouter()
 const totalAchievements = ACHIEVEMENTS.length
+
+const editing = ref(false)
+const editName = ref('')
+const editDraft = reactive<CharacterAvatar>({ ...userStore.avatar })
+
+function startEditing() {
+  editName.value = userStore.name
+  Object.assign(editDraft, userStore.avatar)
+  editing.value = true
+}
+
+function cancelEditing() {
+  editing.value = false
+}
+
+function saveEditing() {
+  if (!editName.value.trim()) return
+  userStore.name = editName.value.trim()
+  Object.assign(userStore.avatar, editDraft)
+  editing.value = false
+}
 
 function getOptionLabel(options: { value: string, label: string }[], value: string) {
   return options.find(option => option.value === value)?.label ?? value

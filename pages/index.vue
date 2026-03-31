@@ -2,11 +2,8 @@
   <div class="space-y-6">
     <!-- Saludo -->
     <div class="card flex items-center gap-4">
-      <div class="rounded-[1.5rem] bg-sky-100/80 p-1">
-        <KawaiiAvatar
-          :avatar="userStore.avatar"
-          size="sm"
-        />
+      <div class="flex items-center justify-center w-14 h-14 rounded-[1.5rem] bg-sky-100/80 text-4xl">
+        {{ timeIcon }}
       </div>
       <div>
         <p class="text-slate-500 text-sm">
@@ -141,4 +138,5 @@ const nextLesson = computed(() => getNextLesson(progressStore.completedLessons))
 
 const hour = new Date().getHours()
 const timeGreeting = hour < 12 ? 'Buenos días' : hour < 18 ? 'Buenas tardes' : 'Buenas noches'
+const timeIcon = hour < 7 ? '🌙' : hour < 18 ? '☀️' : '🌙'
 </script>
