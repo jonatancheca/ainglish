@@ -81,18 +81,126 @@
         </div>
       </div>
 
+      <div
+        v-if="hasVocab"
+        class="rounded-[2rem] border-4 border-slate-800 bg-white px-5 py-4 shadow-[0_8px_0_0_theme(colors.slate.200)]"
+      >
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">🎙️</span>
+          <div>
+            <p class="text-sm font-black text-slate-800">
+              Práctica de pronunciación
+            </p>
+            <p class="mt-1 text-sm text-slate-500">
+              {{ speechSupported ? 'Antes del test, di en voz alta las palabras nuevas y comprobaremos si se han entendido bien.' : 'Tu navegador no ofrece reconocimiento de voz aquí, así que saltaremos esta parte y seguiremos con la lección.' }}
+            </p>
+          </div>
+        </div>
+      </div>
+
       <!-- Botón empezar -->
       <button
         class="btn-primary w-full text-lg"
         @click="startExercises"
       >
-        ¡Empezar lección! 🚀
+        {{ speechSupported ? 'Practicar pronunciación →' : '¡Empezar lección! 🚀' }}
       </button>
+    </div>
+
+    <!-- Pantalla de pronunciación -->
+    <div
+      v-else-if="phase === 'speak'"
+      class="space-y-5 animate-fade-up"
+    >
+      <div class="flex items-center gap-3">
+        <button
+          type="button"
+          class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none"
+          @click="phase = hasVocab ? 'vocab' : 'exercise'"
+        >
+          ✕
+        </button>
+        <div class="flex-1 h-3 overflow-hidden rounded-full bg-slate-100">
+          <div
+            class="h-full rounded-full bg-emerald-400 transition-all duration-500"
+            :style="{ width: `${speechProgress}%` }"
+          ></div>
+        </div>
+        <span class="text-xs font-bold text-slate-400">{{ currentSpeakIndex + 1 }}/{{ vocabularyWords.length }}</span>
+      </div>
+
+      <div class="overflow-hidden rounded-[2rem] border-4 border-slate-800 bg-gradient-to-br from-emerald-100 via-white to-sky-100 p-4 shadow-[0_10px_0_0_theme(colors.emerald.100)]">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <KawaiiMonster
+            :monster="hostMonster"
+            size="sm"
+          />
+
+          <div class="flex-1 space-y-4">
+            <ComicBubble label="Pronunciación">
+              Di en voz alta {{ currentVocabWord?.en }}. Si lo reconozco bien, pasamos a la siguiente palabra.
+            </ComicBubble>
+
+            <div class="rounded-[1.75rem] border-4 border-slate-800 bg-white px-5 py-4 text-center shadow-[0_8px_0_0_theme(colors.slate.200)]">
+              <p class="text-xs font-black uppercase tracking-[0.2em] text-emerald-500">
+                Palabra objetivo
+              </p>
+              <p class="mt-2 text-3xl font-black text-slate-800">
+                {{ currentVocabWord?.en }}
+              </p>
+              <p class="mt-1 text-sm text-slate-500">
+                {{ currentVocabWord?.es }}
+              </p>
+              <p
+                v-if="speechTranscript"
+                class="mt-4 text-sm text-slate-500"
+              >
+                Te he entendido: <strong class="text-slate-700">{{ speechTranscript }}</strong>
+              </p>
+            </div>
+          </div>
+
+          <div class="hidden md:block">
+            <KawaiiAvatar
+              :avatar="userStore.avatar"
+              size="sm"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-[2rem] border-4 border-slate-800 bg-white px-5 py-4 shadow-[0_8px_0_0_theme(colors.slate.200)]">
+        <p class="text-sm font-black text-slate-800">
+          {{ speechStatusMessage }}
+        </p>
+        <p
+          v-if="speechError"
+          class="mt-1 text-sm text-red-500"
+        >
+          {{ speechError }}
+        </p>
+      </div>
+
+      <div class="grid gap-3 md:grid-cols-2">
+        <button
+          class="btn-primary w-full"
+          :disabled="isListening || !speechSupported"
+          @click="listenForWord"
+        >
+          {{ isListening ? 'Escuchando…' : 'Hablar ahora 🎤' }}
+        </button>
+        <button
+          class="btn-secondary w-full"
+          @click="skipSpeechPractice"
+        >
+          {{ isLastVocabWord ? 'Ir al test' : 'Saltar esta palabra' }}
+        </button>
+      </div>
     </div>
 
     <!-- Pantalla de ejercicio -->
     <div
-      v-if="phase === 'exercise'"
+      v-else-if="phase === 'exercise'"
       class="space-y-5"
     >
       <!-- Header de la sesión -->
@@ -289,7 +397,7 @@
 </template>
 
 <script setup lang="ts">
-import { getLessonById, getNextLesson, type Lesson, type VocabWord } from '~/data/lessons'
+import { getLessonById, getNextLesson, type Lesson } from '~/data/lessons'
 import { getMonsterForLesson } from '~/data/monsters'
 import { getAchievementById, type Achievement } from '~/data/achievements'
 
@@ -302,22 +410,31 @@ const lessonId = computed(() => route.params.id as string)
 const lesson = computed<Lesson | undefined>(() => getLessonById(lessonId.value))
 const questions = computed(() => lesson.value?.questions ?? [])
 const hostMonster = computed(() => getMonsterForLesson(lessonId.value))
+const vocabularyWords = computed(() => lesson.value?.vocabulary ?? [])
 
 const letters = ['A', 'B', 'C', 'D']
+let recognition: SpeechRecognition | null = null
 
 // ── State ──────────────────────────────────────────────────────────────────
 const hasVocab = computed(() => (lesson.value?.vocabulary?.length ?? 0) > 0)
-const phase = ref<'vocab' | 'exercise' | 'result' | 'notfound'>('exercise')
+const phase = ref<'vocab' | 'speak' | 'exercise' | 'result' | 'notfound'>('exercise')
 const currentIndex = ref(0)
+const currentSpeakIndex = ref(0)
 const selectedIndex = ref<number | null>(null)
 const answered = ref(false)
 const correctAnswers = ref(0)
 const xpEarned = ref(0)
 const starsEarned = ref(0)
 const newAchievements = ref<Achievement[]>([])
+const speechSupported = ref(false)
+const isListening = ref(false)
+const speechTranscript = ref('')
+const speechError = ref('')
+const speechState = ref<'idle' | 'success' | 'retry'>('idle')
 
 // ── Computed ───────────────────────────────────────────────────────────────
 const currentQuestion = computed(() => questions.value[currentIndex.value])
+const currentVocabWord = computed(() => vocabularyWords.value[currentSpeakIndex.value])
 const introLine = computed(() => {
   if (!lesson.value) return ''
 
@@ -336,6 +453,31 @@ const questionPrompt = computed(() => {
   if (!currentQuestion.value) return ''
 
   return `${hostMonster.value.name} pregunta: ${currentQuestion.value.question}`
+})
+
+const speechProgress = computed(() => {
+  if (!vocabularyWords.value.length) return 0
+  return (currentSpeakIndex.value / vocabularyWords.value.length) * 100
+})
+
+const isLastVocabWord = computed(
+  () => currentSpeakIndex.value >= Math.max(vocabularyWords.value.length - 1, 0),
+)
+
+const speechStatusMessage = computed(() => {
+  if (!speechSupported.value) {
+    return 'El reconocimiento de voz no está disponible en este navegador. Puedes saltar directamente al test.'
+  }
+  if (isListening.value) {
+    return 'Escuchando tu pronunciación...'
+  }
+  if (speechState.value === 'success') {
+    return 'Pronunciación aceptada. Puedes seguir con la siguiente palabra.'
+  }
+  if (speechState.value === 'retry') {
+    return 'No ha coincidido del todo. Puedes intentarlo otra vez o saltar esta palabra.'
+  }
+  return 'Pulsa el micrófono y di la palabra en inglés con naturalidad.'
 })
 
 const isCorrect = computed(
@@ -371,6 +513,105 @@ function optionClass(i: number): string {
     return 'border-red-400 bg-red-50 text-red-700 animate-shake'
   }
   return 'border-slate-200 opacity-60'
+}
+
+function normalizeSpeechText(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function isPronunciationMatch(transcript: string, expected: string): boolean {
+  const heard = normalizeSpeechText(transcript)
+  const target = normalizeSpeechText(expected)
+
+  if (!heard || !target) return false
+  if (heard === target || heard.includes(target)) return true
+
+  const targetTokens = target.split(' ')
+  return targetTokens.every((token) => heard.includes(token))
+}
+
+function createRecognition(): SpeechRecognition | null {
+  if (!import.meta.client) return null
+
+  const RecognitionCtor = window.SpeechRecognition ?? window.webkitSpeechRecognition
+  if (!RecognitionCtor) return null
+
+  const instance = new RecognitionCtor()
+  instance.continuous = false
+  instance.interimResults = false
+  instance.lang = 'en-US'
+  instance.maxAlternatives = 1
+  return instance
+}
+
+function advanceSpeechPractice() {
+  if (isLastVocabWord.value) {
+    phase.value = 'exercise'
+    return
+  }
+
+  currentSpeakIndex.value += 1
+  speechTranscript.value = ''
+  speechError.value = ''
+  speechState.value = 'idle'
+}
+
+function skipSpeechPractice() {
+  if (!speechSupported.value || isLastVocabWord.value) {
+    phase.value = 'exercise'
+    return
+  }
+
+  advanceSpeechPractice()
+}
+
+function listenForWord() {
+  if (!speechSupported.value || !currentVocabWord.value || isListening.value) return
+
+  recognition?.abort()
+  recognition = createRecognition()
+  if (!recognition) {
+    speechSupported.value = false
+    return
+  }
+
+  speechTranscript.value = ''
+  speechError.value = ''
+  speechState.value = 'idle'
+  isListening.value = true
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0]?.transcript ?? ''
+    speechTranscript.value = transcript
+
+    if (isPronunciationMatch(transcript, currentVocabWord.value?.en ?? '')) {
+      speechState.value = 'success'
+      setTimeout(() => {
+        advanceSpeechPractice()
+      }, 650)
+    } else {
+      speechState.value = 'retry'
+    }
+  }
+
+  recognition.onerror = (event) => {
+    speechState.value = 'retry'
+    speechError.value = event.error === 'not-allowed'
+      ? 'No hay permiso para usar el micrófono en este navegador.'
+      : 'No he podido reconocer esa palabra.'
+  }
+
+  recognition.onend = () => {
+    isListening.value = false
+  }
+
+  recognition.start()
 }
 
 function selectAnswer(i: number) {
@@ -412,16 +653,32 @@ function finishLesson() {
 }
 
 function startExercises() {
+  if (hasVocab.value && vocabularyWords.value.length && speechSupported.value) {
+    currentSpeakIndex.value = 0
+    speechTranscript.value = ''
+    speechError.value = ''
+    speechState.value = 'idle'
+    phase.value = 'speak'
+    return
+  }
+
   phase.value = 'exercise'
 }
 
 // Redirigir si la lección no existe
 onMounted(() => {
+  recognition = createRecognition()
+  speechSupported.value = Boolean(recognition)
+
   if (!lesson.value) {
     phase.value = 'notfound'
   } else if (hasVocab.value) {
     phase.value = 'vocab'
   }
+})
+
+onBeforeUnmount(() => {
+  recognition?.abort()
 })
 </script>
 
