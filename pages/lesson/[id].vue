@@ -214,10 +214,10 @@
         <div class="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden">
           <div
             class="h-full bg-sky-400 rounded-full transition-all duration-500"
-            :style="{ width: `${((currentIndex) / questions.length) * 100}%` }"
+            :style="{ width: `${exerciseProgress}%` }"
           ></div>
         </div>
-        <span class="text-xs font-bold text-slate-400">{{ currentIndex + 1 }}/{{ questions.length }}</span>
+        <span class="text-xs font-bold text-slate-400">{{ currentIndex + 1 }}/{{ activeQuestions.length }}</span>
       </div>
 
       <!-- Pregunta -->
@@ -287,7 +287,7 @@
         class="btn-primary w-full animate-fade-up"
         @click="next"
       >
-        {{ currentIndex < questions.length - 1 ? 'Siguiente →' : 'Ver resultado 🎉' }}
+        {{ currentIndex < activeQuestions.length - 1 ? 'Siguiente →' : 'Ver resultado 🎉' }}
       </button>
     </div>
 
@@ -312,7 +312,7 @@
           >⭐</span>
         </div>
         <p class="text-slate-500 text-sm">
-          Respondiste <strong class="text-slate-700">{{ correctAnswers }}/{{ questions.length }}</strong> correctamente
+          Respondiste <strong class="text-slate-700">{{ correctAnswers }}/{{ totalQuestionCount }}</strong> correctamente
         </p>
       </div>
 
@@ -324,6 +324,18 @@
         <div class="text-3xl font-black text-sky-600">
           +{{ xpEarned }} XP ⚡
         </div>
+      </div>
+
+      <div
+        v-if="missedQuestionsCount || recoveredXp"
+        class="card border-2 border-dashed border-amber-300 bg-amber-50"
+      >
+        <p class="text-xs font-black uppercase tracking-wide text-amber-600">
+          Segunda oportunidad
+        </p>
+        <p class="mt-2 text-sm text-slate-600">
+          {{ canRetryMistakes ? `Todavía puedes repetir ${missedQuestionsCount} ${missedQuestionsCount === 1 ? 'pregunta' : 'preguntas'} fallada${missedQuestionsCount === 1 ? '' : 's'} y recuperar hasta ${pendingXp} XP.` : `Has recuperado ${recoveredXp} XP en el repaso. ${pendingXp ? `Aún quedan ${pendingXp} XP sin ganar.` : 'Ya no quedan errores pendientes en esta lección.'}` }}
+        </p>
       </div>
 
       <!-- Logros recientes -->
@@ -350,6 +362,14 @@
           </div>
         </div>
       </div>
+
+      <button
+        v-if="canRetryMistakes"
+        class="btn-primary w-full"
+        @click="startRetryLesson"
+      >
+        Repetir solo mis fallos 🎯
+      </button>
 
       <div class="grid grid-cols-2 gap-3">
         <NuxtLink
@@ -422,9 +442,16 @@ const currentIndex = ref(0)
 const currentSpeakIndex = ref(0)
 const selectedIndex = ref<number | null>(null)
 const answered = ref(false)
+const isRetryRound = ref(false)
+const hasCompletedRetry = ref(false)
+const retryQuestionIds = ref<string[]>([])
+const failedQuestionIds = ref<string[]>([])
+const retryMistakeIds = ref<string[]>([])
 const correctAnswers = ref(0)
 const xpEarned = ref(0)
 const starsEarned = ref(0)
+const pendingXp = ref(0)
+const recoveredXp = ref(0)
 const newAchievements = ref<Achievement[]>([])
 const speechSupported = ref(false)
 const isListening = ref(false)
@@ -433,7 +460,15 @@ const speechError = ref('')
 const speechState = ref<'idle' | 'success' | 'retry'>('idle')
 
 // ── Computed ───────────────────────────────────────────────────────────────
-const currentQuestion = computed(() => questions.value[currentIndex.value])
+const activeQuestions = computed(() => {
+  if (!isRetryRound.value) return questions.value
+
+  const retryIds = new Set(retryQuestionIds.value)
+  return questions.value.filter((question) => retryIds.has(question.id))
+})
+
+const totalQuestionCount = computed(() => questions.value.length)
+const currentQuestion = computed(() => activeQuestions.value[currentIndex.value])
 const currentVocabWord = computed(() => vocabularyWords.value[currentSpeakIndex.value])
 const introLine = computed(() => {
   if (!lesson.value) return ''
@@ -447,12 +482,27 @@ const vocabLine = computed(() => {
   return `${hostMonster.value.catchphrase} Repasa estas palabras antes de entrar en mi casa.`
 })
 
-const questionLabel = computed(() => `Pregunta ${currentIndex.value + 1} de ${questions.value.length}`)
+const questionLabel = computed(() => {
+  const prefix = isRetryRound.value ? 'Reintento' : 'Pregunta'
+  return `${prefix} ${currentIndex.value + 1} de ${activeQuestions.value.length}`
+})
 
 const questionPrompt = computed(() => {
   if (!currentQuestion.value) return ''
 
-  return `${hostMonster.value.name} pregunta: ${currentQuestion.value.question}`
+  const intro = isRetryRound.value ? 'Vamos a repetir justo lo que se resistió antes.' : `${hostMonster.value.name} pregunta:`
+  return `${intro} ${currentQuestion.value.question}`
+})
+
+const canRetryMistakes = computed(
+  () => failedQuestionIds.value.length > 0 && !hasCompletedRetry.value,
+)
+
+const missedQuestionsCount = computed(() => failedQuestionIds.value.length)
+
+const exerciseProgress = computed(() => {
+  if (!activeQuestions.value.length) return 0
+  return (currentIndex.value / activeQuestions.value.length) * 100
 })
 
 const speechProgress = computed(() => {
@@ -534,6 +584,16 @@ function isPronunciationMatch(transcript: string, expected: string): boolean {
 
   const targetTokens = target.split(' ')
   return targetTokens.every((token) => heard.includes(token))
+}
+
+function mergeAchievements(unlockedIds: string[]) {
+  const knownIds = new Set(newAchievements.value.map((achievement) => achievement.id))
+  const mapped = unlockedIds
+    .map((id) => getAchievementById(id))
+    .filter(Boolean)
+    .filter((achievement) => !knownIds.has((achievement as Achievement).id)) as Achievement[]
+
+  newAchievements.value = [...newAchievements.value, ...mapped]
 }
 
 function createRecognition(): SpeechRecognition | null {
@@ -618,14 +678,32 @@ function selectAnswer(i: number) {
   if (answered.value) return
   selectedIndex.value = i
   answered.value = true
+
   if (isCorrect.value) {
     correctAnswers.value += 1
     xpEarned.value += currentQuestion.value.xpReward
+    if (isRetryRound.value) {
+      recoveredXp.value += currentQuestion.value.xpReward
+      pendingXp.value = Math.max(pendingXp.value - currentQuestion.value.xpReward, 0)
+    }
+    return
+  }
+
+  if (isRetryRound.value) {
+    if (!retryMistakeIds.value.includes(currentQuestion.value.id)) {
+      retryMistakeIds.value.push(currentQuestion.value.id)
+    }
+    return
+  }
+
+  if (!failedQuestionIds.value.includes(currentQuestion.value.id)) {
+    failedQuestionIds.value.push(currentQuestion.value.id)
+    pendingXp.value += currentQuestion.value.xpReward
   }
 }
 
 function next() {
-  if (currentIndex.value < questions.value.length - 1) {
+  if (currentIndex.value < activeQuestions.value.length - 1) {
     currentIndex.value += 1
     selectedIndex.value = null
     answered.value = false
@@ -637,19 +715,42 @@ function next() {
 function finishLesson() {
   if (!lesson.value) return
 
+  const xpToAward = isRetryRound.value ? recoveredXp.value : xpEarned.value
+
   // Calcular estrellas
-  const stars = progressStore.saveResult(lessonId.value, correctAnswers.value, questions.value.length)
+  const stars = progressStore.saveResult(lessonId.value, correctAnswers.value, totalQuestionCount.value)
   starsEarned.value = stars
 
   // Registrar actividad y sumar XP
   userStore.recordActivity()
-  userStore.addXp(xpEarned.value)
+  userStore.addXp(xpToAward)
 
   // Evaluar logros
   const unlockedIds = achievementsStore.evaluate()
-  newAchievements.value = unlockedIds.map((id) => getAchievementById(id)).filter(Boolean) as Achievement[]
+  mergeAchievements(unlockedIds)
+
+  if (isRetryRound.value) {
+    failedQuestionIds.value = [...retryMistakeIds.value]
+    retryQuestionIds.value = []
+    retryMistakeIds.value = []
+    isRetryRound.value = false
+    hasCompletedRetry.value = true
+  }
 
   phase.value = 'result'
+}
+
+function startRetryLesson() {
+  if (!failedQuestionIds.value.length) return
+
+  retryQuestionIds.value = [...failedQuestionIds.value]
+  retryMistakeIds.value = []
+  recoveredXp.value = 0
+  currentIndex.value = 0
+  selectedIndex.value = null
+  answered.value = false
+  isRetryRound.value = true
+  phase.value = 'exercise'
 }
 
 function startExercises() {
