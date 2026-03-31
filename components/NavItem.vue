@@ -9,7 +9,7 @@
     <span
       v-if="isActive"
       class="absolute bottom-0 h-0.5 w-8 bg-sky-500 rounded-full"
-    />
+    ></span>
   </NuxtLink>
 </template>
 

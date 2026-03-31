@@ -2,24 +2,33 @@
   "name": "ainglish",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint \"**/*.vue\" \"**/*.ts\"",
+    "lint:fix": "eslint \"**/*.vue\" \"**/*.ts\" --fix"
   },
   "dependencies": {
-    "nuxt": "^3.15.0",
-    "vue": "^3.5.13",
-    "vue-router": "^4.5.0",
     "@pinia/nuxt": "^0.9.0",
+    "nuxt": "^3.15.0",
     "pinia": "^2.3.1",
-    "pinia-plugin-persistedstate": "^2.4.0"
+    "pinia-plugin-persistedstate": "^2.4.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^6.13.2",
+    "@nuxt/eslint": "^1.15.2",
     "@nuxtjs/google-fonts": "^3.2.0",
-    "tailwindcss": "^3.4.17"
+    "@nuxtjs/tailwindcss": "^6.13.2",
+    "@typescript-eslint/eslint-plugin": "^8.58.0",
+    "@typescript-eslint/parser": "^8.58.0",
+    "eslint": "^10.1.0",
+    "eslint-plugin-vue": "^10.8.0",
+    "tailwindcss": "^3.4.17",
+    "vue-eslint-parser": "^10.4.0"
   }
 }

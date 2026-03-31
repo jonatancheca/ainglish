@@ -16,14 +16,23 @@
     <!-- Info -->
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-2">
-        <span class="font-black text-base" :class="locked ? 'text-slate-400' : 'text-slate-700'">
+        <span
+          class="font-black text-base"
+          :class="locked ? 'text-slate-400' : 'text-slate-700'"
+        >
           {{ lesson.title }}
         </span>
-        <span v-if="completed" class="text-xs bg-sky-100 text-sky-600 font-bold px-2 py-0.5 rounded-full">
+        <span
+          v-if="completed"
+          class="text-xs bg-sky-100 text-sky-600 font-bold px-2 py-0.5 rounded-full"
+        >
           ¡Hecho!
         </span>
       </div>
-      <p class="text-sm mt-0.5" :class="locked ? 'text-slate-400' : 'text-slate-500'">
+      <p
+        class="text-sm mt-0.5"
+        :class="locked ? 'text-slate-400' : 'text-slate-500'"
+      >
         {{ lesson.description }}
       </p>
       <!-- Stars -->

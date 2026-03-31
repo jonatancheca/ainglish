@@ -8,7 +8,7 @@
       <div
         class="h-full bg-gradient-to-r from-sky-400 to-sky-500 rounded-full transition-all duration-700 ease-out"
         :style="{ width: `${progress * 100}%` }"
-      />
+      ></div>
     </div>
   </div>
 </template>

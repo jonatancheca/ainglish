@@ -1,7 +1,9 @@
 <template>
   <div class="space-y-5">
     <div>
-      <h1 class="text-2xl font-black text-slate-800">Logros</h1>
+      <h1 class="text-2xl font-black text-slate-800">
+        Logros
+      </h1>
       <p class="text-slate-500 text-sm mt-1">
         {{ unlockedCount }}/{{ total }} desbloqueados
       </p>
@@ -12,7 +14,7 @@
       <div
         class="h-full bg-amber-400 rounded-full transition-all duration-700"
         :style="{ width: `${(unlockedCount / total) * 100}%` }"
-      />
+      ></div>
     </div>
 
     <!-- Grid de logros -->
@@ -32,8 +34,12 @@
           {{ isUnlocked(ach.id) ? ach.icon : '🔒' }}
         </div>
         <div>
-          <p class="font-black text-slate-800">{{ ach.title }}</p>
-          <p class="text-sm text-slate-500">{{ ach.description }}</p>
+          <p class="font-black text-slate-800">
+            {{ ach.title }}
+          </p>
+          <p class="text-sm text-slate-500">
+            {{ ach.description }}
+          </p>
         </div>
       </div>
     </div>

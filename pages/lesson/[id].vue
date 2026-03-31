@@ -1,27 +1,45 @@
 <template>
   <div>
     <!-- Pantalla de ejercicio -->
-    <div v-if="phase === 'exercise'" class="space-y-5">
+    <div
+      v-if="phase === 'exercise'"
+      class="space-y-5"
+    >
       <!-- Header de la sesión -->
       <div class="flex items-center gap-3">
-        <NuxtLink to="/learn" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none">✕</NuxtLink>
+        <NuxtLink
+          to="/learn"
+          class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none"
+        >
+          ✕
+        </NuxtLink>
         <div class="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden">
           <div
             class="h-full bg-sky-400 rounded-full transition-all duration-500"
             :style="{ width: `${((currentIndex) / questions.length) * 100}%` }"
-          />
+          ></div>
         </div>
         <span class="text-xs font-bold text-slate-400">{{ currentIndex + 1 }}/{{ questions.length }}</span>
       </div>
 
       <!-- Pregunta -->
-      <div class="card animate-fade-up" :key="currentIndex">
-        <p class="text-xs font-bold text-sky-500 uppercase tracking-wide mb-3">Elige la respuesta correcta</p>
-        <h2 class="text-xl font-black text-slate-800 leading-snug">{{ currentQuestion.question }}</h2>
+      <div
+        :key="currentIndex"
+        class="card animate-fade-up"
+      >
+        <p class="text-xs font-bold text-sky-500 uppercase tracking-wide mb-3">
+          Elige la respuesta correcta
+        </p>
+        <h2 class="text-xl font-black text-slate-800 leading-snug">
+          {{ currentQuestion.question }}
+        </h2>
       </div>
 
       <!-- Opciones -->
-      <div class="space-y-3" :key="`opts-${currentIndex}`">
+      <div
+        :key="`opts-${currentIndex}`"
+        class="space-y-3"
+      >
         <button
           v-for="(option, i) in currentQuestion.options"
           :key="i"
@@ -56,12 +74,24 @@
     </div>
 
     <!-- Pantalla de resultado -->
-    <div v-else-if="phase === 'result'" class="space-y-5 animate-bounce-in">
+    <div
+      v-else-if="phase === 'result'"
+      class="space-y-5 animate-bounce-in"
+    >
       <div class="card text-center py-8">
-        <div class="text-5xl mb-3">{{ resultEmoji }}</div>
-        <h1 class="text-2xl font-black text-slate-800 mb-1">{{ resultTitle }}</h1>
+        <div class="text-5xl mb-3">
+          {{ resultEmoji }}
+        </div>
+        <h1 class="text-2xl font-black text-slate-800 mb-1">
+          {{ resultTitle }}
+        </h1>
         <div class="flex justify-center gap-1 mb-4">
-          <span v-for="i in 3" :key="i" class="text-2xl" :class="i <= starsEarned ? 'opacity-100' : 'opacity-25'">⭐</span>
+          <span
+            v-for="i in 3"
+            :key="i"
+            class="text-2xl"
+            :class="i <= starsEarned ? 'opacity-100' : 'opacity-25'"
+          >⭐</span>
         </div>
         <p class="text-slate-500 text-sm">
           Respondiste <strong class="text-slate-700">{{ correctAnswers }}/{{ questions.length }}</strong> correctamente
@@ -70,36 +100,80 @@
 
       <!-- XP ganado -->
       <div class="card bg-sky-50 border-sky-200 border-2 text-center">
-        <p class="text-slate-500 text-sm mb-1">XP ganado esta lección</p>
-        <div class="text-3xl font-black text-sky-600">+{{ xpEarned }} XP ⚡</div>
+        <p class="text-slate-500 text-sm mb-1">
+          XP ganado esta lección
+        </p>
+        <div class="text-3xl font-black text-sky-600">
+          +{{ xpEarned }} XP ⚡
+        </div>
       </div>
 
       <!-- Logros recientes -->
-      <div v-if="newAchievements.length" class="card border-2 border-amber-200 bg-amber-50">
-        <p class="text-xs font-black text-amber-600 uppercase tracking-wide mb-3">🏆 ¡Logros desbloqueados!</p>
-        <div v-for="ach in newAchievements" :key="ach.id" class="flex items-center gap-3 mb-2 last:mb-0">
+      <div
+        v-if="newAchievements.length"
+        class="card border-2 border-amber-200 bg-amber-50"
+      >
+        <p class="text-xs font-black text-amber-600 uppercase tracking-wide mb-3">
+          🏆 ¡Logros desbloqueados!
+        </p>
+        <div
+          v-for="ach in newAchievements"
+          :key="ach.id"
+          class="flex items-center gap-3 mb-2 last:mb-0"
+        >
           <span class="text-2xl">{{ ach.icon }}</span>
           <div>
-            <p class="font-black text-slate-800 text-sm">{{ ach.title }}</p>
-            <p class="text-xs text-slate-500">{{ ach.description }}</p>
+            <p class="font-black text-slate-800 text-sm">
+              {{ ach.title }}
+            </p>
+            <p class="text-xs text-slate-500">
+              {{ ach.description }}
+            </p>
           </div>
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
-        <NuxtLink to="/learn" class="btn-secondary text-center">Ver lecciones</NuxtLink>
-        <NuxtLink v-if="nextLessonId" :to="`/lesson/${nextLessonId}`" class="btn-primary text-center">
+        <NuxtLink
+          to="/learn"
+          class="btn-secondary text-center"
+        >
+          Ver lecciones
+        </NuxtLink>
+        <NuxtLink
+          v-if="nextLessonId"
+          :to="`/lesson/${nextLessonId}`"
+          class="btn-primary text-center"
+        >
           Siguiente →
         </NuxtLink>
-        <NuxtLink v-else to="/" class="btn-primary text-center">Inicio 🏠</NuxtLink>
+        <NuxtLink
+          v-else
+          to="/"
+          class="btn-primary text-center"
+        >
+          Inicio 🏠
+        </NuxtLink>
       </div>
     </div>
 
     <!-- Loading / not found -->
-    <div v-else class="text-center py-20 text-slate-400">
-      <p class="text-4xl mb-3">😕</p>
-      <p class="font-bold">Lección no encontrada</p>
-      <NuxtLink to="/learn" class="btn-secondary mt-4 inline-block">Volver</NuxtLink>
+    <div
+      v-else
+      class="text-center py-20 text-slate-400"
+    >
+      <p class="text-4xl mb-3">
+        😕
+      </p>
+      <p class="font-bold">
+        Lección no encontrada
+      </p>
+      <NuxtLink
+        to="/learn"
+        class="btn-secondary mt-4 inline-block"
+      >
+        Volver
+      </NuxtLink>
     </div>
   </div>
 </template>

@@ -5,14 +5,22 @@
       <div class="text-white font-black text-4xl tracking-tight mb-2">
         <span class="bg-white/20 rounded-2xl px-3 py-1">AI</span>nglish
       </div>
-      <p class="text-sky-100 text-base">Tu app para aprender inglés</p>
+      <p class="text-sky-100 text-base">
+        Tu app para aprender inglés
+      </p>
     </div>
 
     <!-- Card -->
     <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl animate-bounce-in">
-      <div class="text-5xl text-center mb-4">👋</div>
-      <h1 class="text-2xl font-black text-slate-800 text-center mb-1">¡Bienvenido/a!</h1>
-      <p class="text-slate-500 text-center text-sm mb-6">¿Cómo te llamas?</p>
+      <div class="text-5xl text-center mb-4">
+        👋
+      </div>
+      <h1 class="text-2xl font-black text-slate-800 text-center mb-1">
+        ¡Bienvenido/a!
+      </h1>
+      <p class="text-slate-500 text-center text-sm mb-6">
+        ¿Cómo te llamas?
+      </p>
 
       <form @submit.prevent="start">
         <input
