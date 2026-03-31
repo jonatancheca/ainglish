@@ -41,7 +41,7 @@
           v-for="i in 3"
           :key="i"
           class="text-base"
-          :class="i <= stars ? 'opacity-100' : 'opacity-25'"
+          :class="i <= (stars ?? 0) ? 'opacity-100' : 'opacity-25'"
         >⭐</span>
       </div>
     </div>
