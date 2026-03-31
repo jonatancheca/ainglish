@@ -109,7 +109,7 @@
         </div>
       </div>
 
-      <div class="relative -mt-5 flex flex-col items-center">
+      <div class="relative flex flex-col items-center">
         <div
           class="relative border-4 border-slate-800"
           :class="outfitClass"

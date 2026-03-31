@@ -6,7 +6,7 @@
         <!-- Logo -->
         <NuxtLink
           to="/"
-          class="flex items-center gap-2 font-black text-sky-500 text-xl tracking-tight"
+          class="flex items-center font-black text-sky-500 text-xl tracking-tight"
         >
           <span class="bg-sky-500 text-white rounded-xl px-2 py-0.5 text-sm font-black">AI</span>
           nglish
