@@ -36,7 +36,7 @@
           Casas en esta calle
         </p>
         <p class="mt-2 text-2xl font-black text-slate-800">
-          {{ streetHouses.length }}
+          {{ completedHousesCount }}/{{ streetHouses.length }}
         </p>
       </div>
       <div class="rounded-[1.75rem] border-4 border-slate-800 bg-white px-4 py-3 shadow-[0_8px_0_0_theme(colors.slate.200)]">
@@ -80,12 +80,18 @@
         >
           <div class="relative flex flex-col items-center">
             <div
-              class="h-8 w-24 rounded-t-[2rem] border-4 border-b-0 border-slate-800"
-              :class="house.palette.roof"
+              v-if="progressStore.isHouseCompleted(house.id)"
+              class="absolute -right-2 -top-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border-2 border-slate-800 bg-emerald-400 text-xs text-white"
+            >
+              ✓
+            </div>
+            <div
+              class="h-8 w-24 rounded-t-[2rem] border-4 border-b-0"
+              :class="[house.palette.roof, progressStore.isHouseCompleted(house.id) ? 'border-emerald-500' : 'border-slate-800']"
             ></div>
             <div
-              class="relative h-20 w-24 rounded-b-[1.25rem] border-4 border-slate-800"
-              :class="house.palette.wall"
+              class="relative h-20 w-24 rounded-b-[1.25rem] border-4"
+              :class="[house.palette.wall, progressStore.isHouseCompleted(house.id) ? 'border-emerald-500' : 'border-slate-800']"
             >
               <div class="absolute left-1/2 top-2 h-7 w-7 -translate-x-1/2 rounded-full border-4 border-slate-800 bg-white"></div>
               <div
@@ -94,7 +100,9 @@
               ></div>
             </div>
           </div>
-          <span class="mt-2 max-w-24 rounded-full border-2 border-slate-800 bg-white px-3 py-1 text-center text-[11px] font-black text-slate-600">
+          <span class="mt-2 max-w-24 rounded-full border-2 px-3 py-1 text-center text-[11px] font-black"
+            :class="progressStore.isHouseCompleted(house.id) ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-800 bg-white text-slate-600'"
+          >
             {{ house.words.join(' + ') }}
           </span>
         </button>
@@ -180,7 +188,7 @@
             {{ barrierOpen ? 'La barrera ya está bajada. Puedes cruzar a la siguiente calle cuando quieras.' : 'Completa la lección en esta calle para bajar la barrera del final.' }}
           </p>
           <NuxtLink
-            :to="`/lesson/${activeLesson.id}`"
+            :to="`/lesson/${activeLesson.id}?house=${selectedHouse.id}`"
             class="btn-primary mt-4 w-full"
           >
             Entrar en la casa
@@ -219,8 +227,14 @@ const progressStore = useProgressStore()
 const userStore = useUserStore()
 
 const streetLessons = getStreetLessons()
+
+function isStreetCompleted(lesson: ReturnType<typeof getStreetLessons>[number]): boolean {
+  const houses = getLessonStreetHouses(lesson)
+  return progressStore.areAllHousesCompleted(houses.map((h) => h.id))
+}
+
 const initialStreetIndex = Math.max(
-  streetLessons.findIndex((lesson) => !progressStore.isCompleted(lesson.id)),
+  streetLessons.findIndex((lesson) => !isStreetCompleted(lesson)),
   0,
 )
 
@@ -232,7 +246,7 @@ const activeLesson = computed(() => streetLessons[activeStreetIndex.value] ?? st
 const streetHouses = computed(() => getLessonStreetHouses(activeLesson.value))
 const hostMonster = computed(() => getMonsterForLesson(activeLesson.value.id))
 const completedLessons = computed(() => progressStore.completedLessons.length)
-const barrierOpen = computed(() => progressStore.isCompleted(activeLesson.value.id))
+const barrierOpen = computed(() => progressStore.areAllHousesCompleted(streetHouses.value.map((h) => h.id)))
 const nextStreetExists = computed(() => activeStreetIndex.value < streetLessons.length - 1)
 const nearbyHouse = computed(() => {
   return streetHouses.value.find((house) => Math.abs(house.position - characterPosition.value) <= 8) ?? null
@@ -247,10 +261,16 @@ const canAdvanceToNextStreet = computed(
   () => barrierOpen.value && nextStreetExists.value && characterPosition.value >= 88,
 )
 
+const completedHousesCount = computed(() => streetHouses.value.filter((h) => progressStore.isHouseCompleted(h.id)).length)
+
 const guideText = computed(() => {
-  return barrierOpen.value
-    ? `${hostMonster.value.name} ha bajado la barrera. Recorre el final de la calle para avanzar.`
-    : `${hostMonster.value.name} te espera en una casa. Acércate y entra para completar esta calle.`
+  if (barrierOpen.value) {
+    return `${hostMonster.value.name} ha bajado la barrera. Recorre el final de la calle para avanzar.`
+  }
+  if (completedHousesCount.value > 0) {
+    return `${hostMonster.value.name} dice: llevas ${completedHousesCount.value} de ${streetHouses.value.length} casas. ¡Sigue así!`
+  }
+  return `${hostMonster.value.name} te espera en una casa. Acércate y entra para completar esta calle.`
 })
 
 const streetAdvanceMessage = computed(() => {
@@ -259,7 +279,7 @@ const streetAdvanceMessage = computed(() => {
   }
 
   if (!barrierOpen.value) {
-    return 'La barrera seguirá levantada hasta que completes la lección de esta calle.'
+    return `La barrera seguirá levantada hasta que completes todas las casas (${completedHousesCount.value}/${streetHouses.value.length}).`
   }
 
   if (characterPosition.value < 88) {
@@ -292,7 +312,7 @@ function enterNearbyHouse() {
   if (!nearbyHouse.value) return
 
   selectedHouseId.value = nearbyHouse.value.id
-  navigateTo(`/lesson/${activeLesson.value.id}`)
+  navigateTo(`/lesson/${activeLesson.value.id}?house=${nearbyHouse.value.id}`)
 }
 
 function advanceStreet() {

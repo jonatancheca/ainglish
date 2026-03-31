@@ -8,7 +8,7 @@
       <!-- Header -->
       <div class="flex items-center gap-3">
         <NuxtLink
-          to="/learn"
+          :to="backUrl"
           class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none"
         >
           ✕
@@ -60,7 +60,7 @@
       <!-- Lista de palabras -->
       <div class="space-y-2">
         <div
-          v-for="(word, i) in lesson?.vocabulary"
+          v-for="(word, i) in vocabularyWords"
           :key="i"
           class="card flex items-start gap-3 !py-3"
         >
@@ -206,7 +206,7 @@
       <!-- Header de la sesión -->
       <div class="flex items-center gap-3">
         <NuxtLink
-          to="/learn"
+          :to="backUrl"
           class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none"
         >
           ✕
@@ -404,7 +404,7 @@
 
       <div class="grid grid-cols-2 gap-3">
         <NuxtLink
-          to="/learn"
+          :to="backUrl"
           class="btn-secondary text-center"
         >
           Ver lecciones
@@ -438,7 +438,7 @@
         Lección no encontrada
       </p>
       <NuxtLink
-        to="/learn"
+        :to="backUrl"
         class="btn-secondary mt-4 inline-block"
       >
         Volver
@@ -451,6 +451,7 @@
 import { getLessonById, getNextLesson, type Lesson, type Question } from '~/data/lessons'
 import { getMonsterForLesson } from '~/data/monsters'
 import { getAchievementById, type Achievement } from '~/data/achievements'
+import { getHouseById } from '~/data/aiworld'
 
 const route = useRoute()
 const userStore = useUserStore()
@@ -458,16 +459,32 @@ const progressStore = useProgressStore()
 const achievementsStore = useAchievementsStore()
 
 const lessonId = computed(() => route.params.id as string)
+const houseId = computed(() => route.query.house as string | undefined)
 const lesson = computed<Lesson | undefined>(() => getLessonById(lessonId.value))
-const questions = computed(() => lesson.value?.questions ?? [])
+const house = computed(() => houseId.value ? getHouseById(lessonId.value, houseId.value) : null)
+const backUrl = computed(() => houseId.value ? '/aiworld' : '/learn')
+const questions = computed(() => {
+  if (!lesson.value) return []
+  if (house.value) {
+    const ids = new Set(house.value.questionIds)
+    return lesson.value.questions.filter((q) => ids.has(q.id))
+  }
+  return lesson.value.questions
+})
 const hostMonster = computed(() => getMonsterForLesson(lessonId.value))
-const vocabularyWords = computed(() => lesson.value?.vocabulary ?? [])
+const vocabularyWords = computed(() => {
+  if (!lesson.value?.vocabulary) return []
+  if (house.value) {
+    return house.value.vocabIndices.map((i) => lesson.value!.vocabulary![i]).filter(Boolean)
+  }
+  return lesson.value.vocabulary
+})
 
 const letters = ['A', 'B', 'C', 'D']
 let recognition: SpeechRecognition | null = null
 
 // ── State ──────────────────────────────────────────────────────────────────
-const hasVocab = computed(() => (lesson.value?.vocabulary?.length ?? 0) > 0)
+const hasVocab = computed(() => vocabularyWords.value.length > 0)
 const phase = ref<'vocab' | 'speak' | 'exercise' | 'result' | 'notfound'>('exercise')
 const currentIndex = ref(0)
 const currentSpeakIndex = ref(0)
@@ -796,7 +813,9 @@ function finishLesson() {
   const xpToAward = isRetryRound.value ? recoveredXp.value : xpEarned.value
 
   // Calcular estrellas
-  const stars = progressStore.saveResult(lessonId.value, correctAnswers.value, totalQuestionCount.value)
+  const stars = houseId.value
+    ? progressStore.saveHouseResult(houseId.value, correctAnswers.value, totalQuestionCount.value)
+    : progressStore.saveResult(lessonId.value, correctAnswers.value, totalQuestionCount.value)
   starsEarned.value = stars
 
   // Registrar actividad y sumar XP

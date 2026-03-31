@@ -13,6 +13,7 @@ export const useProgressStore = defineStore(
   () => {
     const completedLessons = ref<string[]>([])
     const lessonStats = ref<Record<string, LessonStat>>({})
+    const houseStats = ref<Record<string, LessonStat>>({})
 
     const totalLessonsCompleted = computed(() => completedLessons.value.length)
 
@@ -56,15 +57,44 @@ export const useProgressStore = defineStore(
       )
     }
 
+    function saveHouseResult(houseId: string, correct: number, total: number): number {
+      const pct = correct / total
+      const stars = pct >= 0.9 ? 3 : pct >= 0.6 ? 2 : 1
+
+      const prev = houseStats.value[houseId]
+      if (!prev || stars > prev.stars || (stars === prev.stars && correct > prev.correct)) {
+        houseStats.value[houseId] = {
+          correct,
+          total,
+          stars,
+          completedAt: new Date().toISOString(),
+        }
+      }
+
+      return stars
+    }
+
+    function isHouseCompleted(houseId: string): boolean {
+      return houseId in houseStats.value
+    }
+
+    function areAllHousesCompleted(houseIds: string[]): boolean {
+      return houseIds.length > 0 && houseIds.every((id) => isHouseCompleted(id))
+    }
+
     return {
       completedLessons,
       lessonStats,
+      houseStats,
       totalLessonsCompleted,
       isCompleted,
       getStats,
       getStars,
       saveResult,
       hasPerfectLesson,
+      saveHouseResult,
+      isHouseCompleted,
+      areAllHousesCompleted,
     }
   },
   { persist: true },
