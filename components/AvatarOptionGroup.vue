@@ -6,13 +6,13 @@
         v-for="option in options"
         :key="option.value"
         type="button"
-        @click="$emit('update:modelValue', option.value)"
         :class="[
           'relative rounded-xl px-3 py-2 text-xs font-bold text-slate-700 transition-all border-2',
           modelValue === option.value
             ? 'border-sky-400 bg-sky-50 text-sky-600 shadow-sm'
             : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
         ]"
+        @click="$emit('update:modelValue', option.value)"
       >
         {{ option.label }}
         <span

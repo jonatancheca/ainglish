@@ -104,6 +104,21 @@
                   @update:model-value="avatarDraft.glasses = $event"
                 />
 
+                <AvatarOptionGroup
+                  label="Mofletes"
+                  :options="CHEEK_STYLE_OPTIONS"
+                  :model-value="avatarDraft.cheeks"
+                  @update:model-value="avatarDraft.cheeks = $event"
+                />
+
+                <AvatarOptionGroup
+                  v-if="avatarDraft.cheeks !== 'none'"
+                  label="Color de mofletes"
+                  :options="CHEEK_COLOR_OPTIONS"
+                  :model-value="avatarDraft.cheekColor"
+                  @update:model-value="avatarDraft.cheekColor = $event"
+                />
+
                 <button
                   type="submit"
                   class="btn-primary w-full"
@@ -177,6 +192,8 @@ import {
   EYE_STYLE_OPTIONS,
   FACE_SHAPE_OPTIONS,
   GLASSES_OPTIONS,
+  CHEEK_STYLE_OPTIONS,
+  CHEEK_COLOR_OPTIONS,
   HAIR_OPTIONS,
   HAIR_COLOR_OPTIONS,
   OUTFIT_OPTIONS,

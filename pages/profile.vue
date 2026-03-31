@@ -74,6 +74,14 @@
             {{ selectedShoesLabel }}
           </p>
         </div>
+        <div class="rounded-2xl bg-slate-50 px-4 py-3">
+          <p class="font-black text-slate-700">
+            Mofletes
+          </p>
+          <p class="mt-1">
+            {{ selectedCheeksLabel }}
+          </p>
+        </div>
       </div>
     </div>
 
@@ -177,6 +185,7 @@ import {
   EYE_STYLE_OPTIONS,
   FACE_SHAPE_OPTIONS,
   GLASSES_OPTIONS,
+  CHEEK_STYLE_OPTIONS,
   HAIR_OPTIONS,
   OUTFIT_OPTIONS,
   SHOES_OPTIONS,
@@ -199,6 +208,7 @@ const selectedGlassesLabel = computed(() => getOptionLabel(GLASSES_OPTIONS, user
 const selectedHairLabel = computed(() => getOptionLabel(HAIR_OPTIONS, userStore.avatar.hair))
 const selectedOutfitLabel = computed(() => getOptionLabel(OUTFIT_OPTIONS, userStore.avatar.outfit))
 const selectedShoesLabel = computed(() => getOptionLabel(SHOES_OPTIONS, userStore.avatar.shoes))
+const selectedCheeksLabel = computed(() => getOptionLabel(CHEEK_STYLE_OPTIONS, userStore.avatar.cheeks ?? 'none'))
 
 function confirmReset() {
   if (confirm('¿Seguro que quieres reiniciar todo tu progreso? Esta acción no se puede deshacer.')) {

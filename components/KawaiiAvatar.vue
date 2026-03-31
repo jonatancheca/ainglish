@@ -33,12 +33,13 @@
         :class="faceClass"
       >
         <div
-          class="absolute left-1/2 top-0 h-8 w-24 -translate-x-1/2 rounded-t-[999px]"
+          v-if="avatar.hair !== 'bald'"
+          class="absolute left-1/2 top-0 z-10 h-8 w-24 -translate-x-1/2 rounded-t-[999px]"
           :class="hairFrontClass"
         ></div>
         <div
           v-if="showBangs"
-          class="absolute left-1/2 top-5 h-4 w-20 -translate-x-1/2 rounded-b-2xl"
+          class="absolute left-1/2 top-5 z-10 h-4 w-20 -translate-x-1/2 rounded-b-2xl"
           :class="hairFrontClass"
         ></div>
 
@@ -81,21 +82,35 @@
 
         <div class="absolute left-1/2 top-16 h-5 w-8 -translate-x-1/2 rounded-b-full border-b-4 border-slate-800"></div>
 
+        <!-- Mofletes -->
+        <div
+          v-if="avatar.cheeks !== 'none'"
+          class="absolute left-1/2 top-[3.25rem] flex -translate-x-1/2 justify-between"
+          :style="{ width: '5.5rem' }"
+        >
+          <span
+            class="h-3 w-4 opacity-60"
+            :class="[cheekColorClass, cheekShapeClass]"
+          ></span>
+          <span
+            class="h-3 w-4 opacity-60"
+            :class="[cheekColorClass, cheekShapeClass]"
+          ></span>
+        </div>
+
         <div
           v-if="avatar.glasses !== 'none'"
-          class="absolute left-1/2 top-[3.35rem] flex -translate-x-1/2 items-center gap-1"
+          class="absolute left-1/2 top-[1.75rem] flex -translate-x-1/2 items-center gap-1"
           :class="glassesColorClass"
         >
           <span class="h-6 w-6 rounded-full border-[3px]"></span>
           <span class="h-1 w-3 rounded-full bg-current"></span>
           <span class="h-6 w-6 rounded-full border-[3px]"></span>
         </div>
-
-
       </div>
 
       <div class="relative -mt-2 flex flex-col items-center">
-        <div class="h-4 w-5 rounded-b-xl bg-amber-50 border-x-4 border-b-4 border-slate-800"></div>
+        <div class="h-2 w-5 bg-amber-50 border-x-4 border-slate-800"></div>
         <div
           class="relative mt-1 border-4 border-slate-800"
           :class="outfitClass"
@@ -184,6 +199,21 @@ const shoePalette = {
   rollers: 'bg-cyan-400',
 } as const
 
+const cheekColorPalette = {
+  rose: 'bg-rose-300',
+  peach: 'bg-orange-200',
+  pink: 'bg-pink-300',
+  coral: 'bg-red-300',
+  berry: 'bg-fuchsia-300',
+} as const
+
+const cheekShapePalette = {
+  none: '',
+  round: 'rounded-full',
+  oval: 'rounded-[60%]',
+  star: 'rounded-sm rotate-45',
+} as const
+
 const containerClass = computed(() => sizeClasses[props.size].container)
 const bodyScaleClass = computed(() => sizeClasses[props.size].body)
 const showTwinTails = computed(() => props.avatar.hair === 'twin-tails')
@@ -230,4 +260,6 @@ const rightEyeClass = computed(() => {
 const glassesColorClass = computed(() => (props.avatar.glasses === 'red' ? 'text-rose-500' : 'text-sky-500'))
 const outfitClass = computed(() => outfitPalette[props.avatar.outfit])
 const shoeClass = computed(() => shoePalette[props.avatar.shoes])
+const cheekColorClass = computed(() => cheekColorPalette[props.avatar.cheekColor ?? 'rose'])
+const cheekShapeClass = computed(() => cheekShapePalette[props.avatar.cheeks ?? 'round'])
 </script>

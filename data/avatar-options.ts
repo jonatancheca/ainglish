@@ -6,6 +6,8 @@ export type HairStyle = 'twin-tails' | 'bob' | 'bangs' | 'bun' | 'bald'
 export type HairColor = 'amber' | 'orange' | 'stone' | 'rose' | 'teal'
 export type OutfitStyle = 'tee-pants' | 'long-dress' | 'tee-skirt' | 'tee-jeans' | 'hoodie-shorts'
 export type ShoesStyle = 'sneakers' | 'boots' | 'sandals' | 'mary-janes' | 'rollers'
+export type CheekStyle = 'none' | 'round' | 'oval' | 'star'
+export type CheekColor = 'rose' | 'peach' | 'pink' | 'coral' | 'berry'
 
 export interface CharacterAvatar {
   faceShape: FaceShape
@@ -16,6 +18,8 @@ export interface CharacterAvatar {
   hairColor: HairColor
   outfit: OutfitStyle
   shoes: ShoesStyle
+  cheeks: CheekStyle
+  cheekColor: CheekColor
 }
 
 interface AvatarOption<T extends string> {
@@ -85,6 +89,21 @@ export const SHOES_OPTIONS: AvatarOption<ShoesStyle>[] = [
   { value: 'rollers', label: 'Patines' },
 ]
 
+export const CHEEK_STYLE_OPTIONS: AvatarOption<CheekStyle>[] = [
+  { value: 'none', label: 'Sin mofletes' },
+  { value: 'round', label: 'Redondos' },
+  { value: 'oval', label: 'Ovalados' },
+  { value: 'star', label: 'Estrellitas' },
+]
+
+export const CHEEK_COLOR_OPTIONS: AvatarOption<CheekColor>[] = [
+  { value: 'rose', label: 'Rosa' },
+  { value: 'peach', label: 'Melocotón' },
+  { value: 'pink', label: 'Fucsia' },
+  { value: 'coral', label: 'Coral' },
+  { value: 'berry', label: 'Frambuesa' },
+]
+
 export function createDefaultAvatar(): CharacterAvatar {
   return {
     faceShape: 'soft-round',
@@ -95,5 +114,7 @@ export function createDefaultAvatar(): CharacterAvatar {
     hairColor: 'amber',
     outfit: 'tee-pants',
     shoes: 'sneakers',
+    cheeks: 'round',
+    cheekColor: 'rose',
   }
 }
