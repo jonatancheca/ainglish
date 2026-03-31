@@ -137,6 +137,7 @@ const progressStore = useProgressStore()
 const nextLesson = computed(() => getNextLesson(progressStore.completedLessons))
 
 const hour = new Date().getHours()
-const timeGreeting = hour < 12 ? 'Buenos días' : hour < 18 ? 'Buenas tardes' : 'Buenas noches'
-const timeIcon = hour < 7 ? '🌙' : hour < 18 ? '☀️' : '🌙'
+const isNight = hour >= 20 || hour < 7
+const timeGreeting = isNight ? 'Buenas noches' : 'Buenos días'
+const timeIcon = isNight ? '🌙' : '☀️'
 </script>

@@ -5,7 +5,7 @@
     </h1>
 
     <!-- Avatar + nombre -->
-    <div class="card flex flex-col items-center py-8 gap-3">
+    <div class="card flex flex-col items-center py-8 gap-5">
       <div class="rounded-[2rem] bg-slate-50 p-3">
         <KawaiiAvatar
           :avatar="editing ? editDraft : userStore.avatar"

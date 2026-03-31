@@ -25,7 +25,7 @@
     ></div>
 
     <div
-      class="absolute left-1/2 top-8 flex -translate-x-1/2 flex-col items-center"
+      class="absolute left-1/2 top-5 flex -translate-x-1/2 flex-col items-center"
       :class="bodyScaleClass"
     >
       <div
@@ -185,7 +185,7 @@ const eyePalette = {
 const outfitPalette = {
   'tee-pants': 'h-16 w-20 rounded-t-3xl rounded-b-2xl bg-sky-400',
   'long-dress': 'h-24 w-20 rounded-t-3xl rounded-b-[2.75rem] bg-pink-400',
-  'tee-skirt': 'h-18 w-20 rounded-t-3xl rounded-b-[2rem] bg-fuchsia-400',
+  'tee-skirt': 'h-[4.5rem] w-20 rounded-t-3xl rounded-b-[2rem] bg-fuchsia-400',
   'tee-jeans': 'h-16 w-20 rounded-t-3xl rounded-b-2xl bg-indigo-400',
   'hoodie-shorts': 'h-16 w-20 rounded-[2rem] bg-emerald-400',
 } as const
