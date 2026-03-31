@@ -17,15 +17,44 @@
         <span class="text-xs font-bold text-sky-500 uppercase tracking-wide">📖 Vocabulario</span>
       </div>
 
-      <!-- Título -->
-      <div class="card text-center">
-        <span class="text-4xl mb-2 block">{{ lesson?.icon }}</span>
-        <h1 class="text-xl font-black text-slate-800">
-          {{ lesson?.title }}
-        </h1>
-        <p class="text-slate-500 text-sm mt-1">
-          Estudia estas palabras antes de empezar
-        </p>
+      <!-- Escena de introducción -->
+      <div class="overflow-hidden rounded-[2rem] border-4 border-slate-800 bg-gradient-to-br from-sky-100 via-cyan-50 to-amber-100 p-4 shadow-[0_10px_0_0_theme(colors.sky.100)]">
+        <div class="mb-4 flex items-start justify-between gap-3">
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.3em] text-sky-500">
+              Casa de {{ hostMonster.name }}
+            </p>
+            <h1 class="mt-2 text-2xl font-black text-slate-800">
+              {{ lesson?.icon }} {{ lesson?.title }}
+            </h1>
+            <p class="mt-1 text-sm text-slate-500">
+              Estudia estas palabras antes de empezar.
+            </p>
+          </div>
+          <span class="rounded-full border-2 border-slate-800 bg-white px-3 py-1 text-xs font-black text-slate-600">
+            Cómic
+          </span>
+        </div>
+
+        <ComicBubble label="Introducción">
+          {{ introLine }}
+        </ComicBubble>
+
+        <div class="mt-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <KawaiiMonster :monster="hostMonster" />
+          <div class="flex flex-col items-center gap-3 md:max-w-xs">
+            <ComicBubble
+              side="right"
+              label="Consejo"
+            >
+              {{ vocabLine }}
+            </ComicBubble>
+            <KawaiiAvatar
+              :avatar="userStore.avatar"
+              size="sm"
+            />
+          </div>
+        </div>
       </div>
 
       <!-- Lista de palabras -->
@@ -86,14 +115,34 @@
       <!-- Pregunta -->
       <div
         :key="currentIndex"
-        class="card animate-fade-up"
+        class="overflow-hidden rounded-[2rem] border-4 border-slate-800 bg-gradient-to-br from-white via-sky-50 to-amber-50 p-4 shadow-[0_10px_0_0_theme(colors.slate.200)] animate-fade-up"
       >
-        <p class="text-xs font-bold text-sky-500 uppercase tracking-wide mb-3">
-          Elige la respuesta correcta
-        </p>
-        <h2 class="text-xl font-black text-slate-800 leading-snug">
-          {{ currentQuestion.question }}
-        </h2>
+        <div class="flex items-center justify-between gap-3">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-sky-500">
+            {{ questionLabel }}
+          </p>
+          <span class="rounded-full border-2 border-slate-800 bg-white px-3 py-1 text-xs font-black text-slate-500">
+            Elige la respuesta correcta
+          </span>
+        </div>
+
+        <div class="mt-4 grid gap-4 md:grid-cols-[auto_1fr_auto] md:items-end">
+          <KawaiiMonster
+            :monster="hostMonster"
+            size="sm"
+          />
+
+          <ComicBubble :label="`${hostMonster.name} dice`">
+            {{ questionPrompt }}
+          </ComicBubble>
+
+          <div class="hidden md:block">
+            <KawaiiAvatar
+              :avatar="userStore.avatar"
+              size="sm"
+            />
+          </div>
+        </div>
       </div>
 
       <!-- Opciones -->
@@ -241,6 +290,7 @@
 
 <script setup lang="ts">
 import { getLessonById, getNextLesson, type Lesson, type VocabWord } from '~/data/lessons'
+import { getMonsterForLesson } from '~/data/monsters'
 import { getAchievementById, type Achievement } from '~/data/achievements'
 
 const route = useRoute()
@@ -251,6 +301,7 @@ const achievementsStore = useAchievementsStore()
 const lessonId = computed(() => route.params.id as string)
 const lesson = computed<Lesson | undefined>(() => getLessonById(lessonId.value))
 const questions = computed(() => lesson.value?.questions ?? [])
+const hostMonster = computed(() => getMonsterForLesson(lessonId.value))
 
 const letters = ['A', 'B', 'C', 'D']
 
@@ -267,6 +318,25 @@ const newAchievements = ref<Achievement[]>([])
 
 // ── Computed ───────────────────────────────────────────────────────────────
 const currentQuestion = computed(() => questions.value[currentIndex.value])
+const introLine = computed(() => {
+  if (!lesson.value) return ''
+
+  return `Soy ${hostMonster.value.name}, ${hostMonster.value.title}. Vamos a explorar ${lesson.value.title.toLowerCase()} con viñetas y pistas visuales.`
+})
+
+const vocabLine = computed(() => {
+  if (!lesson.value) return ''
+
+  return `${hostMonster.value.catchphrase} Repasa estas palabras antes de entrar en mi casa.`
+})
+
+const questionLabel = computed(() => `Pregunta ${currentIndex.value + 1} de ${questions.value.length}`)
+
+const questionPrompt = computed(() => {
+  if (!currentQuestion.value) return ''
+
+  return `${hostMonster.value.name} pregunta: ${currentQuestion.value.question}`
+})
 
 const isCorrect = computed(
   () => selectedIndex.value === currentQuestion.value?.correctIndex,
