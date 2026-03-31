@@ -230,7 +230,7 @@
             {{ questionLabel }}
           </p>
           <span class="rounded-full border-2 border-slate-800 bg-white px-3 py-1 text-xs font-black text-slate-500">
-            Elige la respuesta correcta
+            {{ currentQuestion.type === 'written' ? 'Escribe la respuesta' : 'Elige la respuesta correcta' }}
           </span>
         </div>
 
@@ -253,8 +253,9 @@
         </div>
       </div>
 
-      <!-- Opciones -->
+      <!-- Opciones (multiple choice) -->
       <div
+        v-if="currentQuestion.type === 'multiple-choice'"
         :key="`opts-${currentIndex}`"
         class="space-y-3"
       >
@@ -271,12 +272,42 @@
         </button>
       </div>
 
+      <!-- Input escrito (written) -->
+      <div
+        v-else-if="currentQuestion.type === 'written'"
+        :key="`write-${currentIndex}`"
+        class="space-y-3"
+      >
+        <div
+          class="rounded-2xl border-2 px-5 py-4 transition-all"
+          :class="writtenInputClass"
+        >
+          <input
+            ref="writtenInputRef"
+            v-model="writtenAnswer"
+            type="text"
+            class="w-full bg-transparent text-lg font-bold text-slate-800 outline-none placeholder:text-slate-300"
+            placeholder="Escribe tu respuesta aquí…"
+            :disabled="answered"
+            @keyup.enter="submitWrittenAnswer"
+          />
+        </div>
+        <button
+          v-if="!answered"
+          class="btn-primary w-full"
+          :disabled="!writtenAnswer.trim()"
+          @click="submitWrittenAnswer"
+        >
+          Comprobar ✓
+        </button>
+      </div>
+
       <!-- Feedback -->
       <Transition name="slide-up">
         <ExerciseFeedback
           v-if="answered"
           :correct="isCorrect"
-          :correct-answer="currentQuestion.options[currentQuestion.correctIndex]"
+          :correct-answer="correctAnswerText"
           :xp="currentQuestion.xpReward"
         />
       </Transition>
@@ -417,7 +448,7 @@
 </template>
 
 <script setup lang="ts">
-import { getLessonById, getNextLesson, type Lesson } from '~/data/lessons'
+import { getLessonById, getNextLesson, type Lesson, type Question } from '~/data/lessons'
 import { getMonsterForLesson } from '~/data/monsters'
 import { getAchievementById, type Achievement } from '~/data/achievements'
 
@@ -458,6 +489,8 @@ const isListening = ref(false)
 const speechTranscript = ref('')
 const speechError = ref('')
 const speechState = ref<'idle' | 'success' | 'retry'>('idle')
+const writtenAnswer = ref('')
+const writtenInputRef = ref<HTMLInputElement | null>(null)
 
 // ── Computed ───────────────────────────────────────────────────────────────
 const activeQuestions = computed(() => {
@@ -530,9 +563,26 @@ const speechStatusMessage = computed(() => {
   return 'Pulsa el micrófono y di la palabra en inglés con naturalidad.'
 })
 
-const isCorrect = computed(
-  () => selectedIndex.value === currentQuestion.value?.correctIndex,
-)
+const isCorrect = computed(() => {
+  if (!currentQuestion.value) return false
+  if (currentQuestion.value.type === 'written') {
+    const accepted = currentQuestion.value.acceptedAnswers ?? [currentQuestion.value.correctAnswer]
+    return accepted.some((a) => a.toLowerCase() === writtenAnswer.value.trim().toLowerCase())
+  }
+  return selectedIndex.value === currentQuestion.value.correctIndex
+})
+
+const correctAnswerText = computed(() => {
+  if (!currentQuestion.value) return ''
+  if (currentQuestion.value.type === 'written') return currentQuestion.value.correctAnswer
+  return currentQuestion.value.options[currentQuestion.value.correctIndex]
+})
+
+const writtenInputClass = computed(() => {
+  if (!answered.value) return 'border-slate-200 focus-within:border-sky-400'
+  if (isCorrect.value) return 'border-emerald-400 bg-emerald-50'
+  return 'border-red-400 bg-red-50'
+})
 
 const resultEmoji = computed(() => {
   if (starsEarned.value === 3) return '🎉'
@@ -702,11 +752,39 @@ function selectAnswer(i: number) {
   }
 }
 
+function submitWrittenAnswer() {
+  if (answered.value || !writtenAnswer.value.trim()) return
+  answered.value = true
+
+  if (isCorrect.value) {
+    correctAnswers.value += 1
+    xpEarned.value += currentQuestion.value.xpReward
+    if (isRetryRound.value) {
+      recoveredXp.value += currentQuestion.value.xpReward
+      pendingXp.value = Math.max(pendingXp.value - currentQuestion.value.xpReward, 0)
+    }
+    return
+  }
+
+  if (isRetryRound.value) {
+    if (!retryMistakeIds.value.includes(currentQuestion.value.id)) {
+      retryMistakeIds.value.push(currentQuestion.value.id)
+    }
+    return
+  }
+
+  if (!failedQuestionIds.value.includes(currentQuestion.value.id)) {
+    failedQuestionIds.value.push(currentQuestion.value.id)
+    pendingXp.value += currentQuestion.value.xpReward
+  }
+}
+
 function next() {
   if (currentIndex.value < activeQuestions.value.length - 1) {
     currentIndex.value += 1
     selectedIndex.value = null
     answered.value = false
+    writtenAnswer.value = ''
   } else {
     finishLesson()
   }

@@ -1,10 +1,22 @@
-export interface Question {
+export interface MultipleChoiceQuestion {
   id: string
+  type: 'multiple-choice'
   question: string
   options: [string, string, string, string]
   correctIndex: 0 | 1 | 2 | 3
   xpReward: number
 }
+
+export interface WrittenQuestion {
+  id: string
+  type: 'written'
+  question: string
+  correctAnswer: string
+  acceptedAnswers?: string[]
+  xpReward: number
+}
+
+export type Question = MultipleChoiceQuestion | WrittenQuestion
 
 export interface VocabWord {
   en: string
@@ -49,6 +61,7 @@ export const LESSONS: Lesson[] = [
     questions: [
       {
         id: 'g1',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "Hola" en inglés?',
         options: ['Goodbye', 'Hello', 'Please', 'Thank you'],
         correctIndex: 1,
@@ -56,6 +69,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'g2',
+        type: 'multiple-choice',
         question: '¿Qué significa "My name is Ana"?',
         options: ['Me llamo Ana', 'Soy de Ana', 'Conozco a Ana', 'Llamo a Ana'],
         correctIndex: 0,
@@ -63,6 +77,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'g3',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "Buenos días"?',
         options: ['Good night', 'Good evening', 'Good morning', 'Good afternoon'],
         correctIndex: 2,
@@ -70,6 +85,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'g4',
+        type: 'multiple-choice',
         question: '¿Qué significa "How are you?"?',
         options: ['¿Cómo te llamas?', '¿Dónde estás?', '¿Cómo estás?', '¿Cuántos años tienes?'],
         correctIndex: 2,
@@ -77,6 +93,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'g5',
+        type: 'multiple-choice',
         question: '"Nice to meet you" significa…',
         options: ['Hasta luego', 'Encantado de conocerte', 'Por favor', 'De nada'],
         correctIndex: 1,
@@ -84,6 +101,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'g6',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "Adiós"?',
         options: ['Hello', 'Sorry', 'Goodbye', 'Please'],
         correctIndex: 2,
@@ -91,6 +109,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'g7',
+        type: 'multiple-choice',
         question: '"I am fine" se traduce como…',
         options: ['Tengo frío', 'Estoy bien', 'Me voy', 'Soy nuevo'],
         correctIndex: 1,
@@ -105,10 +124,11 @@ export const LESSONS: Lesson[] = [
     icon: '🔢',
     color: 'emerald',
     level: 'A1',
-    order: 2,
+    order: 3,
     questions: [
       {
         id: 'n1',
+        type: 'multiple-choice',
         question: '¿Cuánto es "five"?',
         options: ['3', '4', '5', '6'],
         correctIndex: 2,
@@ -116,6 +136,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'n2',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "doce" en inglés?',
         options: ['eleven', 'twelve', 'thirteen', 'twenty'],
         correctIndex: 1,
@@ -123,6 +144,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'n3',
+        type: 'multiple-choice',
         question: '"Fifteen" significa…',
         options: ['50', '15', '5', '51'],
         correctIndex: 1,
@@ -130,6 +152,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'n4',
+        type: 'multiple-choice',
         question: '¿Cómo se escribe el número 8 en inglés?',
         options: ['six', 'seven', 'eight', 'nine'],
         correctIndex: 2,
@@ -137,6 +160,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'n5',
+        type: 'multiple-choice',
         question: '"Twenty" es igual a…',
         options: ['10', '12', '20', '22'],
         correctIndex: 2,
@@ -144,6 +168,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'n6',
+        type: 'multiple-choice',
         question: '"Three" más "four" es…',
         options: ['five', 'six', 'seven', 'eight'],
         correctIndex: 2,
@@ -151,6 +176,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'n7',
+        type: 'multiple-choice',
         question: '¿Cuál es el número "seventeen"?',
         options: ['7', '70', '17', '71'],
         correctIndex: 2,
@@ -165,7 +191,7 @@ export const LESSONS: Lesson[] = [
     icon: '🎨',
     color: 'violet',
     level: 'A1',
-    order: 3,
+    order: 5,
     vocabulary: [
       { en: 'Red', es: 'Rojo', example: 'The apple is red.' },
       { en: 'Blue', es: 'Azul', example: 'The sky is blue.' },
@@ -180,6 +206,7 @@ export const LESSONS: Lesson[] = [
     questions: [
       {
         id: 'c1',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "rojo" en inglés?',
         options: ['Blue', 'Green', 'Red', 'Yellow'],
         correctIndex: 2,
@@ -187,6 +214,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'c2',
+        type: 'multiple-choice',
         question: '"Yellow" significa…',
         options: ['Amarillo', 'Naranja', 'Verde', 'Morado'],
         correctIndex: 0,
@@ -194,6 +222,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'c3',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "azul"?',
         options: ['Black', 'Blue', 'Brown', 'White'],
         correctIndex: 1,
@@ -201,6 +230,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'c4',
+        type: 'multiple-choice',
         question: '"Green" es…',
         options: ['Gris', 'Naranja', 'Verde', 'Rosa'],
         correctIndex: 2,
@@ -208,6 +238,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'c5',
+        type: 'multiple-choice',
         question: '¿Qué color es "white"?',
         options: ['Negro', 'Blanco', 'Gris', 'Beige'],
         correctIndex: 1,
@@ -215,6 +246,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'c6',
+        type: 'multiple-choice',
         question: '"Purple" se traduce como…',
         options: ['Rosa', 'Morado', 'Naranja', 'Marrón'],
         correctIndex: 1,
@@ -222,6 +254,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'c7',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "negro"?',
         options: ['Grey', 'Navy', 'Black', 'Dark'],
         correctIndex: 2,
@@ -236,10 +269,11 @@ export const LESSONS: Lesson[] = [
     icon: '👨‍👩‍👧',
     color: 'rose',
     level: 'A1',
-    order: 4,
+    order: 7,
     questions: [
       {
         id: 'f1',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "madre" en inglés?',
         options: ['Father', 'Sister', 'Mother', 'Aunt'],
         correctIndex: 2,
@@ -247,6 +281,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'f2',
+        type: 'multiple-choice',
         question: '"Brother" significa…',
         options: ['Hermana', 'Hermano', 'Primo', 'Tío'],
         correctIndex: 1,
@@ -254,6 +289,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'f3',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "abuelo"?',
         options: ['Uncle', 'Cousin', 'Grandfather', 'Father'],
         correctIndex: 2,
@@ -261,6 +297,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'f4',
+        type: 'multiple-choice',
         question: '"Daughter" se traduce como…',
         options: ['Hijo', 'Hija', 'Sobrina', 'Nieta'],
         correctIndex: 1,
@@ -268,6 +305,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'f5',
+        type: 'multiple-choice',
         question: '¿Qué significa "My sister is young"?',
         options: ['Mi hermano es mayor', 'Mi hermana es joven', 'Mi prima es bonita', 'Mi hija es nueva'],
         correctIndex: 1,
@@ -275,6 +313,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'f6',
+        type: 'multiple-choice',
         question: '"Parents" hace referencia a…',
         options: ['Los hijos', 'Los abuelos', 'Los padres', 'Los tíos'],
         correctIndex: 2,
@@ -282,6 +321,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'f7',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "esposa"?',
         options: ['Husband', 'Wife', 'Partner', 'Cousin'],
         correctIndex: 1,
@@ -296,7 +336,7 @@ export const LESSONS: Lesson[] = [
     icon: '🍎',
     color: 'amber',
     level: 'A1',
-    order: 5,
+    order: 9,
     vocabulary: [
       { en: 'Apple', es: 'Manzana', example: 'I eat an apple every day.' },
       { en: 'Bread', es: 'Pan', example: 'Can I have some bread?' },
@@ -311,6 +351,7 @@ export const LESSONS: Lesson[] = [
     questions: [
       {
         id: 'fo1',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "manzana"?',
         options: ['Orange', 'Apple', 'Banana', 'Grape'],
         correctIndex: 1,
@@ -318,6 +359,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'fo2',
+        type: 'multiple-choice',
         question: '"Bread" significa…',
         options: ['Arroz', 'Pasta', 'Pan', 'Sopa'],
         correctIndex: 2,
@@ -325,6 +367,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'fo3',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "leche"?',
         options: ['Water', 'Juice', 'Milk', 'Coffee'],
         correctIndex: 2,
@@ -332,6 +375,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'fo4',
+        type: 'multiple-choice',
         question: '"I am hungry" significa…',
         options: ['Tengo sed', 'Tengo hambre', 'Estoy cansado', 'Me gusta comer'],
         correctIndex: 1,
@@ -339,6 +383,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'fo5',
+        type: 'multiple-choice',
         question: '¿Qué es "chicken"?',
         options: ['Cerdo', 'Pescado', 'Ternera', 'Pollo'],
         correctIndex: 3,
@@ -346,6 +391,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'fo6',
+        type: 'multiple-choice',
         question: '"Vegetables" se refiere a…',
         options: ['Frutas', 'Verduras', 'Carnes', 'Bebidas'],
         correctIndex: 1,
@@ -353,6 +399,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'fo7',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "desayuno"?',
         options: ['Lunch', 'Dinner', 'Breakfast', 'Snack'],
         correctIndex: 2,
@@ -367,10 +414,11 @@ export const LESSONS: Lesson[] = [
     icon: '⏰',
     color: 'cyan',
     level: 'A1',
-    order: 6,
+    order: 11,
     questions: [
       {
         id: 't1',
+        type: 'multiple-choice',
         question: '"What time is it?" significa…',
         options: ['¿Cuánto tiempo tienes?', '¿Qué hora es?', '¿Cuándo llegaste?', '¿A qué hora sales?'],
         correctIndex: 1,
@@ -378,6 +426,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 't2',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "lunes"?',
         options: ['Tuesday', 'Sunday', 'Monday', 'Friday'],
         correctIndex: 2,
@@ -385,6 +434,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 't3',
+        type: 'multiple-choice',
         question: '"Yesterday" significa…',
         options: ['Mañana', 'Hoy', 'Ayer', 'Ahora'],
         correctIndex: 2,
@@ -392,6 +442,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 't4',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "semana"?',
         options: ['Month', 'Year', 'Day', 'Week'],
         correctIndex: 3,
@@ -399,6 +450,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 't5',
+        type: 'multiple-choice',
         question: '"It is half past three" significa…',
         options: ['Son las 3 menos cuarto', 'Son las 3 y media', 'Son las 3 en punto', 'Son las 3 y cuarto'],
         correctIndex: 1,
@@ -406,6 +458,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 't6',
+        type: 'multiple-choice',
         question: '¿Qué día es "Wednesday"?',
         options: ['Martes', 'Jueves', 'Miércoles', 'Viernes'],
         correctIndex: 2,
@@ -413,6 +466,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 't7',
+        type: 'multiple-choice',
         question: '"Tomorrow" se traduce como…',
         options: ['Ayer', 'Hoy', 'Esta tarde', 'Mañana'],
         correctIndex: 3,
@@ -427,7 +481,7 @@ export const LESSONS: Lesson[] = [
     icon: '📍',
     color: 'teal',
     level: 'A1',
-    order: 7,
+    order: 13,
     vocabulary: [
       { en: 'School', es: 'Escuela', example: 'Where is the school?' },
       { en: 'Hospital', es: 'Hospital', example: 'The hospital is far away.' },
@@ -442,6 +496,7 @@ export const LESSONS: Lesson[] = [
     questions: [
       {
         id: 'p1',
+        type: 'multiple-choice',
         question: '"Where is the school?" significa…',
         options: ['¿Hay una escuela?', '¿Dónde está la escuela?', '¿Qué es una escuela?', '¿Cuándo abre la escuela?'],
         correctIndex: 1,
@@ -449,6 +504,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'p2',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "hospital"?',
         options: ['Market', 'School', 'Hospital', 'Library'],
         correctIndex: 2,
@@ -456,6 +512,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'p3',
+        type: 'multiple-choice',
         question: '"Turn left" significa…',
         options: ['Sigue recto', 'Gira a la derecha', 'Gira a la izquierda', 'Para aquí'],
         correctIndex: 2,
@@ -463,6 +520,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'p4',
+        type: 'multiple-choice',
         question: '¿Qué es "supermarket"?',
         options: ['Farmacia', 'Supermercado', 'Librería', 'Banco'],
         correctIndex: 1,
@@ -470,6 +528,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'p5',
+        type: 'multiple-choice',
         question: '"It is near here" significa…',
         options: ['Está muy lejos', 'Está aquí dentro', 'Está cerca de aquí', 'No está aquí'],
         correctIndex: 2,
@@ -477,6 +536,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'p6',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "aeropuerto"?',
         options: ['Station', 'Port', 'Airport', 'Bus stop'],
         correctIndex: 2,
@@ -484,6 +544,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'p7',
+        type: 'multiple-choice',
         question: '"Straight ahead" significa…',
         options: ['A la izquierda', 'A la derecha', 'Todo recto', 'Hacia atrás'],
         correctIndex: 2,
@@ -498,10 +559,11 @@ export const LESSONS: Lesson[] = [
     icon: '⚡',
     color: 'indigo',
     level: 'A1',
-    order: 8,
+    order: 15,
     questions: [
       {
         id: 'v1',
+        type: 'multiple-choice',
         question: '"To eat" significa…',
         options: ['Beber', 'Comer', 'Dormir', 'Correr'],
         correctIndex: 1,
@@ -509,6 +571,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'v2',
+        type: 'multiple-choice',
         question: '¿Cómo se dice "hablar"?',
         options: ['To listen', 'To read', 'To speak', 'To write'],
         correctIndex: 2,
@@ -516,6 +579,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'v3',
+        type: 'multiple-choice',
         question: '"I go to school" significa…',
         options: ['Fui a la escuela', 'Voy a la escuela', 'Estoy en la escuela', 'Salgo de la escuela'],
         correctIndex: 1,
@@ -523,6 +587,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'v4',
+        type: 'multiple-choice',
         question: '"To sleep" se traduce como…',
         options: ['Caminar', 'Saltar', 'Dormir', 'Volar'],
         correctIndex: 2,
@@ -530,6 +595,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'v5',
+        type: 'multiple-choice',
         question: '¿Qué significa "She likes music"?',
         options: ['Ella no gusta de la música', 'A ella le gusta la música', 'Ella toca música', 'Ella estudia música'],
         correctIndex: 1,
@@ -537,6 +603,7 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'v6',
+        type: 'multiple-choice',
         question: '"To have" significa…',
         options: ['Ser', 'Estar', 'Tener', 'Hacer'],
         correctIndex: 2,
@@ -544,10 +611,369 @@ export const LESSONS: Lesson[] = [
       },
       {
         id: 'v7',
+        type: 'multiple-choice',
         question: '"They work every day" significa…',
         options: ['Ellos trabajaron ayer', 'Ellos trabajan cada día', 'Ellos no trabajan hoy', 'Ellos van a trabajar'],
         correctIndex: 1,
         xpReward: 10,
+      },
+    ],
+  },
+  // ─── A1 Escritura ────────────────────────────────────────────────────────
+  {
+    id: 'a1-write-greetings',
+    title: 'Escribe saludos',
+    description: 'Practica escribiendo saludos en inglés',
+    icon: '✍️',
+    color: 'sky',
+    level: 'A1',
+    order: 2,
+    questions: [
+      {
+        id: 'wg1',
+        type: 'written',
+        question: 'Escribe "Hola" en inglés',
+        correctAnswer: 'Hello',
+        acceptedAnswers: ['hello', 'Hello'],
+        xpReward: 15,
+      },
+      {
+        id: 'wg2',
+        type: 'written',
+        question: 'Escribe "Adiós" en inglés',
+        correctAnswer: 'Goodbye',
+        acceptedAnswers: ['goodbye', 'Goodbye', 'bye', 'Bye'],
+        xpReward: 15,
+      },
+      {
+        id: 'wg3',
+        type: 'written',
+        question: 'Escribe "Buenos días" en inglés',
+        correctAnswer: 'Good morning',
+        acceptedAnswers: ['good morning', 'Good morning', 'Good Morning'],
+        xpReward: 15,
+      },
+      {
+        id: 'wg4',
+        type: 'written',
+        question: '¿Cómo escribes "Gracias" en inglés?',
+        correctAnswer: 'Thank you',
+        acceptedAnswers: ['thank you', 'Thank you', 'Thanks', 'thanks'],
+        xpReward: 15,
+      },
+      {
+        id: 'wg5',
+        type: 'written',
+        question: 'Escribe "Por favor" en inglés',
+        correctAnswer: 'Please',
+        acceptedAnswers: ['please', 'Please'],
+        xpReward: 15,
+      },
+    ],
+  },
+  {
+    id: 'a1-write-numbers',
+    title: 'Escribe números',
+    description: 'Escribe los números en inglés',
+    icon: '✏️',
+    color: 'emerald',
+    level: 'A1',
+    order: 4,
+    questions: [
+      {
+        id: 'wn1',
+        type: 'written',
+        question: 'Escribe el número 7 en inglés',
+        correctAnswer: 'seven',
+        acceptedAnswers: ['seven', 'Seven'],
+        xpReward: 15,
+      },
+      {
+        id: 'wn2',
+        type: 'written',
+        question: 'Escribe el número 12 en inglés',
+        correctAnswer: 'twelve',
+        acceptedAnswers: ['twelve', 'Twelve'],
+        xpReward: 15,
+      },
+      {
+        id: 'wn3',
+        type: 'written',
+        question: 'Escribe el número 15 en inglés',
+        correctAnswer: 'fifteen',
+        acceptedAnswers: ['fifteen', 'Fifteen'],
+        xpReward: 15,
+      },
+      {
+        id: 'wn4',
+        type: 'written',
+        question: 'Escribe el número 20 en inglés',
+        correctAnswer: 'twenty',
+        acceptedAnswers: ['twenty', 'Twenty'],
+        xpReward: 15,
+      },
+      {
+        id: 'wn5',
+        type: 'written',
+        question: 'Escribe el resultado de "three + four" en inglés',
+        correctAnswer: 'seven',
+        acceptedAnswers: ['seven', 'Seven'],
+        xpReward: 15,
+      },
+    ],
+  },
+  {
+    id: 'a1-write-colors',
+    title: 'Escribe colores',
+    description: 'Practica escribiendo los colores',
+    icon: '🖊️',
+    color: 'violet',
+    level: 'A1',
+    order: 6,
+    questions: [
+      {
+        id: 'wc1',
+        type: 'written',
+        question: 'Escribe "rojo" en inglés',
+        correctAnswer: 'red',
+        acceptedAnswers: ['red', 'Red'],
+        xpReward: 15,
+      },
+      {
+        id: 'wc2',
+        type: 'written',
+        question: 'Escribe "azul" en inglés',
+        correctAnswer: 'blue',
+        acceptedAnswers: ['blue', 'Blue'],
+        xpReward: 15,
+      },
+      {
+        id: 'wc3',
+        type: 'written',
+        question: 'Escribe "amarillo" en inglés',
+        correctAnswer: 'yellow',
+        acceptedAnswers: ['yellow', 'Yellow'],
+        xpReward: 15,
+      },
+      {
+        id: 'wc4',
+        type: 'written',
+        question: 'Escribe "verde" en inglés',
+        correctAnswer: 'green',
+        acceptedAnswers: ['green', 'Green'],
+        xpReward: 15,
+      },
+      {
+        id: 'wc5',
+        type: 'written',
+        question: 'Escribe "negro" en inglés',
+        correctAnswer: 'black',
+        acceptedAnswers: ['black', 'Black'],
+        xpReward: 15,
+      },
+    ],
+  },
+  {
+    id: 'a1-write-family',
+    title: 'Escribe familia',
+    description: 'Escribe palabras de la familia en inglés',
+    icon: '📝',
+    color: 'rose',
+    level: 'A1',
+    order: 8,
+    questions: [
+      {
+        id: 'wf1',
+        type: 'written',
+        question: 'Escribe "madre" en inglés',
+        correctAnswer: 'mother',
+        acceptedAnswers: ['mother', 'Mother', 'mom', 'Mom', 'mum', 'Mum'],
+        xpReward: 15,
+      },
+      {
+        id: 'wf2',
+        type: 'written',
+        question: 'Escribe "padre" en inglés',
+        correctAnswer: 'father',
+        acceptedAnswers: ['father', 'Father', 'dad', 'Dad'],
+        xpReward: 15,
+      },
+      {
+        id: 'wf3',
+        type: 'written',
+        question: 'Escribe "hermano" en inglés',
+        correctAnswer: 'brother',
+        acceptedAnswers: ['brother', 'Brother'],
+        xpReward: 15,
+      },
+      {
+        id: 'wf4',
+        type: 'written',
+        question: 'Escribe "hermana" en inglés',
+        correctAnswer: 'sister',
+        acceptedAnswers: ['sister', 'Sister'],
+        xpReward: 15,
+      },
+      {
+        id: 'wf5',
+        type: 'written',
+        question: 'Escribe "abuelo" en inglés',
+        correctAnswer: 'grandfather',
+        acceptedAnswers: ['grandfather', 'Grandfather', 'grandpa', 'Grandpa'],
+        xpReward: 15,
+      },
+    ],
+  },
+  {
+    id: 'a1-write-food',
+    title: 'Escribe comida',
+    description: 'Escribe palabras de comida en inglés',
+    icon: '🖋️',
+    color: 'amber',
+    level: 'A1',
+    order: 10,
+    questions: [
+      {
+        id: 'wfo1',
+        type: 'written',
+        question: 'Escribe "manzana" en inglés',
+        correctAnswer: 'apple',
+        acceptedAnswers: ['apple', 'Apple'],
+        xpReward: 15,
+      },
+      {
+        id: 'wfo2',
+        type: 'written',
+        question: 'Escribe "pan" en inglés',
+        correctAnswer: 'bread',
+        acceptedAnswers: ['bread', 'Bread'],
+        xpReward: 15,
+      },
+      {
+        id: 'wfo3',
+        type: 'written',
+        question: 'Escribe "leche" en inglés',
+        correctAnswer: 'milk',
+        acceptedAnswers: ['milk', 'Milk'],
+        xpReward: 15,
+      },
+      {
+        id: 'wfo4',
+        type: 'written',
+        question: 'Escribe "agua" en inglés',
+        correctAnswer: 'water',
+        acceptedAnswers: ['water', 'Water'],
+        xpReward: 15,
+      },
+      {
+        id: 'wfo5',
+        type: 'written',
+        question: 'Escribe "pollo" en inglés',
+        correctAnswer: 'chicken',
+        acceptedAnswers: ['chicken', 'Chicken'],
+        xpReward: 15,
+      },
+    ],
+  },
+  {
+    id: 'a1-write-time',
+    title: 'Escribe tiempo',
+    description: 'Escribe palabras de tiempo en inglés',
+    icon: '⌨️',
+    color: 'cyan',
+    level: 'A1',
+    order: 12,
+    questions: [
+      {
+        id: 'wt1',
+        type: 'written',
+        question: 'Escribe "lunes" en inglés',
+        correctAnswer: 'Monday',
+        acceptedAnswers: ['monday', 'Monday'],
+        xpReward: 15,
+      },
+      {
+        id: 'wt2',
+        type: 'written',
+        question: 'Escribe "ayer" en inglés',
+        correctAnswer: 'yesterday',
+        acceptedAnswers: ['yesterday', 'Yesterday'],
+        xpReward: 15,
+      },
+      {
+        id: 'wt3',
+        type: 'written',
+        question: 'Escribe "mañana" (futuro) en inglés',
+        correctAnswer: 'tomorrow',
+        acceptedAnswers: ['tomorrow', 'Tomorrow'],
+        xpReward: 15,
+      },
+      {
+        id: 'wt4',
+        type: 'written',
+        question: 'Escribe "semana" en inglés',
+        correctAnswer: 'week',
+        acceptedAnswers: ['week', 'Week'],
+        xpReward: 15,
+      },
+      {
+        id: 'wt5',
+        type: 'written',
+        question: 'Escribe "miércoles" en inglés',
+        correctAnswer: 'Wednesday',
+        acceptedAnswers: ['wednesday', 'Wednesday'],
+        xpReward: 15,
+      },
+    ],
+  },
+  {
+    id: 'a1-write-places',
+    title: 'Escribe lugares',
+    description: 'Escribe nombres de lugares en inglés',
+    icon: '🗒️',
+    color: 'teal',
+    level: 'A1',
+    order: 14,
+    questions: [
+      {
+        id: 'wp1',
+        type: 'written',
+        question: 'Escribe "escuela" en inglés',
+        correctAnswer: 'school',
+        acceptedAnswers: ['school', 'School'],
+        xpReward: 15,
+      },
+      {
+        id: 'wp2',
+        type: 'written',
+        question: 'Escribe "hospital" en inglés',
+        correctAnswer: 'hospital',
+        acceptedAnswers: ['hospital', 'Hospital'],
+        xpReward: 15,
+      },
+      {
+        id: 'wp3',
+        type: 'written',
+        question: 'Escribe "supermercado" en inglés',
+        correctAnswer: 'supermarket',
+        acceptedAnswers: ['supermarket', 'Supermarket'],
+        xpReward: 15,
+      },
+      {
+        id: 'wp4',
+        type: 'written',
+        question: 'Escribe "aeropuerto" en inglés',
+        correctAnswer: 'airport',
+        acceptedAnswers: ['airport', 'Airport'],
+        xpReward: 15,
+      },
+      {
+        id: 'wp5',
+        type: 'written',
+        question: 'Escribe "cerca" en inglés',
+        correctAnswer: 'near',
+        acceptedAnswers: ['near', 'Near', 'close', 'Close'],
+        xpReward: 15,
       },
     ],
   },
