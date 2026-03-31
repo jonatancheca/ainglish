@@ -18,7 +18,7 @@
     </div>
 
     <!-- Grid de logros -->
-    <div class="grid grid-cols-1 gap-3">
+    <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
       <div
         v-for="ach in achievements"
         :key="ach.id"

@@ -47,7 +47,7 @@
         ></div>
       </div>
 
-      <div class="space-y-3">
+      <div class="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
         <LessonCard
           v-for="(lesson, i) in a1Lessons"
           :key="lesson.id"

@@ -135,7 +135,7 @@
       <p class="text-sm font-black uppercase tracking-[0.25em] text-sky-500">
         Look kawaii
       </p>
-      <div class="mt-4 grid grid-cols-2 gap-3 text-sm text-slate-600 sm:grid-cols-3">
+      <div class="mt-4 grid grid-cols-2 gap-3 text-sm text-slate-600 sm:grid-cols-3 lg:grid-cols-4">
         <div class="rounded-2xl bg-slate-50 px-4 py-3">
           <p class="font-black text-slate-700">
             Cara
@@ -206,7 +206,7 @@
     </div>
 
     <!-- Estadísticas -->
-    <div class="grid grid-cols-2 gap-3">
+    <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
       <div class="card text-center">
         <div class="text-2xl mb-1">
           🔥

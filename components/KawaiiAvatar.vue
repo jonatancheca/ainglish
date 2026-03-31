@@ -4,18 +4,18 @@
     :class="containerClass"
   >
     <div
-      class="absolute left-1/2 top-5 -translate-x-1/2 rounded-full"
+      class="absolute left-1/2 top-1 -translate-x-1/2 rounded-full"
       :class="hairBackClass"
     ></div>
 
     <div
       v-if="showTwinTails"
-      class="absolute left-1 top-10 h-16 w-10 rounded-full"
+      class="absolute left-1 top-6 h-16 w-10 rounded-full"
       :class="hairAccessoryClass"
     ></div>
     <div
       v-if="showTwinTails"
-      class="absolute right-1 top-10 h-16 w-10 rounded-full"
+      class="absolute right-1 top-6 h-16 w-10 rounded-full"
       :class="hairAccessoryClass"
     ></div>
     <div
@@ -25,7 +25,7 @@
     ></div>
 
     <div
-      class="absolute left-1/2 top-5 flex -translate-x-1/2 flex-col items-center"
+      class="absolute left-1/2 top-1 flex -translate-x-1/2 flex-col items-center"
       :class="bodyScaleClass"
     >
       <div

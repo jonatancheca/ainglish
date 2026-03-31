@@ -28,7 +28,7 @@
             Personalidad kawaii guardada en tu perfil.
           </p>
         </div>
-        <div class="hidden sm:block rounded-[1.75rem] bg-white/90 p-2 shadow-sm">
+        <div class="hidden sm:block rounded-[1.75rem] bg-white/90 p-2 shadow-sm lg:block">
           <KawaiiAvatar
             :avatar="userStore.avatar"
             size="sm"
@@ -48,7 +48,7 @@
     </div>
 
     <!-- Stats rápidos -->
-    <div class="grid grid-cols-3 gap-3">
+    <div class="grid grid-cols-3 gap-3 lg:gap-4">
       <div class="card text-center">
         <div class="text-2xl mb-1">
           🔥
