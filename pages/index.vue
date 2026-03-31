@@ -28,10 +28,10 @@
             Personalidad kawaii guardada en tu perfil.
           </p>
         </div>
-        <div class="hidden sm:block rounded-[1.75rem] bg-white/90 p-2 shadow-sm lg:block">
+        <div class="hidden sm:block shrink-0">
           <KawaiiAvatar
             :avatar="userStore.avatar"
-            size="sm"
+            size="md"
           />
         </div>
       </div>
