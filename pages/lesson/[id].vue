@@ -410,7 +410,14 @@
           Ver lecciones
         </NuxtLink>
         <NuxtLink
-          v-if="nextLessonId"
+          v-if="houseId"
+          to="/aiworld"
+          class="btn-primary text-center"
+        >
+          Volver a la calle →
+        </NuxtLink>
+        <NuxtLink
+          v-else-if="nextLessonId"
           :to="`/lesson/${nextLessonId}`"
           class="btn-primary text-center"
         >

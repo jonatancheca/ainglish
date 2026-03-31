@@ -1,28 +1,33 @@
 <template>
   <div
-    class="relative select-none"
+    class="relative select-none overflow-hidden"
     :class="containerClass"
   >
     <div
-      class="absolute left-1/2 top-1 -translate-x-1/2 rounded-full"
-      :class="hairBackClass"
-    ></div>
+      class="absolute inset-0"
+      :class="hairScaleClass"
+    >
+      <div
+        class="absolute left-1/2 top-0 -translate-x-1/2 rounded-full"
+        :class="hairBackClass"
+      ></div>
 
-    <div
-      v-if="showTwinTails"
-      class="absolute left-1 top-6 h-16 w-10 rounded-full"
-      :class="hairAccessoryClass"
-    ></div>
-    <div
-      v-if="showTwinTails"
-      class="absolute right-1 top-6 h-16 w-10 rounded-full"
-      :class="hairAccessoryClass"
-    ></div>
-    <div
-      v-if="showBun"
-      class="absolute left-1/2 top-1 h-10 w-12 -translate-x-1/2 rounded-full"
-      :class="hairAccessoryClass"
-    ></div>
+      <div
+        v-if="showTwinTails"
+        class="absolute left-1 top-6 h-16 w-10 rounded-full"
+        :class="hairAccessoryClass"
+      ></div>
+      <div
+        v-if="showTwinTails"
+        class="absolute right-1 top-6 h-16 w-10 rounded-full"
+        :class="hairAccessoryClass"
+      ></div>
+      <div
+        v-if="showBun"
+        class="absolute left-1/2 top-1 h-10 w-12 -translate-x-1/2 rounded-full"
+        :class="hairAccessoryClass"
+      ></div>
+    </div>
 
     <div
       class="absolute left-1/2 top-1 flex -translate-x-1/2 flex-col items-center"
@@ -161,9 +166,9 @@ const props = withDefaults(
 )
 
 const sizeClasses = {
-  sm: { container: 'h-32 w-28', body: 'scale-75 origin-top' },
-  md: { container: 'h-44 w-36', body: 'scale-90 origin-top' },
-  lg: { container: 'h-56 w-44', body: 'scale-100 origin-top' },
+  sm: { container: 'h-32 w-28', body: 'scale-75 origin-top', hair: 'scale-75 origin-top' },
+  md: { container: 'h-44 w-36', body: 'scale-90 origin-top', hair: 'scale-90 origin-top' },
+  lg: { container: 'h-56 w-44', body: 'scale-100 origin-top', hair: 'scale-100 origin-top' },
 } as const
 
 const hairPalette = {
@@ -215,6 +220,7 @@ const cheekShapePalette = {
 
 const containerClass = computed(() => sizeClasses[props.size].container)
 const bodyScaleClass = computed(() => sizeClasses[props.size].body)
+const hairScaleClass = computed(() => sizeClasses[props.size].hair)
 const showTwinTails = computed(() => props.avatar.hair === 'twin-tails')
 const showBun = computed(() => props.avatar.hair === 'bun')
 const showBangs = computed(() => props.avatar.hair === 'bangs')

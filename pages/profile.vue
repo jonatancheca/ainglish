@@ -127,74 +127,6 @@
       </div>
     </div>
 
-    <!-- Vista solo lectura del look -->
-    <div
-      v-else
-      class="card"
-    >
-      <p class="text-sm font-black uppercase tracking-[0.25em] text-sky-500">
-        Look kawaii
-      </p>
-      <div class="mt-4 grid grid-cols-2 gap-3 text-sm text-slate-600 sm:grid-cols-3 lg:grid-cols-4">
-        <div class="rounded-2xl bg-slate-50 px-4 py-3">
-          <p class="font-black text-slate-700">
-            Cara
-          </p>
-          <p class="mt-1">
-            {{ selectedFaceLabel }}
-          </p>
-        </div>
-        <div class="rounded-2xl bg-slate-50 px-4 py-3">
-          <p class="font-black text-slate-700">
-            Ojos
-          </p>
-          <p class="mt-1">
-            {{ selectedEyeColorLabel }} · {{ selectedEyeStyleLabel }}
-          </p>
-        </div>
-        <div class="rounded-2xl bg-slate-50 px-4 py-3">
-          <p class="font-black text-slate-700">
-            Gafas
-          </p>
-          <p class="mt-1">
-            {{ selectedGlassesLabel }}
-          </p>
-        </div>
-        <div class="rounded-2xl bg-slate-50 px-4 py-3">
-          <p class="font-black text-slate-700">
-            Pelo
-          </p>
-          <p class="mt-1">
-            {{ selectedHairLabel }}
-          </p>
-        </div>
-        <div class="rounded-2xl bg-slate-50 px-4 py-3">
-          <p class="font-black text-slate-700">
-            Ropa
-          </p>
-          <p class="mt-1">
-            {{ selectedOutfitLabel }}
-          </p>
-        </div>
-        <div class="rounded-2xl bg-slate-50 px-4 py-3">
-          <p class="font-black text-slate-700">
-            Zapatos
-          </p>
-          <p class="mt-1">
-            {{ selectedShoesLabel }}
-          </p>
-        </div>
-        <div class="rounded-2xl bg-slate-50 px-4 py-3">
-          <p class="font-black text-slate-700">
-            Mofletes
-          </p>
-          <p class="mt-1">
-            {{ selectedCheeksLabel }}
-          </p>
-        </div>
-      </div>
-    </div>
-
     <!-- XP Bar -->
     <div class="card">
       <XpBar
@@ -277,7 +209,7 @@
         </div>
       </div>
     </div>
-
+        
     <!-- Reset -->
     <button
       class="w-full text-slate-400 text-sm font-semibold py-2 hover:text-red-400 transition-colors"
