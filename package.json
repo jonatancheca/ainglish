@@ -1,0 +1,25 @@
+{
+  "name": "ainglish",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "nuxt": "^3.15.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0",
+    "@pinia/nuxt": "^0.9.0",
+    "pinia": "^2.3.1",
+    "pinia-plugin-persistedstate": "^2.4.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.13.2",
+    "@nuxtjs/google-fonts": "^3.2.0",
+    "tailwindcss": "^3.4.17"
+  }
+}
