@@ -1,0 +1,1 @@
+al acabar la lección te ha de dar la oportunidad de poder repetirla solo con lo que te has equivocado y ganar los puntos de experiencia que no has ganado

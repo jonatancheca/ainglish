@@ -52,62 +52,62 @@
         label="Forma de cara"
         :options="FACE_SHAPE_OPTIONS"
         :model-value="editDraft.faceShape"
-        @update:model-value="editDraft.faceShape = $event"
+        @update:model-value="editDraft.faceShape = $event as any"
       />
       <AvatarOptionGroup
         label="Color de ojos"
         :options="EYE_COLOR_OPTIONS"
         :model-value="editDraft.eyeColor"
-        @update:model-value="editDraft.eyeColor = $event"
+        @update:model-value="editDraft.eyeColor = $event as any"
       />
       <AvatarOptionGroup
         label="Estilo de ojos"
         :options="EYE_STYLE_OPTIONS"
         :model-value="editDraft.eyeStyle"
-        @update:model-value="editDraft.eyeStyle = $event"
+        @update:model-value="editDraft.eyeStyle = $event as any"
       />
       <AvatarOptionGroup
         label="Gafas"
         :options="GLASSES_OPTIONS"
         :model-value="editDraft.glasses"
-        @update:model-value="editDraft.glasses = $event"
+        @update:model-value="editDraft.glasses = $event as any"
       />
       <AvatarOptionGroup
         label="Mofletes"
         :options="CHEEK_STYLE_OPTIONS"
         :model-value="editDraft.cheeks"
-        @update:model-value="editDraft.cheeks = $event"
+        @update:model-value="editDraft.cheeks = $event as any"
       />
       <AvatarOptionGroup
         v-if="editDraft.cheeks !== 'none'"
         label="Color de mofletes"
         :options="CHEEK_COLOR_OPTIONS"
         :model-value="editDraft.cheekColor"
-        @update:model-value="editDraft.cheekColor = $event"
+        @update:model-value="editDraft.cheekColor = $event as any"
       />
       <AvatarOptionGroup
         label="Pelo"
         :options="HAIR_OPTIONS"
         :model-value="editDraft.hair"
-        @update:model-value="editDraft.hair = $event"
+        @update:model-value="editDraft.hair = $event as any"
       />
       <AvatarOptionGroup
         label="Color de pelo"
         :options="HAIR_COLOR_OPTIONS"
         :model-value="editDraft.hairColor"
-        @update:model-value="editDraft.hairColor = $event"
+        @update:model-value="editDraft.hairColor = $event as any"
       />
       <AvatarOptionGroup
         label="Ropa"
         :options="OUTFIT_OPTIONS"
         :model-value="editDraft.outfit"
-        @update:model-value="editDraft.outfit = $event"
+        @update:model-value="editDraft.outfit = $event as any"
       />
       <AvatarOptionGroup
         label="Zapatos"
         :options="SHOES_OPTIONS"
         :model-value="editDraft.shoes"
-        @update:model-value="editDraft.shoes = $event"
+        @update:model-value="editDraft.shoes = $event as any"
       />
 
       <div class="flex gap-3 pt-2">

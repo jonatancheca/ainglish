@@ -1,0 +1,1 @@
+no hagas decir todas las palabras, cambia a que sean parte de las preguntas de forma intercalada
