@@ -1,7 +1,6 @@
 export type FaceShape = 'soft-round' | 'round' | 'oval' | 'square' | 'heart'
 export type EyeColor = 'midnight' | 'hazel' | 'emerald' | 'sky' | 'violet'
 export type EyeStyle = 'sparkle' | 'happy' | 'wink' | 'sleepy' | 'starry'
-export type GlassesStyle = 'none' | 'red' | 'blue'
 export type HairStyle = 'twin-tails' | 'bob' | 'bangs' | 'long' | 'bald'
 export type HairColor = 'amber' | 'orange' | 'stone' | 'rose' | 'teal'
 export type OutfitStyle = 'tee-pants' | 'long-dress' | 'tee-skirt' | 'tee-jeans' | 'hoodie-shorts'
@@ -13,7 +12,6 @@ export interface CharacterAvatar {
   faceShape: FaceShape
   eyeColor: EyeColor
   eyeStyle: EyeStyle
-  glasses: GlassesStyle
   hair: HairStyle
   hairColor: HairColor
   outfit: OutfitStyle
@@ -49,12 +47,6 @@ export const EYE_STYLE_OPTIONS: AvatarOption<EyeStyle>[] = [
   { value: 'wink', label: 'Guiño' },
   { value: 'sleepy', label: 'Dormilones' },
   { value: 'starry', label: 'Estrella' },
-]
-
-export const GLASSES_OPTIONS: AvatarOption<GlassesStyle>[] = [
-  { value: 'none', label: 'Sin gafas' },
-  { value: 'red', label: 'Rojas' },
-  { value: 'blue', label: 'Azules' },
 ]
 
 export const HAIR_OPTIONS: AvatarOption<HairStyle>[] = [
@@ -107,9 +99,8 @@ export const CHEEK_COLOR_OPTIONS: AvatarOption<CheekColor>[] = [
 export function createDefaultAvatar(): CharacterAvatar {
   return {
     faceShape: 'soft-round',
-    eyeColor: 'midnight',
+    eyeColor: 'sky',
     eyeStyle: 'sparkle',
-    glasses: 'none',
     hair: 'twin-tails',
     hairColor: 'amber',
     outfit: 'tee-pants',

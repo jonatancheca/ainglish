@@ -109,15 +109,6 @@
           ></span>
         </div>
 
-        <div
-          v-if="avatar.glasses !== 'none'"
-          class="absolute left-1/2 top-[1.75rem] flex -translate-x-1/2 items-center gap-1"
-          :class="glassesColorClass"
-        >
-          <span class="h-6 w-6 rounded-full border-[3px]"></span>
-          <span class="h-1 w-3 rounded-full bg-current"></span>
-          <span class="h-6 w-6 rounded-full border-[3px]"></span>
-        </div>
       </div>
 
       <div class="relative flex flex-col items-center">
@@ -172,8 +163,8 @@ const props = withDefaults(
 )
 
 const sizeClasses = {
-  sm: { container: 'h-32 w-28', body: 'scale-75 origin-top', hair: 'scale-75 origin-top' },
-  md: { container: 'h-44 w-36', body: 'scale-90 origin-top', hair: 'scale-90 origin-top' },
+  sm: { container: 'h-44 w-28', body: 'scale-75 origin-top', hair: 'scale-75 origin-top' },
+  md: { container: 'h-52 w-36', body: 'scale-90 origin-top', hair: 'scale-90 origin-top' },
   lg: { container: 'h-56 w-44', body: 'scale-100 origin-top', hair: 'scale-100 origin-top' },
 } as const
 
@@ -269,7 +260,7 @@ const rightEyeClass = computed(() => {
   return `${eyeShapeClass.value} ${eyePalette[props.avatar.eyeColor]}`
 })
 
-const glassesColorClass = computed(() => (props.avatar.glasses === 'red' ? 'text-rose-500' : 'text-sky-500'))
+
 const outfitClass = computed(() => outfitPalette[props.avatar.outfit])
 const shoeClass = computed(() => shoePalette[props.avatar.shoes])
 const cheekColorClass = computed(() => cheekColorPalette[props.avatar.cheekColor ?? 'rose'])

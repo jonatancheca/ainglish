@@ -98,13 +98,6 @@
                 />
 
                 <AvatarOptionGroup
-                  label="Gafas"
-                  :options="GLASSES_OPTIONS"
-                  :model-value="avatarDraft.glasses"
-                  @update:model-value="avatarDraft.glasses = $event"
-                />
-
-                <AvatarOptionGroup
                   label="Mofletes"
                   :options="CHEEK_STYLE_OPTIONS"
                   :model-value="avatarDraft.cheeks"
@@ -191,7 +184,6 @@ import {
   EYE_COLOR_OPTIONS,
   EYE_STYLE_OPTIONS,
   FACE_SHAPE_OPTIONS,
-  GLASSES_OPTIONS,
   CHEEK_STYLE_OPTIONS,
   CHEEK_COLOR_OPTIONS,
   HAIR_OPTIONS,

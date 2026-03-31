@@ -67,12 +67,6 @@
         @update:model-value="editDraft.eyeStyle = $event as any"
       />
       <AvatarOptionGroup
-        label="Gafas"
-        :options="GLASSES_OPTIONS"
-        :model-value="editDraft.glasses"
-        @update:model-value="editDraft.glasses = $event as any"
-      />
-      <AvatarOptionGroup
         label="Mofletes"
         :options="CHEEK_STYLE_OPTIONS"
         :model-value="editDraft.cheeks"
@@ -226,7 +220,6 @@ import {
   EYE_COLOR_OPTIONS,
   EYE_STYLE_OPTIONS,
   FACE_SHAPE_OPTIONS,
-  GLASSES_OPTIONS,
   CHEEK_STYLE_OPTIONS,
   CHEEK_COLOR_OPTIONS,
   HAIR_OPTIONS,
@@ -270,7 +263,6 @@ function getOptionLabel(options: { value: string, label: string }[], value: stri
 const selectedFaceLabel = computed(() => getOptionLabel(FACE_SHAPE_OPTIONS, userStore.avatar.faceShape))
 const selectedEyeColorLabel = computed(() => getOptionLabel(EYE_COLOR_OPTIONS, userStore.avatar.eyeColor))
 const selectedEyeStyleLabel = computed(() => getOptionLabel(EYE_STYLE_OPTIONS, userStore.avatar.eyeStyle))
-const selectedGlassesLabel = computed(() => getOptionLabel(GLASSES_OPTIONS, userStore.avatar.glasses))
 const selectedHairLabel = computed(() => getOptionLabel(HAIR_OPTIONS, userStore.avatar.hair))
 const selectedOutfitLabel = computed(() => getOptionLabel(OUTFIT_OPTIONS, userStore.avatar.outfit))
 const selectedShoesLabel = computed(() => getOptionLabel(SHOES_OPTIONS, userStore.avatar.shoes))

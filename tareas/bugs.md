@@ -1,0 +1,1 @@
+en index.vue la barra de experiencia no carga la primera vez, solo cuando vuelvo a la pantalla. Sí pone el nº de experiencia, pero la barra sigue a cero

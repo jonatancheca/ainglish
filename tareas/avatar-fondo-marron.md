@@ -1,1 +1,0 @@
-el avatar en la calle tiene un circulo marron de fondo, quitaselo

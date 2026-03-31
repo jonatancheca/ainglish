@@ -1,0 +1,1 @@
+cuando en profile editas el avatar no lo ves, está demasiado arriba, ponlo a un lado
