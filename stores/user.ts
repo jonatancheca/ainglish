@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { createDefaultAvatar, type CharacterAvatar } from '~/data/avatar-options'
 
 // XP acumulado necesario para alcanzar cada nivel
 const LEVEL_THRESHOLDS = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200, 4000]
@@ -35,6 +36,7 @@ export const useUserStore = defineStore(
   'user',
   () => {
     const name = ref('')
+    const avatar = ref<CharacterAvatar>(createDefaultAvatar())
     const xp = ref(0)
     const streak = ref(0)
     const maxStreak = ref(0)
@@ -99,12 +101,17 @@ export const useUserStore = defineStore(
       name.value = newName.trim()
     }
 
+    function setAvatar(newAvatar: CharacterAvatar) {
+      avatar.value = { ...newAvatar }
+    }
+
     function completeOnboarding() {
       onboardingDone.value = true
     }
 
     return {
       name,
+      avatar,
       xp,
       streak,
       maxStreak,
@@ -121,6 +128,7 @@ export const useUserStore = defineStore(
       recordActivity,
       clearLevelUp,
       setName,
+      setAvatar,
       completeOnboarding,
     }
   },

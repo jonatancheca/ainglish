@@ -2,8 +2,11 @@
   <div class="space-y-6">
     <!-- Saludo -->
     <div class="card flex items-center gap-4">
-      <div class="w-14 h-14 bg-sky-100 rounded-2xl flex items-center justify-center text-3xl">
-        {{ timeEmoji }}
+      <div class="rounded-[1.5rem] bg-sky-100/80 p-1">
+        <KawaiiAvatar
+          :avatar="userStore.avatar"
+          size="sm"
+        />
       </div>
       <div>
         <p class="text-slate-500 text-sm">
@@ -12,6 +15,28 @@
         <h1 class="text-xl font-black text-slate-800">
           {{ userStore.name }}!
         </h1>
+      </div>
+    </div>
+
+    <div class="card border border-rose-100 bg-gradient-to-r from-rose-50 via-white to-sky-50">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <p class="text-xs font-black uppercase tracking-[0.25em] text-rose-400">
+            Tu personaje
+          </p>
+          <h2 class="mt-1 text-lg font-black text-slate-800">
+            {{ userStore.name }} está listo para aprender
+          </h2>
+          <p class="mt-1 text-sm text-slate-500">
+            Personalidad kawaii guardada en tu perfil.
+          </p>
+        </div>
+        <div class="hidden sm:block rounded-[1.75rem] bg-white/90 p-2 shadow-sm">
+          <KawaiiAvatar
+            :avatar="userStore.avatar"
+            size="sm"
+          />
+        </div>
       </div>
     </div>
 
@@ -116,5 +141,4 @@ const nextLesson = computed(() => getNextLesson(progressStore.completedLessons))
 
 const hour = new Date().getHours()
 const timeGreeting = hour < 12 ? 'Buenos días' : hour < 18 ? 'Buenas tardes' : 'Buenas noches'
-const timeEmoji = hour < 12 ? '🌅' : hour < 18 ? '☀️' : '🌙'
 </script>

@@ -6,8 +6,11 @@
 
     <!-- Avatar + nombre -->
     <div class="card flex flex-col items-center py-8 gap-3">
-      <div class="w-20 h-20 rounded-full bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center text-4xl font-black text-white select-none">
-        {{ initials }}
+      <div class="rounded-[2rem] bg-slate-50 p-3">
+        <KawaiiAvatar
+          :avatar="userStore.avatar"
+          size="md"
+        />
       </div>
       <h2 class="text-xl font-black text-slate-800">
         {{ userStore.name }}
@@ -15,6 +18,62 @@
       <div class="flex items-center gap-2">
         <LevelBadge :level="userStore.level" />
         <span class="text-sm font-bold text-slate-500">Nivel {{ userStore.level }}</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="text-sm font-black uppercase tracking-[0.25em] text-sky-500">
+        Look kawaii
+      </p>
+      <div class="mt-4 grid grid-cols-2 gap-3 text-sm text-slate-600 sm:grid-cols-3">
+        <div class="rounded-2xl bg-slate-50 px-4 py-3">
+          <p class="font-black text-slate-700">
+            Cara
+          </p>
+          <p class="mt-1">
+            {{ selectedFaceLabel }}
+          </p>
+        </div>
+        <div class="rounded-2xl bg-slate-50 px-4 py-3">
+          <p class="font-black text-slate-700">
+            Ojos
+          </p>
+          <p class="mt-1">
+            {{ selectedEyeColorLabel }} · {{ selectedEyeStyleLabel }}
+          </p>
+        </div>
+        <div class="rounded-2xl bg-slate-50 px-4 py-3">
+          <p class="font-black text-slate-700">
+            Gafas
+          </p>
+          <p class="mt-1">
+            {{ selectedGlassesLabel }}
+          </p>
+        </div>
+        <div class="rounded-2xl bg-slate-50 px-4 py-3">
+          <p class="font-black text-slate-700">
+            Pelo
+          </p>
+          <p class="mt-1">
+            {{ selectedHairLabel }}
+          </p>
+        </div>
+        <div class="rounded-2xl bg-slate-50 px-4 py-3">
+          <p class="font-black text-slate-700">
+            Ropa
+          </p>
+          <p class="mt-1">
+            {{ selectedOutfitLabel }}
+          </p>
+        </div>
+        <div class="rounded-2xl bg-slate-50 px-4 py-3">
+          <p class="font-black text-slate-700">
+            Zapatos
+          </p>
+          <p class="mt-1">
+            {{ selectedShoesLabel }}
+          </p>
+        </div>
       </div>
     </div>
 
@@ -113,6 +172,15 @@
 
 <script setup lang="ts">
 import { ACHIEVEMENTS } from '~/data/achievements'
+import {
+  EYE_COLOR_OPTIONS,
+  EYE_STYLE_OPTIONS,
+  FACE_SHAPE_OPTIONS,
+  GLASSES_OPTIONS,
+  HAIR_OPTIONS,
+  OUTFIT_OPTIONS,
+  SHOES_OPTIONS,
+} from '~/data/avatar-options'
 
 const userStore = useUserStore()
 const progressStore = useProgressStore()
@@ -120,13 +188,17 @@ const achievementsStore = useAchievementsStore()
 const router = useRouter()
 const totalAchievements = ACHIEVEMENTS.length
 
-const initials = computed(() =>
-  userStore.name
-    .split(' ')
-    .slice(0, 2)
-    .map((w: string) => w[0]?.toUpperCase() ?? '')
-    .join(''),
-)
+function getOptionLabel(options: { value: string, label: string }[], value: string) {
+  return options.find(option => option.value === value)?.label ?? value
+}
+
+const selectedFaceLabel = computed(() => getOptionLabel(FACE_SHAPE_OPTIONS, userStore.avatar.faceShape))
+const selectedEyeColorLabel = computed(() => getOptionLabel(EYE_COLOR_OPTIONS, userStore.avatar.eyeColor))
+const selectedEyeStyleLabel = computed(() => getOptionLabel(EYE_STYLE_OPTIONS, userStore.avatar.eyeStyle))
+const selectedGlassesLabel = computed(() => getOptionLabel(GLASSES_OPTIONS, userStore.avatar.glasses))
+const selectedHairLabel = computed(() => getOptionLabel(HAIR_OPTIONS, userStore.avatar.hair))
+const selectedOutfitLabel = computed(() => getOptionLabel(OUTFIT_OPTIONS, userStore.avatar.outfit))
+const selectedShoesLabel = computed(() => getOptionLabel(SHOES_OPTIONS, userStore.avatar.shoes))
 
 function confirmReset() {
   if (confirm('¿Seguro que quieres reiniciar todo tu progreso? Esta acción no se puede deshacer.')) {
