@@ -38,6 +38,11 @@
           label="Inicio"
         />
         <NavItem
+          to="/aiworld"
+          icon="🌈"
+          label="AIworld"
+        />
+        <NavItem
           to="/learn"
           icon="📖"
           label="Aprender"

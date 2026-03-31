@@ -7,6 +7,28 @@
       Completa las lecciones en orden para desbloquear las siguientes.
     </p>
 
+    <NuxtLink
+      to="/aiworld"
+      class="block rounded-[2rem] border-4 border-slate-800 bg-gradient-to-r from-rose-100 via-white to-sky-100 p-5 shadow-[0_10px_0_0_theme(colors.rose.100)] transition-transform hover:-translate-y-1"
+    >
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <p class="text-xs font-black uppercase tracking-[0.24em] text-rose-400">
+            Nuevo modo
+          </p>
+          <h2 class="mt-2 text-xl font-black text-slate-800">
+            Explora AIworld
+          </h2>
+          <p class="mt-1 text-sm text-slate-500">
+            Recorre calles kawaii, entra en casas y avanza hasta la siguiente lección caminando.
+          </p>
+        </div>
+        <div class="rounded-[1.5rem] border-4 border-slate-800 bg-white px-4 py-3 text-3xl shadow-[0_6px_0_0_theme(colors.slate.200)]">
+          🌈
+        </div>
+      </div>
+    </NuxtLink>
+
     <!-- Nivel A1 -->
     <div>
       <div class="flex items-center gap-2 mb-3">
