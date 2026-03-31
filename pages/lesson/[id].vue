@@ -1,5 +1,66 @@
 <template>
   <div>
+    <!-- Pantalla de vocabulario -->
+    <div
+      v-if="phase === 'vocab'"
+      class="space-y-5 animate-fade-up"
+    >
+      <!-- Header -->
+      <div class="flex items-center gap-3">
+        <NuxtLink
+          to="/learn"
+          class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none"
+        >
+          ✕
+        </NuxtLink>
+        <div class="flex-1"></div>
+        <span class="text-xs font-bold text-sky-500 uppercase tracking-wide">📖 Vocabulario</span>
+      </div>
+
+      <!-- Título -->
+      <div class="card text-center">
+        <span class="text-4xl mb-2 block">{{ lesson?.icon }}</span>
+        <h1 class="text-xl font-black text-slate-800">
+          {{ lesson?.title }}
+        </h1>
+        <p class="text-slate-500 text-sm mt-1">
+          Estudia estas palabras antes de empezar
+        </p>
+      </div>
+
+      <!-- Lista de palabras -->
+      <div class="space-y-2">
+        <div
+          v-for="(word, i) in lesson?.vocabulary"
+          :key="i"
+          class="card flex items-start gap-3 !py-3"
+        >
+          <span class="text-sky-500 font-black text-lg leading-none mt-0.5">{{ i + 1 }}</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-baseline gap-2 flex-wrap">
+              <span class="font-black text-slate-800">{{ word.en }}</span>
+              <span class="text-slate-400">—</span>
+              <span class="text-slate-600">{{ word.es }}</span>
+            </div>
+            <p
+              v-if="word.example"
+              class="text-xs text-slate-400 mt-1 italic"
+            >
+              "{{ word.example }}"
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón empezar -->
+      <button
+        class="btn-primary w-full text-lg"
+        @click="startExercises"
+      >
+        ¡Empezar lección! 🚀
+      </button>
+    </div>
+
     <!-- Pantalla de ejercicio -->
     <div
       v-if="phase === 'exercise'"
@@ -179,7 +240,7 @@
 </template>
 
 <script setup lang="ts">
-import { getLessonById, getNextLesson, type Lesson } from '~/data/lessons'
+import { getLessonById, getNextLesson, type Lesson, type VocabWord } from '~/data/lessons'
 import { getAchievementById, type Achievement } from '~/data/achievements'
 
 const route = useRoute()
@@ -194,7 +255,8 @@ const questions = computed(() => lesson.value?.questions ?? [])
 const letters = ['A', 'B', 'C', 'D']
 
 // ── State ──────────────────────────────────────────────────────────────────
-const phase = ref<'exercise' | 'result' | 'notfound'>('exercise')
+const hasVocab = computed(() => (lesson.value?.vocabulary?.length ?? 0) > 0)
+const phase = ref<'vocab' | 'exercise' | 'result' | 'notfound'>('exercise')
 const currentIndex = ref(0)
 const selectedIndex = ref<number | null>(null)
 const answered = ref(false)
@@ -279,9 +341,17 @@ function finishLesson() {
   phase.value = 'result'
 }
 
+function startExercises() {
+  phase.value = 'exercise'
+}
+
 // Redirigir si la lección no existe
 onMounted(() => {
-  if (!lesson.value) phase.value = 'notfound'
+  if (!lesson.value) {
+    phase.value = 'notfound'
+  } else if (hasVocab.value) {
+    phase.value = 'vocab'
+  }
 })
 </script>
 

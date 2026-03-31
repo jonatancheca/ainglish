@@ -6,6 +6,12 @@ export interface Question {
   xpReward: number
 }
 
+export interface VocabWord {
+  en: string
+  es: string
+  example?: string
+}
+
 export interface Lesson {
   id: string
   title: string
@@ -14,6 +20,7 @@ export interface Lesson {
   color: string
   level: 'A1' | 'A2' | 'B1'
   order: number
+  vocabulary?: VocabWord[]
   questions: Question[]
 }
 
@@ -27,6 +34,18 @@ export const LESSONS: Lesson[] = [
     color: 'sky',
     level: 'A1',
     order: 1,
+    vocabulary: [
+      { en: 'Hello', es: 'Hola', example: 'Hello, how are you?' },
+      { en: 'Goodbye', es: 'Adiós', example: 'Goodbye, see you later!' },
+      { en: 'Good morning', es: 'Buenos días', example: 'Good morning, teacher.' },
+      { en: 'Good evening', es: 'Buenas tardes/noches', example: 'Good evening, sir.' },
+      { en: 'My name is…', es: 'Me llamo…', example: 'My name is Ana.' },
+      { en: 'How are you?', es: '¿Cómo estás?', example: 'Hi! How are you?' },
+      { en: 'Nice to meet you', es: 'Encantado de conocerte', example: 'Nice to meet you, Carlos.' },
+      { en: 'I am fine', es: 'Estoy bien', example: 'I am fine, thank you.' },
+      { en: 'Please', es: 'Por favor', example: 'Please, sit down.' },
+      { en: 'Thank you', es: 'Gracias', example: 'Thank you very much!' },
+    ],
     questions: [
       {
         id: 'g1',
@@ -147,6 +166,17 @@ export const LESSONS: Lesson[] = [
     color: 'violet',
     level: 'A1',
     order: 3,
+    vocabulary: [
+      { en: 'Red', es: 'Rojo', example: 'The apple is red.' },
+      { en: 'Blue', es: 'Azul', example: 'The sky is blue.' },
+      { en: 'Yellow', es: 'Amarillo', example: 'The sun is yellow.' },
+      { en: 'Green', es: 'Verde', example: 'The grass is green.' },
+      { en: 'White', es: 'Blanco', example: 'The snow is white.' },
+      { en: 'Black', es: 'Negro', example: 'The cat is black.' },
+      { en: 'Purple', es: 'Morado', example: 'I like purple flowers.' },
+      { en: 'Orange', es: 'Naranja', example: 'This orange is big.' },
+      { en: 'Brown', es: 'Marrón', example: 'The dog is brown.' },
+    ],
     questions: [
       {
         id: 'c1',
@@ -267,6 +297,17 @@ export const LESSONS: Lesson[] = [
     color: 'amber',
     level: 'A1',
     order: 5,
+    vocabulary: [
+      { en: 'Apple', es: 'Manzana', example: 'I eat an apple every day.' },
+      { en: 'Bread', es: 'Pan', example: 'Can I have some bread?' },
+      { en: 'Milk', es: 'Leche', example: 'I drink milk in the morning.' },
+      { en: 'Chicken', es: 'Pollo', example: 'We have chicken for dinner.' },
+      { en: 'Vegetables', es: 'Verduras', example: 'Eat your vegetables!' },
+      { en: 'Breakfast', es: 'Desayuno', example: 'Breakfast is at 8 o\'clock.' },
+      { en: 'I am hungry', es: 'Tengo hambre', example: 'I am hungry, let\'s eat.' },
+      { en: 'Water', es: 'Agua', example: 'Can I have some water?' },
+      { en: 'Rice', es: 'Arroz', example: 'I like rice with chicken.' },
+    ],
     questions: [
       {
         id: 'fo1',
@@ -387,6 +428,17 @@ export const LESSONS: Lesson[] = [
     color: 'teal',
     level: 'A1',
     order: 7,
+    vocabulary: [
+      { en: 'School', es: 'Escuela', example: 'Where is the school?' },
+      { en: 'Hospital', es: 'Hospital', example: 'The hospital is far away.' },
+      { en: 'Supermarket', es: 'Supermercado', example: 'I go to the supermarket.' },
+      { en: 'Airport', es: 'Aeropuerto', example: 'The airport is very big.' },
+      { en: 'Turn left', es: 'Gira a la izquierda', example: 'Turn left at the corner.' },
+      { en: 'Turn right', es: 'Gira a la derecha', example: 'Turn right after the park.' },
+      { en: 'Straight ahead', es: 'Todo recto', example: 'Go straight ahead.' },
+      { en: 'Near', es: 'Cerca', example: 'It is near here.' },
+      { en: 'Far', es: 'Lejos', example: 'The station is far from here.' },
+    ],
     questions: [
       {
         id: 'p1',
