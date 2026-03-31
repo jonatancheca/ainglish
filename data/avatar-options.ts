@@ -2,7 +2,7 @@ export type FaceShape = 'soft-round' | 'round' | 'oval' | 'square' | 'heart'
 export type EyeColor = 'midnight' | 'hazel' | 'emerald' | 'sky' | 'violet'
 export type EyeStyle = 'sparkle' | 'happy' | 'wink' | 'sleepy' | 'starry'
 export type GlassesStyle = 'none' | 'red' | 'blue'
-export type HairStyle = 'twin-tails' | 'bob' | 'bangs' | 'bun' | 'bald'
+export type HairStyle = 'twin-tails' | 'bob' | 'bangs' | 'long' | 'bald'
 export type HairColor = 'amber' | 'orange' | 'stone' | 'rose' | 'teal'
 export type OutfitStyle = 'tee-pants' | 'long-dress' | 'tee-skirt' | 'tee-jeans' | 'hoodie-shorts'
 export type ShoesStyle = 'sneakers' | 'boots' | 'sandals' | 'mary-janes' | 'rollers'
@@ -61,7 +61,7 @@ export const HAIR_OPTIONS: AvatarOption<HairStyle>[] = [
   { value: 'twin-tails', label: 'Coletas' },
   { value: 'bob', label: 'Melena corta' },
   { value: 'bangs', label: 'Flequillo' },
-  { value: 'bun', label: 'Moñito' },
+  { value: 'long', label: 'Pelo largo' },
   { value: 'bald', label: 'Sin pelo' },
 ]
 

@@ -22,9 +22,15 @@
         class="absolute right-1 top-6 h-16 w-10 rounded-full"
         :class="hairAccessoryClass"
       ></div>
+      <!-- Pelo largo: mechones que caen a los lados -->
       <div
-        v-if="showBun"
-        class="absolute left-1/2 -top-3 z-20 h-10 w-12 -translate-x-1/2 rounded-full"
+        v-if="showLong"
+        class="absolute left-0 top-8 h-24 w-8 rounded-b-full"
+        :class="hairAccessoryClass"
+      ></div>
+      <div
+        v-if="showLong"
+        class="absolute right-0 top-8 h-24 w-8 rounded-b-full"
         :class="hairAccessoryClass"
       ></div>
     </div>
@@ -222,7 +228,7 @@ const containerClass = computed(() => sizeClasses[props.size].container)
 const bodyScaleClass = computed(() => sizeClasses[props.size].body)
 const hairScaleClass = computed(() => sizeClasses[props.size].hair)
 const showTwinTails = computed(() => props.avatar.hair === 'twin-tails')
-const showBun = computed(() => props.avatar.hair === 'bun')
+const showLong = computed(() => props.avatar.hair === 'long')
 const showBangs = computed(() => props.avatar.hair === 'bangs')
 
 const hairColorClass = computed(() => hairPalette[props.avatar.hairColor])
