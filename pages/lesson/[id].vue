@@ -1,206 +1,8 @@
 <template>
   <div>
-    <!-- Pantalla de vocabulario -->
-    <div
-      v-if="phase === 'vocab'"
-      class="space-y-5 animate-fade-up"
-    >
-      <!-- Header -->
-      <div class="flex items-center gap-3">
-        <NuxtLink
-          :to="backUrl"
-          class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none"
-        >
-          ✕
-        </NuxtLink>
-        <div class="flex-1"></div>
-        <span class="text-xs font-bold text-sky-500 uppercase tracking-wide">📖 Vocabulario</span>
-      </div>
-
-      <!-- Escena de introducción -->
-      <div class="overflow-hidden rounded-[2rem] border-4 border-slate-800 bg-gradient-to-br from-sky-100 via-cyan-50 to-amber-100 p-4 shadow-[0_10px_0_0_theme(colors.sky.100)]">
-        <div class="mb-4 flex items-start justify-between gap-3">
-          <div>
-            <p class="text-xs font-black uppercase tracking-[0.3em] text-sky-500">
-              Casa de {{ hostMonster.name }}
-            </p>
-            <h1 class="mt-2 text-2xl font-black text-slate-800">
-              {{ lesson?.icon }} {{ lesson?.title }}
-            </h1>
-            <p class="mt-1 text-sm text-slate-500">
-              Estudia estas palabras antes de empezar.
-            </p>
-          </div>
-          <span class="rounded-full border-2 border-slate-800 bg-white px-3 py-1 text-xs font-black text-slate-600">
-            Cómic
-          </span>
-        </div>
-
-        <ComicBubble label="Introducción">
-          {{ introLine }}
-        </ComicBubble>
-
-        <div class="mt-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <KawaiiMonster :monster="hostMonster" />
-          <div class="flex flex-col items-center gap-3 md:max-w-xs">
-            <ComicBubble
-              side="right"
-              label="Consejo"
-            >
-              {{ vocabLine }}
-            </ComicBubble>
-            <KawaiiAvatar
-              :avatar="userStore.avatar"
-              size="sm"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Lista de palabras -->
-      <div class="space-y-2">
-        <div
-          v-for="(word, i) in vocabularyWords"
-          :key="i"
-          class="card flex items-start gap-3 !py-3"
-        >
-          <span class="text-sky-500 font-black text-lg leading-none mt-0.5">{{ i + 1 }}</span>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-baseline gap-2 flex-wrap">
-              <span class="font-black text-slate-800">{{ word.en }}</span>
-              <span class="text-slate-400">—</span>
-              <span class="text-slate-600">{{ word.es }}</span>
-            </div>
-            <p
-              v-if="word.example"
-              class="text-xs text-slate-400 mt-1 italic"
-            >
-              "{{ word.example }}"
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div
-        v-if="hasVocab"
-        class="rounded-[2rem] border-4 border-slate-800 bg-white px-5 py-4 shadow-[0_8px_0_0_theme(colors.slate.200)]"
-      >
-        <div class="flex items-start gap-3">
-          <span class="text-2xl">🎙️</span>
-          <div>
-            <p class="text-sm font-black text-slate-800">
-              Práctica de pronunciación
-            </p>
-            <p class="mt-1 text-sm text-slate-500">
-              {{ speechSupported ? 'Antes del test, di en voz alta las palabras nuevas y comprobaremos si se han entendido bien.' : 'Tu navegador no ofrece reconocimiento de voz aquí, así que saltaremos esta parte y seguiremos con la lección.' }}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Botón empezar -->
-      <button
-        class="btn-primary w-full text-lg"
-        @click="startExercises"
-      >
-        {{ speechSupported ? 'Practicar pronunciación →' : '¡Empezar lección! 🚀' }}
-      </button>
-    </div>
-
-    <!-- Pantalla de pronunciación -->
-    <div
-      v-else-if="phase === 'speak'"
-      class="space-y-5 animate-fade-up"
-    >
-      <div class="flex items-center gap-3">
-        <button
-          type="button"
-          class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none"
-          @click="phase = hasVocab ? 'vocab' : 'exercise'"
-        >
-          ✕
-        </button>
-        <div class="flex-1 h-3 overflow-hidden rounded-full bg-slate-100">
-          <div
-            class="h-full rounded-full bg-emerald-400 transition-all duration-500"
-            :style="{ width: `${speechProgress}%` }"
-          ></div>
-        </div>
-        <span class="text-xs font-bold text-slate-400">{{ currentSpeakIndex + 1 }}/{{ vocabularyWords.length }}</span>
-      </div>
-
-      <div class="overflow-hidden rounded-[2rem] border-4 border-slate-800 bg-gradient-to-br from-emerald-100 via-white to-sky-100 p-4 shadow-[0_10px_0_0_theme(colors.emerald.100)]">
-        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <KawaiiMonster
-            :monster="hostMonster"
-            size="sm"
-          />
-
-          <div class="flex-1 space-y-4">
-            <ComicBubble label="Pronunciación">
-              Di en voz alta {{ currentVocabWord?.en }}. Si lo reconozco bien, pasamos a la siguiente palabra.
-            </ComicBubble>
-
-            <div class="rounded-[1.75rem] border-4 border-slate-800 bg-white px-5 py-4 text-center shadow-[0_8px_0_0_theme(colors.slate.200)]">
-              <p class="text-xs font-black uppercase tracking-[0.2em] text-emerald-500">
-                Palabra objetivo
-              </p>
-              <p class="mt-2 text-3xl font-black text-slate-800">
-                {{ currentVocabWord?.en }}
-              </p>
-              <p class="mt-1 text-sm text-slate-500">
-                {{ currentVocabWord?.es }}
-              </p>
-              <p
-                v-if="speechTranscript"
-                class="mt-4 text-sm text-slate-500"
-              >
-                Te he entendido: <strong class="text-slate-700">{{ speechTranscript }}</strong>
-              </p>
-            </div>
-          </div>
-
-          <div class="hidden md:block">
-            <KawaiiAvatar
-              :avatar="userStore.avatar"
-              size="sm"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div class="rounded-[2rem] border-4 border-slate-800 bg-white px-5 py-4 shadow-[0_8px_0_0_theme(colors.slate.200)]">
-        <p class="text-sm font-black text-slate-800">
-          {{ speechStatusMessage }}
-        </p>
-        <p
-          v-if="speechError"
-          class="mt-1 text-sm text-red-500"
-        >
-          {{ speechError }}
-        </p>
-      </div>
-
-      <div class="grid gap-3 md:grid-cols-2">
-        <button
-          class="btn-primary w-full"
-          :disabled="isListening || !speechSupported"
-          @click="listenForWord"
-        >
-          {{ isListening ? 'Escuchando…' : 'Hablar ahora 🎤' }}
-        </button>
-        <button
-          class="btn-secondary w-full"
-          @click="skipSpeechPractice"
-        >
-          {{ isLastVocabWord ? 'Ir al test' : 'Saltar esta palabra' }}
-        </button>
-      </div>
-    </div>
-
     <!-- Pantalla de ejercicio -->
     <div
-      v-else-if="phase === 'exercise'"
+      v-if="phase === 'exercise'"
       class="space-y-5"
     >
       <!-- Header de la sesión -->
@@ -217,109 +19,140 @@
             :style="{ width: `${exerciseProgress}%` }"
           ></div>
         </div>
-        <span class="text-xs font-bold text-slate-400">{{ currentIndex + 1 }}/{{ activeQuestions.length }}</span>
+        <span class="text-xs font-bold text-slate-400">{{ currentStepIndex + 1 }}/{{ exerciseSequence.length }}</span>
       </div>
 
-      <!-- Pregunta -->
-      <div
-        :key="currentIndex"
-        class="overflow-hidden rounded-[2rem] border-4 border-slate-800 bg-gradient-to-br from-white via-sky-50 to-amber-50 p-4 shadow-[0_10px_0_0_theme(colors.slate.200)] animate-fade-up"
-      >
-        <div class="flex items-center justify-between gap-3">
+      <!-- Vocab card -->
+      <template v-if="currentStep?.type === 'vocab'">
+        <div
+          :key="`vocab-${currentStepIndex}`"
+          class="overflow-hidden rounded-[2rem] border-4 border-slate-800 bg-gradient-to-br from-sky-100 via-cyan-50 to-amber-100 p-4 shadow-[0_10px_0_0_theme(colors.sky.100)] animate-fade-up"
+        >
           <p class="text-xs font-bold uppercase tracking-[0.2em] text-sky-500">
-            {{ questionLabel }}
+            📖 Vocabulario
           </p>
-          <span class="rounded-full border-2 border-slate-800 bg-white px-3 py-1 text-xs font-black text-slate-500">
-            {{ currentQuestion.type === 'written' ? 'Escribe la respuesta' : 'Elige la respuesta correcta' }}
-          </span>
-        </div>
-
-        <div class="mt-4 grid gap-4 md:grid-cols-[auto_1fr_auto] md:items-end">
-          <KawaiiMonster
-            :monster="hostMonster"
-            size="sm"
-          />
-
-          <ComicBubble :label="`${hostMonster.name} dice`">
-            {{ questionPrompt }}
-          </ComicBubble>
-
-          <div class="hidden md:block">
-            <KawaiiAvatar
-              :avatar="userStore.avatar"
-              size="sm"
-            />
+          <div class="mt-4 flex flex-col items-center gap-2">
+            <span class="text-3xl font-black text-slate-800">{{ currentStep.word.en }}</span>
+            <span class="text-lg text-slate-500">{{ currentStep.word.es }}</span>
+            <p
+              v-if="currentStep.word.example"
+              class="text-sm text-slate-400 italic mt-1"
+            >
+              "{{ currentStep.word.example }}"
+            </p>
           </div>
         </div>
-      </div>
-
-      <!-- Opciones (multiple choice) -->
-      <div
-        v-if="currentQuestion.type === 'multiple-choice'"
-        :key="`opts-${currentIndex}`"
-        class="space-y-3"
-      >
         <button
-          v-for="(option, i) in currentQuestion.options"
-          :key="i"
-          class="w-full text-left px-5 py-4 rounded-2xl border-2 font-bold text-base transition-all"
-          :class="optionClass(i)"
-          :disabled="answered"
-          @click="selectAnswer(i)"
-        >
-          <span class="text-slate-400 font-black mr-2">{{ letters[i] }}.</span>
-          {{ option }}
-        </button>
-      </div>
-
-      <!-- Input escrito (written) -->
-      <div
-        v-else-if="currentQuestion.type === 'written'"
-        :key="`write-${currentIndex}`"
-        class="space-y-3"
-      >
-        <div
-          class="rounded-2xl border-2 px-5 py-4 transition-all"
-          :class="writtenInputClass"
-        >
-          <input
-            ref="writtenInputRef"
-            v-model="writtenAnswer"
-            type="text"
-            class="w-full bg-transparent text-lg font-bold text-slate-800 outline-none placeholder:text-slate-300"
-            placeholder="Escribe tu respuesta aquí…"
-            :disabled="answered"
-            @keyup.enter="submitWrittenAnswer"
-          />
-        </div>
-        <button
-          v-if="!answered"
           class="btn-primary w-full"
-          :disabled="!writtenAnswer.trim()"
-          @click="submitWrittenAnswer"
+          @click="advanceStep"
         >
-          Comprobar ✓
+          Continuar →
         </button>
-      </div>
+      </template>
 
-      <!-- Feedback -->
-      <Transition name="slide-up">
-        <ExerciseFeedback
+      <!-- Question -->
+      <template v-else-if="currentStep?.type === 'question'">
+        <!-- Pregunta -->
+        <div
+          :key="`q-${currentStepIndex}`"
+          class="overflow-hidden rounded-[2rem] border-4 border-slate-800 bg-gradient-to-br from-white via-sky-50 to-amber-50 p-4 shadow-[0_10px_0_0_theme(colors.slate.200)] animate-fade-up"
+        >
+          <div class="flex items-center justify-between gap-3">
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-sky-500">
+              {{ questionLabel }}
+            </p>
+            <span class="rounded-full border-2 border-slate-800 bg-white px-3 py-1 text-xs font-black text-slate-500">
+              {{ currentStep.question.type === 'written' ? 'Escribe la respuesta' : 'Elige la respuesta correcta' }}
+            </span>
+          </div>
+
+          <div class="mt-4 grid gap-4 md:grid-cols-[auto_1fr_auto] md:items-end">
+            <KawaiiMonster
+              :monster="hostMonster"
+              size="sm"
+            />
+
+            <ComicBubble :label="`${hostMonster.name} dice`">
+              {{ questionPrompt }}
+            </ComicBubble>
+
+            <div class="hidden md:block">
+              <KawaiiAvatar
+                :avatar="userStore.avatar"
+                size="sm"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Opciones (multiple choice) -->
+        <div
+          v-if="currentStep.question.type === 'multiple-choice'"
+          :key="`opts-${currentStepIndex}`"
+          class="space-y-3"
+        >
+          <button
+            v-for="(option, i) in currentStep.question.options"
+            :key="i"
+            class="w-full text-left px-5 py-4 rounded-2xl border-2 font-bold text-base transition-all"
+            :class="optionClass(i)"
+            :disabled="answered"
+            @click="selectAnswer(i)"
+          >
+            <span class="text-slate-400 font-black mr-2">{{ letters[i] }}.</span>
+            {{ option }}
+          </button>
+        </div>
+
+        <!-- Input escrito (written) -->
+        <div
+          v-else-if="currentStep.question.type === 'written'"
+          :key="`write-${currentStepIndex}`"
+          class="space-y-3"
+        >
+          <div
+            class="rounded-2xl border-2 px-5 py-4 transition-all"
+            :class="writtenInputClass"
+          >
+            <input
+              ref="writtenInputRef"
+              v-model="writtenAnswer"
+              type="text"
+              class="w-full bg-transparent text-lg font-bold text-slate-800 outline-none placeholder:text-slate-300"
+              placeholder="Escribe tu respuesta aquí…"
+              :disabled="answered"
+              @keyup.enter="submitWrittenAnswer"
+            />
+          </div>
+          <button
+            v-if="!answered"
+            class="btn-primary w-full"
+            :disabled="!writtenAnswer.trim()"
+            @click="submitWrittenAnswer"
+          >
+            Comprobar ✓
+          </button>
+        </div>
+
+        <!-- Feedback -->
+        <Transition name="slide-up">
+          <ExerciseFeedback
+            v-if="answered"
+            :correct="isCorrect"
+            :correct-answer="correctAnswerText"
+            :xp="currentStep.question.xpReward"
+          />
+        </Transition>
+
+        <!-- Continuar -->
+        <button
           v-if="answered"
-          :correct="isCorrect"
-          :correct-answer="correctAnswerText"
-          :xp="currentQuestion.xpReward"
-        />
-      </Transition>
-
-      <!-- Continuar -->
-      <button
-        v-if="answered"
-        class="btn-primary w-full animate-fade-up"
-        @click="next"
-      >
-        {{ currentIndex < activeQuestions.length - 1 ? 'Siguiente →' : 'Ver resultado 🎉' }}
-      </button>
+          class="btn-primary w-full animate-fade-up"
+          @click="next"
+        >
+          {{ currentStepIndex < exerciseSequence.length - 1 ? 'Siguiente →' : 'Ver resultado 🎉' }}
+        </button>
+      </template>
     </div>
 
     <!-- Pantalla de resultado -->
@@ -455,10 +288,14 @@
 </template>
 
 <script setup lang="ts">
-import { getLessonById, getNextLesson, type Lesson, type Question } from '~/data/lessons'
+import { getLessonById, getNextLesson, type Lesson, type Question, type VocabWord } from '~/data/lessons'
 import { getMonsterForLesson } from '~/data/monsters'
 import { getAchievementById, type Achievement } from '~/data/achievements'
 import { getHouseById } from '~/data/aiworld'
+
+type ExerciseStep =
+  | { type: 'vocab'; word: VocabWord; index: number }
+  | { type: 'question'; question: Question; questionIndex: number }
 
 const route = useRoute()
 const userStore = useUserStore()
@@ -488,13 +325,10 @@ const vocabularyWords = computed(() => {
 })
 
 const letters = ['A', 'B', 'C', 'D']
-let recognition: SpeechRecognition | null = null
 
 // ── State ──────────────────────────────────────────────────────────────────
-const hasVocab = computed(() => vocabularyWords.value.length > 0)
-const phase = ref<'vocab' | 'speak' | 'exercise' | 'result' | 'notfound'>('exercise')
-const currentIndex = ref(0)
-const currentSpeakIndex = ref(0)
+const phase = ref<'exercise' | 'result' | 'notfound'>('exercise')
+const currentStepIndex = ref(0)
 const selectedIndex = ref<number | null>(null)
 const answered = ref(false)
 const isRetryRound = ref(false)
@@ -508,11 +342,6 @@ const starsEarned = ref(0)
 const pendingXp = ref(0)
 const recoveredXp = ref(0)
 const newAchievements = ref<Achievement[]>([])
-const speechSupported = ref(false)
-const isListening = ref(false)
-const speechTranscript = ref('')
-const speechError = ref('')
-const speechState = ref<'idle' | 'success' | 'retry'>('idle')
 const writtenAnswer = ref('')
 const writtenInputRef = ref<HTMLInputElement | null>(null)
 
@@ -524,24 +353,49 @@ const activeQuestions = computed(() => {
   return questions.value.filter((question) => retryIds.has(question.id))
 })
 
+const exerciseSequence = computed<ExerciseStep[]>(() => {
+  const words = vocabularyWords.value
+  const qs = activeQuestions.value
+
+  if (isRetryRound.value || words.length === 0) {
+    return qs.map((q, i) => ({ type: 'question' as const, question: q, questionIndex: i }))
+  }
+
+  const steps: ExerciseStep[] = []
+  const ratio = words.length / Math.max(qs.length, 1)
+  let vocabIdx = 0
+
+  for (let qi = 0; qi < qs.length; qi++) {
+    const targetVocab = Math.round((qi + 1) * ratio)
+    while (vocabIdx < targetVocab && vocabIdx < words.length) {
+      steps.push({ type: 'vocab', word: words[vocabIdx], index: vocabIdx })
+      vocabIdx++
+    }
+    steps.push({ type: 'question', question: qs[qi], questionIndex: qi })
+  }
+  while (vocabIdx < words.length) {
+    steps.push({ type: 'vocab', word: words[vocabIdx], index: vocabIdx })
+    vocabIdx++
+  }
+
+  return steps
+})
+
+const currentStep = computed(() => exerciseSequence.value[currentStepIndex.value])
+
+const currentQuestion = computed(() => {
+  const step = currentStep.value
+  if (step?.type === 'question') return step.question
+  return null
+})
+
 const totalQuestionCount = computed(() => questions.value.length)
-const currentQuestion = computed(() => activeQuestions.value[currentIndex.value])
-const currentVocabWord = computed(() => vocabularyWords.value[currentSpeakIndex.value])
-const introLine = computed(() => {
-  if (!lesson.value) return ''
-
-  return `Soy ${hostMonster.value.name}, ${hostMonster.value.title}. Vamos a explorar ${lesson.value.title.toLowerCase()} con viñetas y pistas visuales.`
-})
-
-const vocabLine = computed(() => {
-  if (!lesson.value) return ''
-
-  return `${hostMonster.value.catchphrase} Repasa estas palabras antes de entrar en mi casa.`
-})
 
 const questionLabel = computed(() => {
+  const step = currentStep.value
+  if (step?.type !== 'question') return ''
   const prefix = isRetryRound.value ? 'Reintento' : 'Pregunta'
-  return `${prefix} ${currentIndex.value + 1} de ${activeQuestions.value.length}`
+  return `${prefix} ${step.questionIndex + 1} de ${activeQuestions.value.length}`
 })
 
 const questionPrompt = computed(() => {
@@ -558,33 +412,8 @@ const canRetryMistakes = computed(
 const missedQuestionsCount = computed(() => failedQuestionIds.value.length)
 
 const exerciseProgress = computed(() => {
-  if (!activeQuestions.value.length) return 0
-  return (currentIndex.value / activeQuestions.value.length) * 100
-})
-
-const speechProgress = computed(() => {
-  if (!vocabularyWords.value.length) return 0
-  return (currentSpeakIndex.value / vocabularyWords.value.length) * 100
-})
-
-const isLastVocabWord = computed(
-  () => currentSpeakIndex.value >= Math.max(vocabularyWords.value.length - 1, 0),
-)
-
-const speechStatusMessage = computed(() => {
-  if (!speechSupported.value) {
-    return 'El reconocimiento de voz no está disponible en este navegador. Puedes saltar directamente al test.'
-  }
-  if (isListening.value) {
-    return 'Escuchando tu pronunciación...'
-  }
-  if (speechState.value === 'success') {
-    return 'Pronunciación aceptada. Puedes seguir con la siguiente palabra.'
-  }
-  if (speechState.value === 'retry') {
-    return 'No ha coincidido del todo. Puedes intentarlo otra vez o saltar esta palabra.'
-  }
-  return 'Pulsa el micrófono y di la palabra en inglés con naturalidad.'
+  if (!exerciseSequence.value.length) return 0
+  return (currentStepIndex.value / exerciseSequence.value.length) * 100
 })
 
 const isCorrect = computed(() => {
@@ -627,6 +456,7 @@ const nextLessonId = computed(() => {
 
 // ── Methods ────────────────────────────────────────────────────────────────
 function optionClass(i: number): string {
+  if (!currentQuestion.value) return 'border-slate-200'
   if (!answered.value) {
     return 'border-slate-200 hover:border-sky-400 hover:bg-sky-50'
   }
@@ -639,27 +469,6 @@ function optionClass(i: number): string {
   return 'border-slate-200 opacity-60'
 }
 
-function normalizeSpeechText(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
-function isPronunciationMatch(transcript: string, expected: string): boolean {
-  const heard = normalizeSpeechText(transcript)
-  const target = normalizeSpeechText(expected)
-
-  if (!heard || !target) return false
-  if (heard === target || heard.includes(target)) return true
-
-  const targetTokens = target.split(' ')
-  return targetTokens.every((token) => heard.includes(token))
-}
-
 function mergeAchievements(unlockedIds: string[]) {
   const knownIds = new Set(newAchievements.value.map((achievement) => achievement.id))
   const mapped = unlockedIds
@@ -670,86 +479,16 @@ function mergeAchievements(unlockedIds: string[]) {
   newAchievements.value = [...newAchievements.value, ...mapped]
 }
 
-function createRecognition(): SpeechRecognition | null {
-  if (!import.meta.client) return null
-
-  const RecognitionCtor = window.SpeechRecognition ?? window.webkitSpeechRecognition
-  if (!RecognitionCtor) return null
-
-  const instance = new RecognitionCtor()
-  instance.continuous = false
-  instance.interimResults = false
-  instance.lang = 'en-US'
-  instance.maxAlternatives = 1
-  return instance
-}
-
-function advanceSpeechPractice() {
-  if (isLastVocabWord.value) {
-    phase.value = 'exercise'
-    return
+function advanceStep() {
+  if (currentStepIndex.value < exerciseSequence.value.length - 1) {
+    currentStepIndex.value += 1
+  } else {
+    finishLesson()
   }
-
-  currentSpeakIndex.value += 1
-  speechTranscript.value = ''
-  speechError.value = ''
-  speechState.value = 'idle'
-}
-
-function skipSpeechPractice() {
-  if (!speechSupported.value || isLastVocabWord.value) {
-    phase.value = 'exercise'
-    return
-  }
-
-  advanceSpeechPractice()
-}
-
-function listenForWord() {
-  if (!speechSupported.value || !currentVocabWord.value || isListening.value) return
-
-  recognition?.abort()
-  recognition = createRecognition()
-  if (!recognition) {
-    speechSupported.value = false
-    return
-  }
-
-  speechTranscript.value = ''
-  speechError.value = ''
-  speechState.value = 'idle'
-  isListening.value = true
-
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0]?.transcript ?? ''
-    speechTranscript.value = transcript
-
-    if (isPronunciationMatch(transcript, currentVocabWord.value?.en ?? '')) {
-      speechState.value = 'success'
-      setTimeout(() => {
-        advanceSpeechPractice()
-      }, 650)
-    } else {
-      speechState.value = 'retry'
-    }
-  }
-
-  recognition.onerror = (event) => {
-    speechState.value = 'retry'
-    speechError.value = event.error === 'not-allowed'
-      ? 'No hay permiso para usar el micrófono en este navegador.'
-      : 'No he podido reconocer esa palabra.'
-  }
-
-  recognition.onend = () => {
-    isListening.value = false
-  }
-
-  recognition.start()
 }
 
 function selectAnswer(i: number) {
-  if (answered.value) return
+  if (answered.value || !currentQuestion.value) return
   selectedIndex.value = i
   answered.value = true
 
@@ -777,7 +516,7 @@ function selectAnswer(i: number) {
 }
 
 function submitWrittenAnswer() {
-  if (answered.value || !writtenAnswer.value.trim()) return
+  if (answered.value || !writtenAnswer.value.trim() || !currentQuestion.value) return
   answered.value = true
 
   if (isCorrect.value) {
@@ -804,8 +543,8 @@ function submitWrittenAnswer() {
 }
 
 function next() {
-  if (currentIndex.value < activeQuestions.value.length - 1) {
-    currentIndex.value += 1
+  if (currentStepIndex.value < exerciseSequence.value.length - 1) {
+    currentStepIndex.value += 1
     selectedIndex.value = null
     answered.value = false
     writtenAnswer.value = ''
@@ -819,17 +558,14 @@ function finishLesson() {
 
   const xpToAward = isRetryRound.value ? recoveredXp.value : xpEarned.value
 
-  // Calcular estrellas
   const stars = houseId.value
     ? progressStore.saveHouseResult(houseId.value, correctAnswers.value, totalQuestionCount.value)
     : progressStore.saveResult(lessonId.value, correctAnswers.value, totalQuestionCount.value)
   starsEarned.value = stars
 
-  // Registrar actividad y sumar XP
   userStore.recordActivity()
   userStore.addXp(xpToAward)
 
-  // Evaluar logros
   const unlockedIds = achievementsStore.evaluate()
   mergeAchievements(unlockedIds)
 
@@ -850,40 +586,19 @@ function startRetryLesson() {
   retryQuestionIds.value = [...failedQuestionIds.value]
   retryMistakeIds.value = []
   recoveredXp.value = 0
-  currentIndex.value = 0
+  currentStepIndex.value = 0
   selectedIndex.value = null
   answered.value = false
   isRetryRound.value = true
   phase.value = 'exercise'
 }
 
-function startExercises() {
-  if (hasVocab.value && vocabularyWords.value.length && speechSupported.value) {
-    currentSpeakIndex.value = 0
-    speechTranscript.value = ''
-    speechError.value = ''
-    speechState.value = 'idle'
-    phase.value = 'speak'
-    return
-  }
-
-  phase.value = 'exercise'
-}
-
-// Redirigir si la lección no existe
 onMounted(() => {
-  recognition = createRecognition()
-  speechSupported.value = Boolean(recognition)
-
   if (!lesson.value) {
     phase.value = 'notfound'
-  } else if (hasVocab.value) {
-    phase.value = 'vocab'
+  } else {
+    phase.value = 'exercise'
   }
-})
-
-onBeforeUnmount(() => {
-  recognition?.abort()
 })
 </script>
 
