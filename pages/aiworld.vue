@@ -100,7 +100,8 @@
               ></div>
             </div>
           </div>
-          <span class="mt-2 max-w-24 rounded-full border-2 px-3 py-1 text-center text-[11px] font-black"
+          <span
+            class="mt-2 max-w-24 rounded-full border-2 px-3 py-1 text-center text-[11px] font-black"
             :class="progressStore.isHouseCompleted(house.id) ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-800 bg-white text-slate-600'"
           >
             {{ house.words.join(' + ') }}

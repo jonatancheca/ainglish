@@ -108,7 +108,6 @@
             :class="[cheekColorClass, cheekShapeClass]"
           ></span>
         </div>
-
       </div>
 
       <div class="relative flex flex-col items-center">
