@@ -97,7 +97,10 @@
           ></span>
         </div>
 
-        <div class="absolute left-1/2 top-[6.4rem] h-2 w-3 -translate-x-1/2 rounded-full bg-slate-800"></div>
+        <div
+          v-if="mouthStyle !== 'smile'"
+          class="absolute left-1/2 top-[6.4rem] h-2 w-3 -translate-x-1/2 rounded-full bg-slate-800"
+        ></div>
         <!-- Boca: sonrisa o abierta -->
         <div
           v-if="mouthStyle === 'smile'"
