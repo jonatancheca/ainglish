@@ -24,7 +24,7 @@ export default defineNuxtConfig({
       title: 'AInglish',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Aprende inglés estilo Duolingo' },
+        { name: 'description', content: 'Aprende inglés estilo Kawaii' },
       ],
       link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
     },
