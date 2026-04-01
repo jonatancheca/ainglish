@@ -9,6 +9,7 @@ export interface KawaiiMonster {
   eyeStyle: 'round' | 'sleepy' | 'sparkle'
   earStyle: 'horns' | 'wings' | 'leaf'
   pattern: 'spots' | 'belly' | 'stripes' | 'heart'
+  mouthStyle?: 'open' | 'smile'
   catchphrase: string
 }
 
@@ -167,6 +168,7 @@ export const KAWAII_MONSTERS: KawaiiMonster[] = [
     eyeStyle: 'sparkle',
     earStyle: 'horns',
     pattern: 'spots',
+    mouthStyle: 'smile',
     catchphrase: 'Reírse ayuda a recordar. ¡Ja, ja, ja!',
   },
   {

@@ -98,7 +98,15 @@
         </div>
 
         <div class="absolute left-1/2 top-[6.4rem] h-2 w-3 -translate-x-1/2 rounded-full bg-slate-800"></div>
-        <div class="absolute left-1/2 top-[7rem] h-5 w-12 -translate-x-1/2 rounded-b-full border-b-4 border-slate-800"></div>
+        <!-- Boca: sonrisa o abierta -->
+        <div
+          v-if="mouthStyle === 'smile'"
+          class="absolute left-1/2 top-[6.8rem] h-4 w-8 -translate-x-1/2 rounded-b-full border-b-4 border-l-4 border-r-4 border-slate-800"
+        ></div>
+        <div
+          v-else
+          class="absolute left-1/2 top-[7rem] h-5 w-12 -translate-x-1/2 rounded-b-full border-b-4 border-slate-800"
+        ></div>
 
         <div class="absolute -bottom-4 left-5 h-8 w-5 rounded-full border-4 border-slate-800 bg-amber-50"></div>
         <div class="absolute -bottom-4 right-5 h-8 w-5 rounded-full border-4 border-slate-800 bg-amber-50"></div>
@@ -132,4 +140,5 @@ const eyeClassMap = {
 
 const leftEyeClass = computed(() => eyeClassMap[props.monster.eyeStyle])
 const rightEyeClass = computed(() => eyeClassMap[props.monster.eyeStyle])
+const mouthStyle = computed(() => props.monster.mouthStyle ?? 'open')
 </script>
