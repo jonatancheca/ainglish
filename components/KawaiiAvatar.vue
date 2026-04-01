@@ -14,13 +14,13 @@
 
       <div
         v-if="showTwinTails"
-        class="absolute left-1 top-6 h-16 w-10 rounded-full"
-        :class="hairAccessoryClass"
+        class="absolute top-6 rounded-full"
+        :class="[hairAccessoryClass, twinTailClass, 'left-1']"
       ></div>
       <div
         v-if="showTwinTails"
-        class="absolute right-1 top-6 h-16 w-10 rounded-full"
-        :class="hairAccessoryClass"
+        class="absolute top-6 rounded-full"
+        :class="[hairAccessoryClass, twinTailClass, 'right-1']"
       ></div>
       <!-- Pelo largo: mechones que caen a los lados -->
       <div
@@ -220,6 +220,15 @@ const hairScaleClass = computed(() => sizeClasses[props.size].hair)
 const showTwinTails = computed(() => props.avatar.hair === 'twin-tails')
 const showLong = computed(() => props.avatar.hair === 'long')
 const showBangs = computed(() => props.avatar.hair === 'bangs')
+
+const twinTailClass = computed(() => {
+  const map = {
+    sm: 'h-[5.33rem] w-[3.33rem]',
+    md: 'h-[4.44rem] w-[2.78rem]',
+    lg: 'h-16 w-10',
+  } as const
+  return map[props.size]
+})
 
 const hairColorClass = computed(() => hairPalette[props.avatar.hairColor])
 const hairBackClass = computed(() => {

@@ -5,38 +5,46 @@
     </h1>
 
     <!-- Avatar + nombre -->
-    <div class="card flex flex-col items-center py-8 gap-5">
-      <div class="rounded-[2rem] bg-slate-50 p-3">
+    <div
+      class="card py-8 gap-5"
+      :class="editing ? 'flex flex-col sm:flex-row sm:items-start' : 'flex flex-col items-center'"
+    >
+      <div
+        class="rounded-[2rem] bg-gradient-to-b from-sky-100 via-white to-rose-50 p-4"
+        :class="editing ? 'shrink-0 self-center sm:self-start' : ''"
+      >
         <KawaiiAvatar
           :avatar="editing ? editDraft : userStore.avatar"
-          size="md"
+          size="lg"
         />
       </div>
-      <template v-if="!editing">
-        <h2 class="text-xl font-black text-slate-800">
-          {{ userStore.name || 'Sin nombre' }}
-        </h2>
-      </template>
-      <template v-else>
-        <input
-          v-model="editName"
-          type="text"
-          maxlength="30"
-          placeholder="Tu nombre"
-          class="w-52 text-center rounded-2xl border-2 border-slate-200 px-4 py-2 text-lg font-black text-slate-800 outline-none focus:border-sky-400"
-        />
-      </template>
-      <div class="flex items-center gap-2">
-        <LevelBadge :level="userStore.level" />
-        <span class="text-sm font-bold text-slate-500">Nivel {{ userStore.level }}</span>
+      <div :class="editing ? 'flex flex-1 flex-col items-center sm:items-start gap-3' : 'flex flex-col items-center gap-3'">
+        <template v-if="!editing">
+          <h2 class="text-xl font-black text-slate-800">
+            {{ userStore.name || 'Sin nombre' }}
+          </h2>
+        </template>
+        <template v-else>
+          <input
+            v-model="editName"
+            type="text"
+            maxlength="30"
+            placeholder="Tu nombre"
+            class="w-52 text-center rounded-2xl border-2 border-slate-200 px-4 py-2 text-lg font-black text-slate-800 outline-none focus:border-sky-400"
+          />
+        </template>
+        <div class="flex items-center gap-2">
+          <LevelBadge :level="userStore.level" />
+          <span class="text-sm font-bold text-slate-500">Nivel {{ userStore.level }}</span>
+        </div>
+        <button
+          v-if="!editing"
+          class="text-sm font-bold text-sky-500 hover:text-sky-600 transition-colors"
+          @click="startEditing"
+        >
+          ✏️ Editar personaje
+        </button>
       </div>
-      <button
-        v-if="!editing"
-        class="text-sm font-bold text-sky-500 hover:text-sky-600 transition-colors"
-        @click="startEditing"
-      >
-        ✏️ Editar personaje
-      </button>
     </div>
 
     <!-- Edición del avatar -->

@@ -1,0 +1,1 @@
+cambia el monstruo bobi a no tenga ese bigote o nariz que hay encima de la boca
