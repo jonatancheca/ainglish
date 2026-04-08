@@ -5,5 +5,5 @@ cuando acabes una tarea:
 
 haz linting
 comprueba que funcione
-mueve la tarea a la carpeta tareas-completadas
 haz un commit
+mueve la tarea a la carpeta tareas-por-revisar
