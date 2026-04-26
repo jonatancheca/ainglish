@@ -77,7 +77,7 @@
             </ComicBubble>
 
             <div class="hidden md:block">
-              <KawaiiAvatar
+              <AvatarIllustration
                 :avatar="userStore.avatar"
                 size="sm"
               />

@@ -1,116 +1,72 @@
 <template>
-  <div class="space-y-5">
+  <div
+    v-if="isClient"
+    class="space-y-5"
+  >
     <h1 class="text-2xl font-black text-slate-800">
       Mi perfil
     </h1>
 
-    <!-- Avatar + nombre -->
     <div
-      class="card py-8 gap-5"
-      :class="editing ? 'flex flex-col sm:flex-row sm:items-start' : 'flex flex-col items-center'"
+      class="card gap-5 py-7"
+      :class="editing ? 'flex flex-col lg:flex-row lg:items-start' : 'flex flex-col items-center text-center'"
     >
-      <div
-        class="rounded-[2rem] bg-gradient-to-b from-sky-100 via-white to-rose-50 p-4"
-        :class="editing ? 'shrink-0 self-center sm:self-start' : ''"
-      >
-        <KawaiiAvatar
-          :avatar="editing ? editDraft : userStore.avatar"
+      <div class="rounded-[2rem] bg-gradient-to-b from-sky-50 via-white to-rose-50 p-4">
+        <AvatarIllustration
+          :avatar="displayAvatar"
           size="lg"
         />
       </div>
-      <div :class="editing ? 'flex flex-1 flex-col items-center sm:items-start gap-3' : 'flex flex-col items-center gap-3'">
+
+      <div :class="editing ? 'flex flex-1 flex-col gap-4' : 'flex flex-col items-center gap-3'">
         <template v-if="!editing">
           <h2 class="text-xl font-black text-slate-800">
             {{ userStore.name || 'Sin nombre' }}
           </h2>
         </template>
+
         <template v-else>
-          <input
-            v-model="editName"
-            type="text"
-            maxlength="30"
-            placeholder="Tu nombre"
-            class="w-52 text-center rounded-2xl border-2 border-slate-200 px-4 py-2 text-lg font-black text-slate-800 outline-none focus:border-sky-400"
-          />
+          <div>
+            <label class="mb-2 block text-sm font-black text-slate-700">Tu nombre</label>
+            <input
+              v-model="editName"
+              type="text"
+              maxlength="30"
+              placeholder="Tu nombre"
+              class="w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-base font-black text-slate-800 outline-none focus:border-sky-400"
+            />
+          </div>
         </template>
+
         <div class="flex items-center gap-2">
           <LevelBadge :level="userStore.level" />
           <span class="text-sm font-bold text-slate-500">Nivel {{ userStore.level }}</span>
         </div>
+
         <button
           v-if="!editing"
-          class="text-sm font-bold text-sky-500 hover:text-sky-600 transition-colors"
+          class="text-sm font-bold text-sky-500 transition-colors hover:text-sky-600"
           @click="startEditing"
         >
-          ✏️ Editar personaje
+          Editar personaje
         </button>
       </div>
     </div>
 
-    <!-- Edición del avatar -->
     <div
       v-if="editing"
       class="card space-y-4"
     >
-      <p class="text-sm font-black uppercase tracking-[0.25em] text-sky-500">
-        Editar look kawaii
-      </p>
+      <div>
+        <p class="text-sm font-black uppercase tracking-[0.25em] text-sky-500">
+          Escoge avatar
+        </p>
+        <p class="mt-2 text-sm font-semibold text-slate-500">
+          Selecciona una ilustracion manga chibi de cuerpo completo.
+        </p>
+      </div>
 
-      <AvatarOptionGroup
-        label="Forma de cara"
-        :options="FACE_SHAPE_OPTIONS"
-        :model-value="editDraft.faceShape"
-        @update:model-value="editDraft.faceShape = $event as any"
-      />
-      <AvatarOptionGroup
-        label="Color de ojos"
-        :options="EYE_COLOR_OPTIONS"
-        :model-value="editDraft.eyeColor"
-        @update:model-value="editDraft.eyeColor = $event as any"
-      />
-      <AvatarOptionGroup
-        label="Estilo de ojos"
-        :options="EYE_STYLE_OPTIONS"
-        :model-value="editDraft.eyeStyle"
-        @update:model-value="editDraft.eyeStyle = $event as any"
-      />
-      <AvatarOptionGroup
-        label="Mofletes"
-        :options="CHEEK_STYLE_OPTIONS"
-        :model-value="editDraft.cheeks"
-        @update:model-value="editDraft.cheeks = $event as any"
-      />
-      <AvatarOptionGroup
-        v-if="editDraft.cheeks !== 'none'"
-        label="Color de mofletes"
-        :options="CHEEK_COLOR_OPTIONS"
-        :model-value="editDraft.cheekColor"
-        @update:model-value="editDraft.cheekColor = $event as any"
-      />
-      <AvatarOptionGroup
-        label="Pelo"
-        :options="HAIR_OPTIONS"
-        :model-value="editDraft.hair"
-        @update:model-value="editDraft.hair = $event as any"
-      />
-      <AvatarOptionGroup
-        label="Color de pelo"
-        :options="HAIR_COLOR_OPTIONS"
-        :model-value="editDraft.hairColor"
-        @update:model-value="editDraft.hairColor = $event as any"
-      />
-      <AvatarOptionGroup
-        label="Ropa"
-        :options="OUTFIT_OPTIONS"
-        :model-value="editDraft.outfit"
-        @update:model-value="editDraft.outfit = $event as any"
-      />
-      <AvatarOptionGroup
-        label="Zapatos"
-        :options="SHOES_OPTIONS"
-        :model-value="editDraft.shoes"
-        @update:model-value="editDraft.shoes = $event as any"
-      />
+      <AvatarSelector v-model="selectedAvatarId" />
 
       <div class="flex gap-3 pt-2">
         <button
@@ -124,12 +80,11 @@
           :disabled="!editName.trim()"
           @click="saveEditing"
         >
-          Guardar cambios ✨
+          Guardar cambios
         </button>
       </div>
     </div>
 
-    <!-- XP Bar -->
     <div class="card">
       <XpBar
         :level="userStore.level"
@@ -139,101 +94,100 @@
       />
     </div>
 
-    <!-- Estadísticas -->
     <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
       <div class="card text-center">
-        <div class="text-2xl mb-1">
+        <div class="mb-1 text-2xl">
           🔥
         </div>
         <div class="text-2xl font-black text-orange-500">
           {{ userStore.streak }}
         </div>
-        <div class="text-xs text-slate-500 font-semibold mt-0.5">
+        <div class="mt-0.5 text-xs font-semibold text-slate-500">
           Racha actual
         </div>
       </div>
       <div class="card text-center">
-        <div class="text-2xl mb-1">
+        <div class="mb-1 text-2xl">
           📅
         </div>
         <div class="text-2xl font-black text-amber-500">
           {{ userStore.maxStreak }}
         </div>
-        <div class="text-xs text-slate-500 font-semibold mt-0.5">
-          Racha máxima
+        <div class="mt-0.5 text-xs font-semibold text-slate-500">
+          Racha maxima
         </div>
       </div>
       <div class="card text-center">
-        <div class="text-2xl mb-1">
+        <div class="mb-1 text-2xl">
           ⚡
         </div>
         <div class="text-2xl font-black text-sky-500">
           {{ userStore.xp }}
         </div>
-        <div class="text-xs text-slate-500 font-semibold mt-0.5">
+        <div class="mt-0.5 text-xs font-semibold text-slate-500">
           XP total
         </div>
       </div>
       <div class="card text-center">
-        <div class="text-2xl mb-1">
+        <div class="mb-1 text-2xl">
           📚
         </div>
         <div class="text-2xl font-black text-emerald-500">
           {{ progressStore.totalLessonsCompleted }}
         </div>
-        <div class="text-xs text-slate-500 font-semibold mt-0.5">
+        <div class="mt-0.5 text-xs font-semibold text-slate-500">
           Lecciones
         </div>
       </div>
     </div>
 
-    <!-- Logros recientes -->
     <div class="card">
-      <div class="flex items-center justify-between mb-3">
+      <div class="mb-3 flex items-center justify-between">
         <p class="font-black text-slate-700">
           Logros
         </p>
         <NuxtLink
           to="/achievements"
-          class="text-xs text-sky-500 font-bold"
+          class="text-xs font-bold text-sky-500"
         >
           Ver todos →
         </NuxtLink>
       </div>
       <div class="flex items-center gap-2">
         <span class="text-2xl font-black text-amber-500">{{ achievementsStore.unlockedCount }}</span>
-        <span class="text-slate-400 text-sm">/{{ totalAchievements }} desbloqueados</span>
-        <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden ml-2">
+        <span class="text-sm text-slate-400">/{{ totalAchievements }} desbloqueados</span>
+        <div class="ml-2 h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
           <div
-            class="h-full bg-amber-400 rounded-full"
+            class="h-full rounded-full bg-amber-400"
             :style="{ width: `${(achievementsStore.unlockedCount / totalAchievements) * 100}%` }"
           ></div>
         </div>
       </div>
     </div>
-        
-    <!-- Reset -->
+
     <button
-      class="w-full text-slate-400 text-sm font-semibold py-2 hover:text-red-400 transition-colors"
+      class="w-full py-2 text-sm font-semibold text-slate-400 transition-colors hover:text-red-400"
       @click="confirmReset"
     >
-      ⚠️ Reiniciar progreso
+      Reiniciar progreso
     </button>
+  </div>
+  <div
+    v-else
+    class="space-y-5"
+  >
+    <h1 class="text-2xl font-black text-slate-800">
+      Mi perfil
+    </h1>
+    <div class="card h-72 animate-pulse bg-white"></div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ACHIEVEMENTS } from '~/data/achievements'
 import {
-  EYE_COLOR_OPTIONS,
-  EYE_STYLE_OPTIONS,
-  FACE_SHAPE_OPTIONS,
-  CHEEK_STYLE_OPTIONS,
-  CHEEK_COLOR_OPTIONS,
-  HAIR_OPTIONS,
-  HAIR_COLOR_OPTIONS,
-  OUTFIT_OPTIONS,
-  SHOES_OPTIONS,
+  getAvatarOption,
+  type AvatarId,
   type CharacterAvatar,
 } from '~/data/avatar-options'
 
@@ -243,45 +197,46 @@ const achievementsStore = useAchievementsStore()
 const router = useRouter()
 const totalAchievements = ACHIEVEMENTS.length
 
+const isClient = ref(false)
 const editing = ref(false)
 const editName = ref('')
-const editDraft = reactive<CharacterAvatar>({ ...userStore.avatar })
+const selectedAvatarId = ref<AvatarId>(getAvatarOption(userStore.avatar).value)
+
+const displayAvatar = computed<CharacterAvatar>(() => (
+  editing.value ? { id: selectedAvatarId.value } : { id: getAvatarOption(userStore.avatar).value }
+))
+const selectedAvatar = computed(() => getAvatarOption(displayAvatar.value))
 
 function startEditing() {
   editName.value = userStore.name
-  Object.assign(editDraft, userStore.avatar)
+  selectedAvatarId.value = getAvatarOption(userStore.avatar).value
   editing.value = true
 }
 
 function cancelEditing() {
+  selectedAvatarId.value = getAvatarOption(userStore.avatar).value
   editing.value = false
 }
 
 function saveEditing() {
   if (!editName.value.trim()) return
-  userStore.name = editName.value.trim()
-  Object.assign(userStore.avatar, editDraft)
+
+  userStore.setName(editName.value)
+  userStore.setAvatar({ id: selectedAvatarId.value })
   editing.value = false
 }
 
-function getOptionLabel(options: { value: string, label: string }[], value: string) {
-  return options.find(option => option.value === value)?.label ?? value
-}
-
-const selectedFaceLabel = computed(() => getOptionLabel(FACE_SHAPE_OPTIONS, userStore.avatar.faceShape))
-const selectedEyeColorLabel = computed(() => getOptionLabel(EYE_COLOR_OPTIONS, userStore.avatar.eyeColor))
-const selectedEyeStyleLabel = computed(() => getOptionLabel(EYE_STYLE_OPTIONS, userStore.avatar.eyeStyle))
-const selectedHairLabel = computed(() => getOptionLabel(HAIR_OPTIONS, userStore.avatar.hair))
-const selectedOutfitLabel = computed(() => getOptionLabel(OUTFIT_OPTIONS, userStore.avatar.outfit))
-const selectedShoesLabel = computed(() => getOptionLabel(SHOES_OPTIONS, userStore.avatar.shoes))
-const selectedCheeksLabel = computed(() => getOptionLabel(CHEEK_STYLE_OPTIONS, userStore.avatar.cheeks ?? 'none'))
-
 function confirmReset() {
-  if (confirm('¿Seguro que quieres reiniciar todo tu progreso? Esta acción no se puede deshacer.')) {
+  if (confirm('Seguro que quieres reiniciar todo tu progreso? Esta accion no se puede deshacer.')) {
     userStore.$reset()
     progressStore.$reset()
     achievementsStore.$reset()
     router.push('/onboarding')
   }
 }
+
+onMounted(() => {
+  isClient.value = true
+  selectedAvatarId.value = getAvatarOption(userStore.avatar).value
+})
 </script>

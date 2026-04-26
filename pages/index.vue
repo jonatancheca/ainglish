@@ -29,7 +29,7 @@
           </p>
         </div>
         <div class="hidden sm:block shrink-0">
-          <KawaiiAvatar
+          <AvatarIllustration
             :avatar="userStore.avatar"
             size="md"
           />

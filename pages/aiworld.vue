@@ -112,7 +112,7 @@
           class="absolute bottom-4 transition-all duration-200"
           :style="{ left: `calc(${characterPosition}% - 2.25rem)` }"
         >
-          <KawaiiAvatar
+          <AvatarIllustration
             :avatar="userStore.avatar"
             size="sm"
           />

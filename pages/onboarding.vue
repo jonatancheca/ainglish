@@ -1,179 +1,90 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-sky-400 via-sky-500 to-indigo-500 px-6 py-10">
-    <div class="mx-auto flex min-h-full max-w-5xl flex-col items-center justify-center gap-8 lg:flex-row lg:items-stretch">
-      <div class="flex w-full max-w-sm flex-col justify-center text-center lg:text-left">
-        <div class="mb-8 text-center lg:text-left">
-          <div class="text-white font-black text-4xl tracking-tight mb-2">
-            <span class="bg-white/20 rounded-2xl px-3 py-1">AI</span>nglish
+  <div class="min-h-screen bg-gradient-to-br from-sky-400 via-cyan-400 to-rose-300 px-5 py-8">
+    <div class="mx-auto flex min-h-full max-w-6xl flex-col gap-6 lg:flex-row lg:items-center">
+      <section class="flex w-full flex-col text-center text-white lg:max-w-sm lg:text-left">
+        <div>
+          <div class="mb-3 text-4xl font-black tracking-tight">
+            <span class="rounded-2xl bg-white/20 px-3 py-1">AI</span>nglish
           </div>
-          <p class="text-sky-100 text-base">
-            Tu app para aprender inglés
+          <p class="text-base font-bold text-white/85">
+            Tu app para aprender ingles
           </p>
         </div>
 
-        <div class="hidden rounded-[2rem] bg-white/15 p-6 text-left text-white shadow-2xl backdrop-blur lg:block">
-          <p class="text-xs font-black uppercase tracking-[0.3em] text-sky-100">
-            Avatar kawaii
+        <div class="mt-8 hidden rounded-[2rem] bg-white/15 p-6 text-left shadow-2xl backdrop-blur lg:block">
+          <p class="text-xs font-black uppercase tracking-[0.3em] text-white/70">
+            Avatar chibi
           </p>
-          <h2 class="mt-3 text-3xl font-black leading-tight">
-            Diseña tu personaje antes de empezar.
-          </h2>
-          <p class="mt-3 text-sm text-sky-50/90">
-            Elige la cara, el pelo, la ropa y los detalles que te van a acompañar en tu aventura.
+          <h1 class="mt-3 text-3xl font-black leading-tight">
+            Elige quien eres antes de empezar.
+          </h1>
+          <p class="mt-3 text-sm font-semibold text-white/85">
+            Tu personaje aparecera siempre de cuerpo completo en tu perfil, inicio y aventura.
           </p>
         </div>
-      </div>
+      </section>
 
-      <div class="w-full max-w-3xl rounded-[2rem] bg-white p-6 shadow-2xl animate-bounce-in lg:p-8">
-        <div class="grid gap-8 lg:grid-cols-[1fr_1.15fr]">
-          <div class="rounded-[2rem] bg-slate-50 p-5">
-            <div class="flex items-center justify-between gap-3">
-              <div>
-                <p class="text-xs font-black uppercase tracking-[0.3em] text-sky-500">
-                  Paso {{ currentStep }} de 2
-                </p>
-                <h1 class="mt-2 text-2xl font-black text-slate-800">
-                  {{ stepTitle }}
-                </h1>
-              </div>
-              <span class="rounded-full bg-white px-3 py-1 text-xs font-black text-slate-500 shadow-sm">
-                kawaii mode
-              </span>
-            </div>
+      <section class="w-full rounded-[2rem] bg-white p-5 shadow-2xl animate-bounce-in lg:p-7">
+        <form
+          class="grid gap-6 lg:grid-cols-[0.8fr_1.4fr]"
+          @submit.prevent="finishOnboarding"
+        >
+          <div class="rounded-[2rem] bg-gradient-to-b from-sky-50 via-white to-rose-50 p-5">
+            <p class="text-xs font-black uppercase tracking-[0.28em] text-sky-500">
+              Tu personaje
+            </p>
 
-            <div class="mt-6 flex justify-center rounded-[2rem] bg-gradient-to-b from-sky-100 via-white to-rose-50 p-4">
-              <KawaiiAvatar
+            <div class="mt-5 flex justify-center">
+              <AvatarIllustration
                 :avatar="avatarDraft"
-                size="lg"
+                size="xl"
               />
             </div>
 
-            <div class="mt-4 rounded-2xl bg-white p-4 shadow-sm">
-              <p class="text-sm font-black text-slate-700">
-                {{ previewHeadline }}
+            <div class="mt-5 rounded-2xl bg-white p-4 shadow-sm">
+              <p class="text-lg font-black text-slate-800">
+                Tu avatar
               </p>
-              <p class="mt-1 text-sm text-slate-500">
-                {{ previewDescription }}
+              <p class="mt-1 text-sm font-bold text-slate-500">
+                {{ selectedAvatar.description }}
               </p>
             </div>
           </div>
 
-          <div>
-            <form
-              class="space-y-5"
-              @submit.prevent="submitStep"
+          <div class="flex flex-col gap-5">
+            <div>
+              <p class="text-xs font-black uppercase tracking-[0.28em] text-rose-400">
+                Primer paso
+              </p>
+              <h2 class="mt-2 text-2xl font-black text-slate-800">
+                Nombre y avatar
+              </h2>
+            </div>
+
+            <div>
+              <label class="mb-2 block text-sm font-black text-slate-700">Tu nombre</label>
+              <input
+                v-model="nameInput"
+                type="text"
+                placeholder="Tu nombre..."
+                maxlength="30"
+                class="w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-base font-bold text-slate-700 outline-none transition-colors focus:border-sky-400"
+                autofocus
+              />
+            </div>
+
+            <AvatarSelector v-model="selectedAvatarId" />
+
+            <button
+              type="submit"
+              class="btn-primary w-full"
+              :disabled="!nameInput.trim()"
             >
-              <template v-if="currentStep === 1">
-                <div>
-                  <label class="mb-2 block text-sm font-black text-slate-700">Tu nombre</label>
-                  <input
-                    v-model="nameInput"
-                    type="text"
-                    placeholder="Tu nombre..."
-                    maxlength="30"
-                    class="w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-base font-bold text-slate-700 outline-none transition-colors focus:border-sky-400"
-                    autofocus
-                  />
-                </div>
-
-                <AvatarOptionGroup
-                  label="Forma de cara"
-                  :options="FACE_SHAPE_OPTIONS"
-                  :model-value="avatarDraft.faceShape"
-                  @update:model-value="avatarDraft.faceShape = $event"
-                />
-
-                <AvatarOptionGroup
-                  label="Color de ojos"
-                  :options="EYE_COLOR_OPTIONS"
-                  :model-value="avatarDraft.eyeColor"
-                  @update:model-value="avatarDraft.eyeColor = $event"
-                />
-
-                <AvatarOptionGroup
-                  label="Estilo de ojos"
-                  :options="EYE_STYLE_OPTIONS"
-                  :model-value="avatarDraft.eyeStyle"
-                  @update:model-value="avatarDraft.eyeStyle = $event"
-                />
-
-                <AvatarOptionGroup
-                  label="Mofletes"
-                  :options="CHEEK_STYLE_OPTIONS"
-                  :model-value="avatarDraft.cheeks"
-                  @update:model-value="avatarDraft.cheeks = $event"
-                />
-
-                <AvatarOptionGroup
-                  v-if="avatarDraft.cheeks !== 'none'"
-                  label="Color de mofletes"
-                  :options="CHEEK_COLOR_OPTIONS"
-                  :model-value="avatarDraft.cheekColor"
-                  @update:model-value="avatarDraft.cheekColor = $event"
-                />
-
-                <button
-                  type="submit"
-                  class="btn-primary w-full"
-                  :disabled="!nameInput.trim()"
-                >
-                  Siguiente: estilo del cuerpo →
-                </button>
-              </template>
-
-              <template v-else>
-                <AvatarOptionGroup
-                  label="Pelo"
-                  :options="HAIR_OPTIONS"
-                  :model-value="avatarDraft.hair"
-                  @update:model-value="avatarDraft.hair = $event"
-                />
-
-                <AvatarOptionGroup
-                  label="Color de pelo"
-                  :options="HAIR_COLOR_OPTIONS"
-                  :model-value="avatarDraft.hairColor"
-                  @update:model-value="avatarDraft.hairColor = $event"
-                />
-
-                <AvatarOptionGroup
-                  label="Ropa"
-                  :options="OUTFIT_OPTIONS"
-                  :model-value="avatarDraft.outfit"
-                  @update:model-value="avatarDraft.outfit = $event"
-                />
-
-                <AvatarOptionGroup
-                  label="Zapatos"
-                  :options="SHOES_OPTIONS"
-                  :model-value="avatarDraft.shoes"
-                  @update:model-value="avatarDraft.shoes = $event"
-                />
-
-                <div class="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500">
-                  Tu personaje se guardará con tu perfil y aparecerá en inicio y en la ficha de usuario.
-                </div>
-
-                <div class="flex gap-3">
-                  <button
-                    type="button"
-                    class="w-1/3 rounded-2xl border-2 border-slate-200 px-4 py-3 text-sm font-black text-slate-600 transition-colors hover:border-slate-300"
-                    @click="currentStep = 1"
-                  >
-                    ← Atrás
-                  </button>
-                  <button
-                    type="submit"
-                    class="btn-primary w-2/3"
-                  >
-                    ¡Empezar a aprender! 🚀
-                  </button>
-                </div>
-              </template>
-            </form>
+              Empezar a aprender
+            </button>
           </div>
-        </div>
-      </div>
+        </form>
+      </section>
     </div>
   </div>
 </template>
@@ -181,15 +92,8 @@
 <script setup lang="ts">
 import {
   createDefaultAvatar,
-  EYE_COLOR_OPTIONS,
-  EYE_STYLE_OPTIONS,
-  FACE_SHAPE_OPTIONS,
-  CHEEK_STYLE_OPTIONS,
-  CHEEK_COLOR_OPTIONS,
-  HAIR_OPTIONS,
-  HAIR_COLOR_OPTIONS,
-  OUTFIT_OPTIONS,
-  SHOES_OPTIONS,
+  getAvatarOption,
+  type AvatarId,
   type CharacterAvatar,
 } from '~/data/avatar-options'
 
@@ -198,33 +102,17 @@ definePageMeta({ layout: false })
 const userStore = useUserStore()
 const router = useRouter()
 const nameInput = ref('')
-const currentStep = ref(1)
-const avatarDraft = reactive<CharacterAvatar>(createDefaultAvatar())
+const selectedAvatarId = ref<AvatarId>(createDefaultAvatar().id)
 
-const stepTitle = computed(() =>
-  currentStep.value === 1 ? 'Ponle nombre y carita' : 'Viste a tu personaje',
-)
+const avatarDraft = computed<CharacterAvatar>(() => ({ id: selectedAvatarId.value }))
+const selectedAvatar = computed(() => getAvatarOption(avatarDraft.value))
 
-const previewHeadline = computed(() => `${nameInput.value.trim() || 'Tu avatar'} ya va tomando forma`)
-const previewDescription = computed(() => {
-  if (currentStep.value === 1) {
-    return 'Elige la expresión de la cara y remata el look en el siguiente paso.'
-  }
-
-  return 'Revisa el resultado final y entra en la aventura con tu estilo kawaii.'
-})
-
-function submitStep() {
-  if (currentStep.value === 1) {
-    if (!nameInput.value.trim()) return
-    currentStep.value = 2
-    return
-  }
+function finishOnboarding() {
+  if (!nameInput.value.trim()) return
 
   userStore.setName(nameInput.value)
-  userStore.setAvatar({ ...avatarDraft })
+  userStore.setAvatar(avatarDraft.value)
   userStore.completeOnboarding()
   router.push('/')
 }
 </script>
-
