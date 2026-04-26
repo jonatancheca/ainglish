@@ -31,7 +31,7 @@ const sizeClasses = {
   sm: 'h-28 w-20',
   md: 'h-40 w-28',
   lg: 'h-64 w-44',
-  xl: 'h-[21rem] w-56',
+  xl: 'h-64 w-44 lg:h-[21rem] lg:w-56',
 } as const
 
 const selectedAvatar = computed(() => getAvatarOption(props.avatar))

@@ -205,7 +205,6 @@ const selectedAvatarId = ref<AvatarId>(getAvatarOption(userStore.avatar).value)
 const displayAvatar = computed<CharacterAvatar>(() => (
   editing.value ? { id: selectedAvatarId.value } : { id: getAvatarOption(userStore.avatar).value }
 ))
-const selectedAvatar = computed(() => getAvatarOption(displayAvatar.value))
 
 function startEditing() {
   editName.value = userStore.name

@@ -1,9 +1,12 @@
-import avatar1 from '~/assets/images/avatar/avatar1.png'
-import avatar2 from '~/assets/images/avatar/avatar2.png'
-import avatar3 from '~/assets/images/avatar/avatar3.png'
-import avatar4 from '~/assets/images/avatar/avatar4.png'
+const avatarNumbers = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+  11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+  21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+] as const
 
-export type AvatarId = 'chibi-boy-classic' | 'chibi-boy-winter' | 'chibi-girl-mint' | 'chibi-girl-rose'
+type AvatarNumber = typeof avatarNumbers[number]
+
+export type AvatarId = `avatar${AvatarNumber}`
 
 export interface CharacterAvatar {
   id: AvatarId
@@ -11,42 +14,50 @@ export interface CharacterAvatar {
 
 export interface AvatarOption {
   value: AvatarId
-  description: string
   image: string
   alt: string
+  available: boolean
 }
 
-export const AVATAR_OPTIONS: AvatarOption[] = [
-  {
-    value: 'chibi-boy-classic',
-    description: 'Look chibi alegre',
-    image: avatar1,
-    alt: 'Avatar manga chibi de cuerpo completo con estilo alegre',
-  },
-  {
-    value: 'chibi-boy-winter',
-    description: 'Look chibi de invierno',
-    image: avatar2,
-    alt: 'Avatar manga chibi de cuerpo completo con ropa de invierno',
-  },
-  {
-    value: 'chibi-girl-mint',
-    description: 'Look chibi brillante',
-    image: avatar3,
-    alt: 'Avatar manga chibi de cuerpo completo con estilo brillante',
-  },
-  {
-    value: 'chibi-girl-rose',
-    description: 'Look chibi dulce',
-    image: avatar4,
-    alt: 'Avatar manga chibi de cuerpo completo con estilo dulce',
-  },
-]
+const avatarImages = import.meta.glob<string>('../assets/images/avatar/avatar*.png', {
+  eager: true,
+  import: 'default',
+})
+
+const transparentAvatar = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='
+
+const legacyAvatarIds: Record<string, AvatarId> = {
+  'chibi-boy-classic': 'avatar1',
+  'chibi-boy-winter': 'avatar2',
+  'chibi-girl-mint': 'avatar3',
+  'chibi-girl-rose': 'avatar4',
+}
+
+export const AVATAR_OPTIONS: AvatarOption[] = avatarNumbers.map((number) => {
+  const value = `avatar${number}` as AvatarId
+  const image = avatarImages[`../assets/images/avatar/${value}.png`]
+
+  return {
+    value,
+    image: image ?? transparentAvatar,
+    alt: `Avatar ${number}`,
+    available: Boolean(image),
+  }
+})
+
+const avatarOptionById = new Map(AVATAR_OPTIONS.map((option) => [option.value, option]))
 
 export function createDefaultAvatar(): CharacterAvatar {
   return { id: AVATAR_OPTIONS[0].value }
 }
 
-export function getAvatarOption(avatar?: Partial<CharacterAvatar> | null): AvatarOption {
-  return AVATAR_OPTIONS.find((option) => option.value === avatar?.id) ?? AVATAR_OPTIONS[0]
+export function getAvatarOption(avatar?: { id?: string } | null): AvatarOption {
+  const avatarId = normalizeAvatarId(avatar?.id)
+  return avatarOptionById.get(avatarId) ?? AVATAR_OPTIONS[0]
+}
+
+function normalizeAvatarId(id?: string): AvatarId {
+  if (id && avatarOptionById.has(id as AvatarId)) return id as AvatarId
+  if (id && legacyAvatarIds[id]) return legacyAvatarIds[id]
+  return AVATAR_OPTIONS[0].value
 }

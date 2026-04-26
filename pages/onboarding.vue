@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-sky-400 via-cyan-400 to-rose-300 px-5 py-8">
-    <div class="mx-auto flex min-h-full max-w-6xl flex-col gap-6 lg:flex-row lg:items-center">
-      <section class="flex w-full flex-col text-center text-white lg:max-w-sm lg:text-left">
+    <div class="mx-auto flex min-h-full max-w-7xl flex-col gap-6 lg:flex-row lg:items-center xl:max-w-[92rem]">
+      <section class="flex w-full flex-col text-center text-white lg:max-w-xs xl:max-w-sm lg:text-left">
         <div>
           <div class="mb-3 text-4xl font-black tracking-tight">
             <span class="rounded-2xl bg-white/20 px-3 py-1">AI</span>nglish
@@ -26,7 +26,7 @@
 
       <section class="w-full rounded-[2rem] bg-white p-5 shadow-2xl animate-bounce-in lg:p-7">
         <form
-          class="grid gap-6 lg:grid-cols-[0.8fr_1.4fr]"
+          class="grid gap-6 lg:grid-cols-[0.7fr_1.7fr] xl:grid-cols-[0.65fr_1.95fr]"
           @submit.prevent="finishOnboarding"
         >
           <div class="rounded-[2rem] bg-gradient-to-b from-sky-50 via-white to-rose-50 p-5">
@@ -44,9 +44,6 @@
             <div class="mt-5 rounded-2xl bg-white p-4 shadow-sm">
               <p class="text-lg font-black text-slate-800">
                 Tu avatar
-              </p>
-              <p class="mt-1 text-sm font-bold text-slate-500">
-                {{ selectedAvatar.description }}
               </p>
             </div>
           </div>
@@ -92,7 +89,6 @@
 <script setup lang="ts">
 import {
   createDefaultAvatar,
-  getAvatarOption,
   type AvatarId,
   type CharacterAvatar,
 } from '~/data/avatar-options'
@@ -105,7 +101,6 @@ const nameInput = ref('')
 const selectedAvatarId = ref<AvatarId>(createDefaultAvatar().id)
 
 const avatarDraft = computed<CharacterAvatar>(() => ({ id: selectedAvatarId.value }))
-const selectedAvatar = computed(() => getAvatarOption(avatarDraft.value))
 
 function finishOnboarding() {
   if (!nameInput.value.trim()) return
