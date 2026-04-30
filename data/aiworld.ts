@@ -112,7 +112,7 @@ export function getLessonStreetHouses(lesson: Lesson): StreetHouse[] {
       words,
       vocabIndices,
       questionIds: [],
-      position: 16 + index * (64 / Math.max(safeGroups.length - 1, 1)),
+      position: 30 + index * (40 / Math.max(safeGroups.length - 1, 1)),
       palette: HOUSE_PALETTES[index % HOUSE_PALETTES.length],
     }
   })
