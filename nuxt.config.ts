@@ -4,9 +4,14 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/google-fonts',
     '@tresjs/nuxt',
   ],
+
+  piniaPluginPersistedstate: {
+    storage: 'localStorage',
+  },
 
   googleFonts: {
     families: {

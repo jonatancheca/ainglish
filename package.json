@@ -13,15 +13,15 @@
     "lint:fix": "eslint \"**/*.vue\" \"**/*.ts\" --fix"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.9.0",
+    "@pinia/nuxt": "^0.11.3",
     "@tresjs/cientos": "^5.8.1",
     "@tresjs/nuxt": "^5.6.3",
-    "nuxt": "^3.15.0",
-    "pinia": "^2.3.1",
-    "pinia-plugin-persistedstate": "^2.4.0",
+    "nuxt": "^4.4.8",
+    "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1",
     "three": "^0.185.0",
-    "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue": "3.5.35",
+    "vue-router": "^5.1.0"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.2",
@@ -34,5 +34,10 @@
     "eslint-plugin-vue": "^10.8.0",
     "tailwindcss": "^3.4.17",
     "vue-eslint-parser": "^10.4.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "vite": "7.3.6"
+    }
   }
 }
