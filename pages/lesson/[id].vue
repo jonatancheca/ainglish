@@ -62,7 +62,7 @@
               {{ questionLabel }}
             </p>
             <span class="rounded-full border-2 border-slate-800 bg-white px-3 py-1 text-xs font-black text-slate-500">
-              {{ currentStep.question.type === 'written' ? 'Escribe la respuesta' : 'Elige la respuesta correcta' }}
+              {{ typeLabel }}
             </span>
           </div>
 
@@ -132,6 +132,89 @@
           >
             Comprobar ✓
           </button>
+        </div>
+
+        <!-- Banco de palabras (word-bank) -->
+        <div
+          v-else-if="currentStep.question.type === 'word-bank'"
+          :key="`wb-${currentStepIndex}`"
+          class="space-y-3"
+        >
+          <!-- Respuesta que se construye -->
+          <div
+            class="min-h-[3.5rem] rounded-2xl border-2 px-4 py-3 flex flex-wrap items-center gap-2 transition-all"
+            :class="wordBankInputClass"
+          >
+            <button
+              v-for="i in wordBankPicked"
+              :key="`picked-${i}`"
+              class="rounded-xl border-2 border-slate-800 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 shadow-[0_3px_0_0_theme(colors.slate.200)] disabled:opacity-100"
+              :disabled="answered"
+              @click="unpickTile(i)"
+            >
+              {{ wordBankTiles[i] }}
+            </button>
+            <span
+              v-if="!wordBankPicked.length"
+              class="text-sm font-semibold text-slate-300"
+            >
+              Toca las palabras en orden…
+            </span>
+          </div>
+
+          <!-- Fichas disponibles -->
+          <div class="flex flex-wrap gap-2">
+            <button
+              v-for="tile in wordBankAvailable"
+              :key="`tile-${tile.index}`"
+              class="rounded-xl border-2 border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition-all hover:border-sky-400 hover:bg-sky-50"
+              :disabled="answered"
+              @click="pickTile(tile.index)"
+            >
+              {{ tile.value }}
+            </button>
+          </div>
+
+          <button
+            v-if="!answered"
+            class="btn-primary w-full"
+            :disabled="!wordBankPicked.length"
+            @click="submitWordBank"
+          >
+            Comprobar ✓
+          </button>
+        </div>
+
+        <!-- Emparejar palabras (matching) -->
+        <div
+          v-else-if="currentStep.question.type === 'matching'"
+          :key="`match-${currentStepIndex}`"
+          class="grid grid-cols-2 gap-3"
+        >
+          <div class="space-y-3">
+            <button
+              v-for="item in matchEnItems"
+              :key="`en-${item.index}`"
+              class="w-full px-4 py-3 rounded-2xl border-2 font-bold text-base transition-all"
+              :class="matchEnClass(item.index)"
+              :disabled="answered || matchResolved.includes(item.index)"
+              @click="selectMatchEn(item.index)"
+            >
+              {{ item.text }}
+            </button>
+          </div>
+          <div class="space-y-3">
+            <button
+              v-for="item in matchEsItems"
+              :key="`es-${item.index}`"
+              class="w-full px-4 py-3 rounded-2xl border-2 font-bold text-base transition-all"
+              :class="matchEsClass(item.index)"
+              :disabled="answered || matchResolved.includes(item.index)"
+              @click="selectMatchEs(item.index)"
+            >
+              {{ item.text }}
+            </button>
+          </div>
         </div>
 
         <!-- Feedback -->
@@ -343,6 +426,11 @@ const pendingXp = ref(0)
 const recoveredXp = ref(0)
 const newAchievements = ref<Achievement[]>([])
 const writtenAnswer = ref('')
+const wordBankPicked = ref<number[]>([])
+const matchSelectedEn = ref<number | null>(null)
+const matchResolved = ref<number[]>([])
+const matchWrongEn = ref<number | null>(null)
+const matchWrongEs = ref<number | null>(null)
 
 // ── Cronómetro de tiempo activo en la lección ───────────────────────────────
 const sessionId = ref('')
@@ -448,12 +536,21 @@ const isCorrect = computed(() => {
     const accepted = currentQuestion.value.acceptedAnswers ?? [currentQuestion.value.correctAnswer]
     return accepted.some((a) => a.toLowerCase() === writtenAnswer.value.trim().toLowerCase())
   }
+  if (currentQuestion.value.type === 'word-bank') {
+    const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, ' ')
+    return normalize(wordBankSentence.value) === normalize(currentQuestion.value.correctAnswer)
+  }
+  if (currentQuestion.value.type === 'matching') {
+    return matchResolved.value.length === currentQuestion.value.pairs.length
+  }
   return selectedIndex.value === currentQuestion.value.correctIndex
 })
 
 const correctAnswerText = computed(() => {
   if (!currentQuestion.value) return ''
   if (currentQuestion.value.type === 'written') return currentQuestion.value.correctAnswer
+  if (currentQuestion.value.type === 'word-bank') return currentQuestion.value.correctAnswer
+  if (currentQuestion.value.type === 'matching') return ''
   return currentQuestion.value.options[currentQuestion.value.correctIndex]
 })
 
@@ -461,6 +558,49 @@ const writtenInputClass = computed(() => {
   if (!answered.value) return 'border-slate-200 focus-within:border-sky-400'
   if (isCorrect.value) return 'border-emerald-400 bg-emerald-50'
   return 'border-red-400 bg-red-50'
+})
+
+const typeLabel = computed(() => {
+  const type = currentQuestion.value?.type
+  if (type === 'written') return 'Escribe la respuesta'
+  if (type === 'word-bank') return 'Ordena las palabras'
+  if (type === 'matching') return 'Empareja las palabras'
+  return 'Elige la respuesta correcta'
+})
+
+const wordBankTiles = computed<string[]>(() => {
+  const question = currentQuestion.value
+  if (!question || question.type !== 'word-bank') return []
+  const tokens = [...question.correctAnswer.split(' '), ...(question.distractors ?? [])]
+  return seededShuffle(tokens, question.id)
+})
+
+const wordBankAvailable = computed(() =>
+  wordBankTiles.value
+    .map((value, index) => ({ value, index }))
+    .filter((tile) => !wordBankPicked.value.includes(tile.index)),
+)
+
+const wordBankSentence = computed(() =>
+  wordBankPicked.value.map((i) => wordBankTiles.value[i] ?? '').join(' '),
+)
+
+const wordBankInputClass = computed(() => {
+  if (!answered.value) return 'border-slate-200'
+  if (isCorrect.value) return 'border-emerald-400 bg-emerald-50'
+  return 'border-red-400 bg-red-50'
+})
+
+const matchEnItems = computed(() => {
+  const question = currentQuestion.value
+  if (!question || question.type !== 'matching') return []
+  return seededShuffle(question.pairs.map((pair, index) => ({ text: pair.en, index })), `${question.id}-en`)
+})
+
+const matchEsItems = computed(() => {
+  const question = currentQuestion.value
+  if (!question || question.type !== 'matching') return []
+  return seededShuffle(question.pairs.map((pair, index) => ({ text: pair.es, index })), `${question.id}-es`)
 })
 
 const resultEmoji = computed(() => {
@@ -541,6 +681,113 @@ function selectAnswer(i: number) {
   }
 }
 
+function seededShuffle<T>(items: T[], seed: string): T[] {
+  let h = 2166136261
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  const rand = () => {
+    h += 0x6d2b79f5
+    let t = h
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+  const arr = [...items]
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1))
+    const tmp = arr[i]!
+    arr[i] = arr[j]!
+    arr[j] = tmp
+  }
+  return arr
+}
+
+function pickTile(index: number) {
+  if (answered.value) return
+  if (!wordBankPicked.value.includes(index)) wordBankPicked.value.push(index)
+}
+
+function unpickTile(index: number) {
+  if (answered.value) return
+  wordBankPicked.value = wordBankPicked.value.filter((i) => i !== index)
+}
+
+function matchEnClass(index: number): string {
+  if (matchResolved.value.includes(index)) return 'border-emerald-400 bg-emerald-50 text-emerald-700 opacity-70'
+  if (matchWrongEn.value === index) return 'border-red-400 bg-red-50 text-red-700 animate-shake'
+  if (matchSelectedEn.value === index) return 'border-sky-400 bg-sky-50 text-sky-700'
+  return 'border-slate-200 hover:border-sky-400 hover:bg-sky-50'
+}
+
+function matchEsClass(index: number): string {
+  if (matchResolved.value.includes(index)) return 'border-emerald-400 bg-emerald-50 text-emerald-700 opacity-70'
+  if (matchWrongEs.value === index) return 'border-red-400 bg-red-50 text-red-700 animate-shake'
+  return 'border-slate-200 hover:border-sky-400 hover:bg-sky-50'
+}
+
+function selectMatchEn(index: number) {
+  if (answered.value || matchResolved.value.includes(index)) return
+  matchSelectedEn.value = index
+}
+
+function selectMatchEs(index: number) {
+  if (answered.value || matchResolved.value.includes(index)) return
+  if (matchSelectedEn.value === null || !currentQuestion.value) return
+
+  const enIndex = matchSelectedEn.value
+  matchSelectedEn.value = null
+
+  if (enIndex === index) {
+    matchResolved.value.push(index)
+    if (matchResolved.value.length === currentQuestion.value.pairs.length) {
+      answered.value = true
+      correctAnswers.value += 1
+      xpEarned.value += currentQuestion.value.xpReward
+      if (isRetryRound.value) {
+        recoveredXp.value += currentQuestion.value.xpReward
+        pendingXp.value = Math.max(pendingXp.value - currentQuestion.value.xpReward, 0)
+      }
+    }
+    return
+  }
+
+  matchWrongEn.value = enIndex
+  matchWrongEs.value = index
+  setTimeout(() => {
+    matchWrongEn.value = null
+    matchWrongEs.value = null
+  }, 500)
+}
+
+function submitWordBank() {
+  if (answered.value || !wordBankPicked.value.length || !currentQuestion.value) return
+  answered.value = true
+
+  if (isCorrect.value) {
+    correctAnswers.value += 1
+    xpEarned.value += currentQuestion.value.xpReward
+    if (isRetryRound.value) {
+      recoveredXp.value += currentQuestion.value.xpReward
+      pendingXp.value = Math.max(pendingXp.value - currentQuestion.value.xpReward, 0)
+    }
+    return
+  }
+
+  if (isRetryRound.value) {
+    if (!retryMistakeIds.value.includes(currentQuestion.value.id)) {
+      retryMistakeIds.value.push(currentQuestion.value.id)
+    }
+    return
+  }
+
+  if (!failedQuestionIds.value.includes(currentQuestion.value.id)) {
+    failedQuestionIds.value.push(currentQuestion.value.id)
+    pendingXp.value += currentQuestion.value.xpReward
+  }
+}
+
 function submitWrittenAnswer() {
   if (answered.value || !writtenAnswer.value.trim() || !currentQuestion.value) return
   answered.value = true
@@ -574,6 +821,11 @@ function next() {
     selectedIndex.value = null
     answered.value = false
     writtenAnswer.value = ''
+    wordBankPicked.value = []
+    matchSelectedEn.value = null
+    matchResolved.value = []
+    matchWrongEn.value = null
+    matchWrongEs.value = null
   } else {
     finishLesson()
   }
@@ -585,7 +837,7 @@ function finishLesson() {
   const xpToAward = isRetryRound.value ? recoveredXp.value : xpEarned.value
 
   const stars = houseId.value
-    ? progressStore.saveHouseResult(houseId.value, correctAnswers.value, totalQuestionCount.value)
+    ? progressStore.saveHouseResult(lessonId.value, houseId.value, correctAnswers.value, totalQuestionCount.value)
     : progressStore.saveResult(lessonId.value, correctAnswers.value, totalQuestionCount.value)
   starsEarned.value = stars
 
@@ -630,6 +882,12 @@ function startRetryLesson() {
   currentStepIndex.value = 0
   selectedIndex.value = null
   answered.value = false
+  writtenAnswer.value = ''
+  wordBankPicked.value = []
+  matchSelectedEn.value = null
+  matchResolved.value = []
+  matchWrongEn.value = null
+  matchWrongEs.value = null
   isRetryRound.value = true
   phase.value = 'exercise'
 }

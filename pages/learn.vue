@@ -7,6 +7,16 @@
       Completa las lecciones en orden para desbloquear las siguientes.
     </p>
 
+    <button
+      v-if="isLocal"
+      type="button"
+      class="rounded-full border-2 border-slate-800 px-4 py-2 text-xs font-black transition-colors"
+      :class="unlockAll ? 'bg-emerald-400 text-slate-900' : 'bg-white text-slate-600 hover:bg-slate-100'"
+      @click="unlockAll = !unlockAll"
+    >
+      {{ unlockAll ? '🔓 Dev: lecciones desbloqueadas' : '🔒 Dev: desbloquear todas' }}
+    </button>
+
     <NuxtLink
       to="/aiworld"
       class="block rounded-[2rem] border-4 border-slate-800 bg-gradient-to-r from-rose-100 via-white to-sky-100 p-5 shadow-[0_10px_0_0_theme(colors.rose.100)] transition-transform hover:-translate-y-1"
@@ -52,7 +62,7 @@
           v-for="(lesson, i) in a1Lessons"
           :key="lesson.id"
           :lesson="lesson"
-          :locked="i > 0 && !progressStore.isCompleted(a1Lessons[i - 1]?.id ?? '')"
+          :locked="!unlockAll && i > 0 && !progressStore.isCompleted(a1Lessons[i - 1]?.id ?? '')"
           :completed="progressStore.isCompleted(lesson.id)"
           :stars="progressStore.getStars(lesson.id)"
           @click="navigateTo(`/lesson/${lesson.id}`)"
@@ -83,7 +93,7 @@
           v-for="(lesson, i) in a2Lessons"
           :key="lesson.id"
           :lesson="lesson"
-          :locked="i > 0 && !progressStore.isCompleted(a2Lessons[i - 1]?.id ?? '')"
+          :locked="!unlockAll && i > 0 && !progressStore.isCompleted(a2Lessons[i - 1]?.id ?? '')"
           :completed="progressStore.isCompleted(lesson.id)"
           :stars="progressStore.getStars(lesson.id)"
           @click="navigateTo(`/lesson/${lesson.id}`)"
@@ -114,7 +124,7 @@
           v-for="(lesson, i) in a3Lessons"
           :key="lesson.id"
           :lesson="lesson"
-          :locked="i > 0 && !progressStore.isCompleted(a3Lessons[i - 1]?.id ?? '')"
+          :locked="!unlockAll && i > 0 && !progressStore.isCompleted(a3Lessons[i - 1]?.id ?? '')"
           :completed="progressStore.isCompleted(lesson.id)"
           :stars="progressStore.getStars(lesson.id)"
           @click="navigateTo(`/lesson/${lesson.id}`)"
@@ -145,7 +155,7 @@
           v-for="(lesson, i) in a4Lessons"
           :key="lesson.id"
           :lesson="lesson"
-          :locked="i > 0 && !progressStore.isCompleted(a4Lessons[i - 1]?.id ?? '')"
+          :locked="!unlockAll && i > 0 && !progressStore.isCompleted(a4Lessons[i - 1]?.id ?? '')"
           :completed="progressStore.isCompleted(lesson.id)"
           :stars="progressStore.getStars(lesson.id)"
           @click="navigateTo(`/lesson/${lesson.id}`)"
@@ -174,4 +184,11 @@ const a3Completed = computed(() => a3Lessons.value.filter((l) => progressStore.i
 const a4Lessons = computed(() => LESSONS.filter((l) => l.level === 'A4').sort((a, b) => a.order - b.order))
 const a4Total = computed(() => a4Lessons.value.length)
 const a4Completed = computed(() => a4Lessons.value.filter((l) => progressStore.isCompleted(l.id)).length)
+
+const isLocal = ref(false)
+const unlockAll = ref(false)
+
+onMounted(() => {
+  isLocal.value = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+})
 </script>

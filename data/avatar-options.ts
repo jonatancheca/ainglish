@@ -16,15 +16,12 @@ export interface AvatarOption {
   value: AvatarId
   image: string
   alt: string
-  available: boolean
 }
 
 const avatarImages = import.meta.glob<string>('../assets/images/avatar/avatar*.png', {
   eager: true,
   import: 'default',
 })
-
-const transparentAvatar = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='
 
 const legacyAvatarIds: Record<string, AvatarId> = {
   'chibi-boy-classic': 'avatar1',
@@ -33,17 +30,20 @@ const legacyAvatarIds: Record<string, AvatarId> = {
   'chibi-girl-rose': 'avatar4',
 }
 
-export const AVATAR_OPTIONS: AvatarOption[] = avatarNumbers.map((number) => {
-  const value = `avatar${number}` as AvatarId
-  const image = avatarImages[`../assets/images/avatar/${value}.png`]
+export const AVATAR_OPTIONS: AvatarOption[] = avatarNumbers
+  .map((number) => {
+    const value = `avatar${number}` as AvatarId
+    const image = avatarImages[`../assets/images/avatar/${value}.png`]
 
-  return {
-    value,
-    image: image ?? transparentAvatar,
-    alt: `Avatar ${number}`,
-    available: Boolean(image),
-  }
-})
+    return image
+      ? {
+          value,
+          image,
+          alt: `Avatar ${number}`,
+        }
+      : null
+  })
+  .filter((option): option is AvatarOption => option !== null)
 
 const avatarOptionById = new Map(AVATAR_OPTIONS.map((option) => [option.value, option]))
 

@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { LESSONS } from '~/data/lessons'
+import { getLessonStreetHouses } from '~/data/aiworld'
 
 export interface LessonStat {
   correct: number
@@ -45,7 +47,7 @@ export const useProgressStore = defineStore(
       return lessonStats.value[lessonId]?.stars ?? 0
     }
 
-    function saveResult(lessonId: string, correct: number, total: number) {
+    function markLessonCompleted(lessonId: string, correct: number, total: number): number {
       const pct = correct / total
       const stars = pct >= 0.9 ? 3 : pct >= 0.6 ? 2 : 1
 
@@ -67,13 +69,39 @@ export const useProgressStore = defineStore(
       return stars
     }
 
+    // Sincroniza modo normal → aiworld: marca como completadas las casas de la
+    // lección que aún no tengan resultado, para abrir la barrera en aiworld.
+    function syncHousesFromLesson(lessonId: string, stars: number) {
+      const lesson = LESSONS.find((l) => l.id === lessonId)
+      if (!lesson) return
+
+      const completedAt = new Date().toISOString()
+      for (const house of getLessonStreetHouses(lesson)) {
+        if (houseStats.value[house.id]) continue
+
+        const total = Math.max(house.questionIds.length, 1)
+        houseStats.value[house.id] = {
+          correct: total,
+          total,
+          stars,
+          completedAt,
+        }
+      }
+    }
+
+    function saveResult(lessonId: string, correct: number, total: number) {
+      const stars = markLessonCompleted(lessonId, correct, total)
+      syncHousesFromLesson(lessonId, stars)
+      return stars
+    }
+
     function hasPerfectLesson(): boolean {
       return Object.values(lessonStats.value as Record<string, LessonStat>).some(
         (s) => s.correct === s.total,
       )
     }
 
-    function saveHouseResult(houseId: string, correct: number, total: number): number {
+    function saveHouseResult(lessonId: string, houseId: string, correct: number, total: number): number {
       const pct = correct / total
       const stars = pct >= 0.9 ? 3 : pct >= 0.6 ? 2 : 1
 
@@ -84,6 +112,28 @@ export const useProgressStore = defineStore(
           total,
           stars,
           completedAt: new Date().toISOString(),
+        }
+      }
+
+      // Sincroniza aiworld → modo normal: si ya están todas las casas de la
+      // lección, marca la lección como completada agregando sus resultados.
+      const lesson = LESSONS.find((l) => l.id === lessonId)
+      if (lesson) {
+        const houses = getLessonStreetHouses(lesson)
+        if (houses.length && houses.every((h) => isHouseCompleted(h.id))) {
+          const agg = houses.reduce(
+            (acc, h) => {
+              const stat = houseStats.value[h.id]
+              return {
+                correct: acc.correct + (stat?.correct ?? 0),
+                total: acc.total + (stat?.total ?? 0),
+              }
+            },
+            { correct: 0, total: 0 },
+          )
+          if (agg.total > 0) {
+            markLessonCompleted(lessonId, agg.correct, agg.total)
+          }
         }
       }
 

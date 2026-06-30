@@ -39,6 +39,8 @@ function getFallbackWords(lesson: Lesson): string[] {
   for (const question of lesson.questions) {
     if (question.type === 'multiple-choice') {
       uniqueOptions.add(question.options[question.correctIndex])
+    } else if (question.type === 'matching') {
+      for (const pair of question.pairs) uniqueOptions.add(pair.en)
     } else {
       uniqueOptions.add(question.correctAnswer)
     }
@@ -49,9 +51,14 @@ function getFallbackWords(lesson: Lesson): string[] {
 
 function questionMatchesWords(question: Question, enWords: string[], esWords: string[]): boolean {
   const text = question.question.toLowerCase()
-  const correctText = question.type === 'written'
-    ? question.correctAnswer.toLowerCase()
-    : question.options[question.correctIndex].toLowerCase()
+  let correctText: string
+  if (question.type === 'multiple-choice') {
+    correctText = question.options[question.correctIndex].toLowerCase()
+  } else if (question.type === 'matching') {
+    correctText = question.pairs.map((pair) => pair.en).join(' ').toLowerCase()
+  } else {
+    correctText = question.correctAnswer.toLowerCase()
+  }
 
   for (let i = 0; i < enWords.length; i++) {
     const en = enWords[i]?.toLowerCase() ?? ''
