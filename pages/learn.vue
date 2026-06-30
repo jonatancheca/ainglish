@@ -60,14 +60,97 @@
       </div>
     </div>
 
-    <!-- Próximamente -->
-    <div class="card border-2 border-dashed border-slate-200 text-center py-6">
-      <div class="text-3xl mb-2">
-        🚧
+    <!-- Nivel A2 -->
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-indigo-100 text-indigo-600 font-black text-xs px-3 py-1 rounded-full">NIVEL A2</span>
+        <div class="flex-1 h-px bg-slate-200"></div>
+        <span class="text-xs text-slate-400 font-semibold">
+          {{ a2Completed }}/{{ a2Total }} lecciones
+        </span>
       </div>
-      <p class="font-bold text-slate-400">
-        Nivel A2 — próximamente
-      </p>
+
+      <!-- Progress bar del nivel -->
+      <div class="h-2 bg-slate-100 rounded-full mb-4 overflow-hidden">
+        <div
+          class="h-full bg-indigo-400 rounded-full transition-all duration-700"
+          :style="{ width: `${(a2Completed / a2Total) * 100}%` }"
+        ></div>
+      </div>
+
+      <div class="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
+        <LessonCard
+          v-for="(lesson, i) in a2Lessons"
+          :key="lesson.id"
+          :lesson="lesson"
+          :locked="i > 0 && !progressStore.isCompleted(a2Lessons[i - 1]?.id ?? '')"
+          :completed="progressStore.isCompleted(lesson.id)"
+          :stars="progressStore.getStars(lesson.id)"
+          @click="navigateTo(`/lesson/${lesson.id}`)"
+        />
+      </div>
+    </div>
+
+    <!-- Nivel A3 -->
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-emerald-100 text-emerald-600 font-black text-xs px-3 py-1 rounded-full">NIVEL A3</span>
+        <div class="flex-1 h-px bg-slate-200"></div>
+        <span class="text-xs text-slate-400 font-semibold">
+          {{ a3Completed }}/{{ a3Total }} lecciones
+        </span>
+      </div>
+
+      <!-- Progress bar del nivel -->
+      <div class="h-2 bg-slate-100 rounded-full mb-4 overflow-hidden">
+        <div
+          class="h-full bg-emerald-400 rounded-full transition-all duration-700"
+          :style="{ width: `${(a3Completed / a3Total) * 100}%` }"
+        ></div>
+      </div>
+
+      <div class="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
+        <LessonCard
+          v-for="(lesson, i) in a3Lessons"
+          :key="lesson.id"
+          :lesson="lesson"
+          :locked="i > 0 && !progressStore.isCompleted(a3Lessons[i - 1]?.id ?? '')"
+          :completed="progressStore.isCompleted(lesson.id)"
+          :stars="progressStore.getStars(lesson.id)"
+          @click="navigateTo(`/lesson/${lesson.id}`)"
+        />
+      </div>
+    </div>
+
+    <!-- Nivel A4 -->
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <span class="bg-fuchsia-100 text-fuchsia-600 font-black text-xs px-3 py-1 rounded-full">NIVEL A4</span>
+        <div class="flex-1 h-px bg-slate-200"></div>
+        <span class="text-xs text-slate-400 font-semibold">
+          {{ a4Completed }}/{{ a4Total }} lecciones
+        </span>
+      </div>
+
+      <!-- Progress bar del nivel -->
+      <div class="h-2 bg-slate-100 rounded-full mb-4 overflow-hidden">
+        <div
+          class="h-full bg-fuchsia-400 rounded-full transition-all duration-700"
+          :style="{ width: `${(a4Completed / a4Total) * 100}%` }"
+        ></div>
+      </div>
+
+      <div class="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
+        <LessonCard
+          v-for="(lesson, i) in a4Lessons"
+          :key="lesson.id"
+          :lesson="lesson"
+          :locked="i > 0 && !progressStore.isCompleted(a4Lessons[i - 1]?.id ?? '')"
+          :completed="progressStore.isCompleted(lesson.id)"
+          :stars="progressStore.getStars(lesson.id)"
+          @click="navigateTo(`/lesson/${lesson.id}`)"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -79,4 +162,16 @@ const progressStore = useProgressStore()
 const a1Lessons = computed(() => LESSONS.filter((l) => l.level === 'A1').sort((a, b) => a.order - b.order))
 const a1Total = computed(() => a1Lessons.value.length)
 const a1Completed = computed(() => a1Lessons.value.filter((l) => progressStore.isCompleted(l.id)).length)
+
+const a2Lessons = computed(() => LESSONS.filter((l) => l.level === 'A2').sort((a, b) => a.order - b.order))
+const a2Total = computed(() => a2Lessons.value.length)
+const a2Completed = computed(() => a2Lessons.value.filter((l) => progressStore.isCompleted(l.id)).length)
+
+const a3Lessons = computed(() => LESSONS.filter((l) => l.level === 'A3').sort((a, b) => a.order - b.order))
+const a3Total = computed(() => a3Lessons.value.length)
+const a3Completed = computed(() => a3Lessons.value.filter((l) => progressStore.isCompleted(l.id)).length)
+
+const a4Lessons = computed(() => LESSONS.filter((l) => l.level === 'A4').sort((a, b) => a.order - b.order))
+const a4Total = computed(() => a4Lessons.value.length)
+const a4Completed = computed(() => a4Lessons.value.filter((l) => progressStore.isCompleted(l.id)).length)
 </script>

@@ -59,6 +59,12 @@
           label="Perfil"
           sidebar
         />
+        <NavItem
+          to="/progress"
+          icon="📊"
+          label="Progreso"
+          sidebar
+        />
       </aside>
 
       <!-- Page content -->
@@ -94,6 +100,11 @@
           to="/profile"
           icon="👤"
           label="Perfil"
+        />
+        <NavItem
+          to="/progress"
+          icon="📊"
+          label="Progreso"
         />
       </div>
     </nav>

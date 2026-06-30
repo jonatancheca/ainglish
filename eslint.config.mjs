@@ -10,6 +10,8 @@ export default [
       '.output/**',
       'node_modules/**',
       'dist/**',
+      'playwright-report/**',
+      'test-results/**',
     ],
   },
   // Spread the flat config presets from eslint-plugin-vue

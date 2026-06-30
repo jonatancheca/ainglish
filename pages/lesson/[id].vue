@@ -343,6 +343,32 @@ const pendingXp = ref(0)
 const recoveredXp = ref(0)
 const newAchievements = ref<Achievement[]>([])
 const writtenAnswer = ref('')
+
+// ── Cronómetro de tiempo activo en la lección ───────────────────────────────
+const sessionId = ref('')
+const activeMs = ref(0)
+const lastResumeTs = ref<number | null>(null)
+
+function startTimer() {
+  if (lastResumeTs.value === null) lastResumeTs.value = Date.now()
+}
+
+function pauseTimer() {
+  if (lastResumeTs.value !== null) {
+    activeMs.value += Date.now() - lastResumeTs.value
+    lastResumeTs.value = null
+  }
+}
+
+function elapsedSeconds(): number {
+  const running = lastResumeTs.value !== null ? Date.now() - lastResumeTs.value : 0
+  return Math.round((activeMs.value + running) / 1000)
+}
+
+function handleVisibility() {
+  if (document.hidden) pauseTimer()
+  else startTimer()
+}
 const writtenInputRef = ref<HTMLInputElement | null>(null)
 
 // ── Computed ───────────────────────────────────────────────────────────────
@@ -563,6 +589,21 @@ function finishLesson() {
     : progressStore.saveResult(lessonId.value, correctAnswers.value, totalQuestionCount.value)
   starsEarned.value = stars
 
+  progressStore.logSession({
+    id: sessionId.value,
+    lessonId: lessonId.value,
+    houseId: houseId.value,
+    title: lesson.value.title,
+    icon: lesson.value.icon,
+    level: lesson.value.level,
+    isHouse: !!houseId.value,
+    correct: correctAnswers.value,
+    total: totalQuestionCount.value,
+    stars,
+    durationSec: elapsedSeconds(),
+    completedAt: new Date().toISOString(),
+  })
+
   userStore.recordActivity()
   userStore.addXp(xpToAward)
 
@@ -598,7 +639,18 @@ onMounted(() => {
     phase.value = 'notfound'
   } else {
     phase.value = 'exercise'
+    sessionId.value =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`
+    startTimer()
+    document.addEventListener('visibilitychange', handleVisibility)
   }
+})
+
+onUnmounted(() => {
+  pauseTimer()
+  document.removeEventListener('visibilitychange', handleVisibility)
 })
 </script>
 

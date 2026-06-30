@@ -109,6 +109,18 @@ export const useUserStore = defineStore(
       onboardingDone.value = true
     }
 
+    function $reset() {
+      name.value = ''
+      avatar.value = createDefaultAvatar()
+      xp.value = 0
+      streak.value = 0
+      maxStreak.value = 0
+      lastActiveDate.value = ''
+      onboardingDone.value = false
+      justLeveledUp.value = false
+      previousLevel.value = 1
+    }
+
     return {
       name,
       avatar,
@@ -130,6 +142,7 @@ export const useUserStore = defineStore(
       setName,
       setAvatar,
       completeOnboarding,
+      $reset,
     }
   },
   { persist: true },

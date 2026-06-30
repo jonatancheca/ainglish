@@ -8,12 +8,28 @@ export interface LessonStat {
   completedAt: string
 }
 
+export interface LessonSession {
+  id: string
+  lessonId: string
+  houseId?: string
+  title: string
+  icon: string
+  level: string
+  isHouse: boolean
+  correct: number
+  total: number
+  stars: number
+  durationSec: number
+  completedAt: string
+}
+
 export const useProgressStore = defineStore(
   'progress',
   () => {
     const completedLessons = ref<string[]>([])
     const lessonStats = ref<Record<string, LessonStat>>({})
     const houseStats = ref<Record<string, LessonStat>>({})
+    const sessionLog = ref<LessonSession[]>([])
 
     const totalLessonsCompleted = computed(() => completedLessons.value.length)
 
@@ -82,10 +98,27 @@ export const useProgressStore = defineStore(
       return houseIds.length > 0 && houseIds.every((id) => isHouseCompleted(id))
     }
 
+    function logSession(entry: LessonSession) {
+      const idx = sessionLog.value.findIndex((s) => s.id === entry.id)
+      if (idx >= 0) {
+        sessionLog.value[idx] = entry
+      } else {
+        sessionLog.value.push(entry)
+      }
+    }
+
+    function $reset() {
+      completedLessons.value = []
+      lessonStats.value = {}
+      houseStats.value = {}
+      sessionLog.value = []
+    }
+
     return {
       completedLessons,
       lessonStats,
       houseStats,
+      sessionLog,
       totalLessonsCompleted,
       isCompleted,
       getStats,
@@ -95,6 +128,8 @@ export const useProgressStore = defineStore(
       saveHouseResult,
       isHouseCompleted,
       areAllHousesCompleted,
+      logSession,
+      $reset,
     }
   },
   { persist: true },

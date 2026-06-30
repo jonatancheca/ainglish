@@ -52,6 +52,11 @@
           icon="👤"
           label="Perfil"
         />
+        <NavItem
+          to="/progress"
+          icon="📊"
+          label="Progreso"
+        />
       </div>
     </nav>
 

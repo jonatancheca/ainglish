@@ -10,7 +10,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint \"**/*.vue\" \"**/*.ts\"",
-    "lint:fix": "eslint \"**/*.vue\" \"**/*.ts\" --fix"
+    "lint:fix": "eslint \"**/*.vue\" \"**/*.ts\" --fix",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.11.3",
@@ -25,6 +27,7 @@
     "@nuxt/eslint": "^1.15.2",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@nuxtjs/tailwindcss": "^6.13.2",
+    "@playwright/test": "^1.61.1",
     "@types/three": "^0.185.0",
     "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",

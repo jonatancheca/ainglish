@@ -38,6 +38,11 @@ export const useAchievementsStore = defineStore(
       recentlyUnlocked.value = []
     }
 
+    function $reset() {
+      unlocked.value = []
+      recentlyUnlocked.value = []
+    }
+
     return {
       unlocked,
       recentlyUnlocked,
@@ -45,6 +50,7 @@ export const useAchievementsStore = defineStore(
       isUnlocked,
       evaluate,
       clearRecent,
+      $reset,
     }
   },
   { persist: true },
