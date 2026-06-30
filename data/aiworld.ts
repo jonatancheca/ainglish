@@ -10,14 +10,17 @@ export interface StreetHouse {
     roof: string
     wall: string
     door: string
+    roofHex: string
+    wallHex: string
+    doorHex: string
   }
 }
 
 const HOUSE_PALETTES = [
-  { roof: 'bg-rose-400', wall: 'bg-rose-100', door: 'bg-rose-600' },
-  { roof: 'bg-sky-400', wall: 'bg-sky-100', door: 'bg-sky-600' },
-  { roof: 'bg-emerald-400', wall: 'bg-emerald-100', door: 'bg-emerald-600' },
-  { roof: 'bg-amber-400', wall: 'bg-amber-100', door: 'bg-amber-600' },
+  { roof: 'bg-rose-400', wall: 'bg-rose-100', door: 'bg-rose-600', roofHex: '#fb7185', wallHex: '#ffe4e6', doorHex: '#e11d48' },
+  { roof: 'bg-sky-400', wall: 'bg-sky-100', door: 'bg-sky-600', roofHex: '#38bdf8', wallHex: '#e0f2fe', doorHex: '#0284c7' },
+  { roof: 'bg-emerald-400', wall: 'bg-emerald-100', door: 'bg-emerald-600', roofHex: '#34d399', wallHex: '#d1fae5', doorHex: '#059669' },
+  { roof: 'bg-amber-400', wall: 'bg-amber-100', door: 'bg-amber-600', roofHex: '#fbbf24', wallHex: '#fef3c7', doorHex: '#d97706' },
 ]
 
 function chunkWords(words: string[], size: number): string[][] {

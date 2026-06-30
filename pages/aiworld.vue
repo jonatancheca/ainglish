@@ -28,119 +28,27 @@
         </p>
       </div>
 
-      <!-- Escena Principal -->
-      <div class="relative h-full w-full overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.9),_transparent_45%),linear-gradient(to_bottom,_#bae6fd,_#e0f2fe_55%,_#bbf7d0_55%,_#86efac_100%)]">
-        <!-- Calle (Fondo) - fija, no se mueve -->
-        <div class="absolute inset-x-0 bottom-0 h-[18%] bg-slate-700"></div>
-        <div
-          class="absolute inset-x-0 h-0.5 bg-yellow-200 opacity-70"
-          style="bottom: 18%"
-        ></div>
-
-        <!-- Mundo que se mueve (300% ancho = 3× viewport) -->
-        <!-- La cámara centra al personaje usando: translateX(calc(50vw - posición_personaje_en_mundo)) -->
-        <!-- Mundo: 300vw. Personaje en left: characterPosition% → position vw = characterPosition * 3 vw -->
-        <!-- Para centrarlo: translateX(calc(50vw - characterPosition * 3vw)) -->
-        <div
-          class="absolute inset-y-0 left-0 h-full transition-transform duration-300 ease-out"
-          :style="{ width: '200vw', transform: `translateX(calc(50vw - ${characterPosition * 2}vw))` }"
-        >
-          <button
-            v-for="house in streetHouses"
-            :key="house.id"
-            type="button"
-            class="absolute flex -translate-x-1/2 flex-col items-center cursor-pointer transition-all duration-300"
-            :class="isNearbyHouse(house.id) ? 'scale-105' : ''"
-            :style="{ left: `${house.position}%`, bottom: '18%' }"
-            @click="focusHouse(house.id)"
-          >
-            <div class="relative flex flex-col items-center">
-              <!-- Marca de completada -->
-              <div
-                v-if="progressStore.isHouseCompleted(house.id)"
-                class="absolute -right-2 -top-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border-2 border-slate-800 bg-emerald-400 text-xs text-white font-black"
-              >
-                ✓
-              </div>
-
-              <!-- Techo -->
-              <div
-                class="h-6 w-20 rounded-t-[1.5rem] border-4 border-b-0 transition-all duration-300"
-                :class="[
-                  progressStore.isHouseCompleted(house.id)
-                    ? 'border-slate-400 opacity-70'
-                    : 'border-slate-800',
-                  house.palette.roof,
-                  progressStore.isHouseCompleted(house.id) ? 'saturate-50' : 'saturate-100'
-                ]"
-              ></div>
-
-              <!-- Pared -->
-              <div
-                class="relative h-16 w-20 rounded-b-[1rem] border-4 transition-all duration-300"
-                :class="[
-                  progressStore.isHouseCompleted(house.id)
-                    ? 'border-slate-400 opacity-70'
-                    : 'border-slate-800',
-                  house.palette.wall,
-                  progressStore.isHouseCompleted(house.id) ? 'saturate-50' : 'saturate-100'
-                ]"
-              >
-                <div class="absolute left-1/2 top-2 h-5 w-5 -translate-x-1/2 rounded-full border-4 border-slate-800 bg-white"></div>
-                <div
-                  class="absolute bottom-0 left-1/2 h-9 w-7 -translate-x-1/2 rounded-t-lg border-4 border-b-0 transition-all duration-300"
-                  :class="[
-                    progressStore.isHouseCompleted(house.id) ? 'border-slate-400' : 'border-slate-800',
-                    house.palette.door,
-                    progressStore.isHouseCompleted(house.id) ? 'opacity-70' : 'opacity-100'
-                  ]"
-                ></div>
-              </div>
+      <!-- Escena 3D (Three.js / TresJS) -->
+      <div class="absolute inset-0">
+        <ClientOnly>
+          <AiworldScene
+            :houses="streetHouses"
+            :character-position="characterPosition"
+            :nearby-house-id="nearbyHouse?.id ?? null"
+            :barrier-open="barrierOpen"
+            :completed-ids="completedHouseIds"
+            :avatar-image="avatarImage"
+            :monster-image="hostMonster.image"
+            @select-house="focusHouse"
+          />
+          <template #fallback>
+            <div class="flex h-full w-full items-center justify-center bg-[linear-gradient(to_bottom,_#bae6fd,_#bbf7d0)]">
+              <p class="rounded-full border-2 border-slate-800 bg-white px-4 py-2 text-sm font-black text-slate-600">
+                Cargando mundo 3D…
+              </p>
             </div>
-
-            <!-- Etiqueta de palabras -->
-            <span
-              class="mt-3 max-w-24 rounded-full border-2 px-3 py-1 text-center text-[11px] font-black transition-all duration-300"
-              :class="
-                progressStore.isHouseCompleted(house.id)
-                  ? 'border-slate-300 bg-slate-100 text-slate-500'
-                  : isNearbyHouse(house.id)
-                    ? 'border-emerald-500 bg-emerald-100 text-emerald-700 scale-110'
-                    : 'border-slate-800 bg-white text-slate-600'
-              "
-            >
-              {{ house.words.join(' + ') }}
-            </span>
-          </button>
-
-          <!-- Avatar del Personaje — se mueve dentro del mundo -->
-          <div
-            class="absolute -translate-x-1/2 transition-all duration-300 ease-out"
-            :style="{ left: `${characterPosition}%`, bottom: '18%' }"
-          >
-            <AvatarIllustration
-              :avatar="userStore.avatar"
-              size="sm"
-            />
-          </div>
-
-          <!-- Barrera Final (al 96% del mundo) -->
-          <div
-            class="absolute flex flex-col items-center"
-            style="left: 96%; bottom: 18%"
-          >
-            <div
-              class="h-28 w-5 rounded-full border-4 border-slate-800 bg-amber-700 transition-all duration-500"
-              :class="barrierOpen ? 'opacity-0 -translate-y-8' : 'opacity-100'"
-            ></div>
-            <div
-              class="mt-2 rounded-full border-2 border-slate-800 px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-300"
-              :class="barrierOpen ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-700'"
-            >
-              {{ barrierOpen ? 'Paso libre' : 'Barrera' }}
-            </div>
-          </div>
-        </div>
+          </template>
+        </ClientOnly>
       </div>
     </div>
 
@@ -240,6 +148,8 @@
 <script setup lang="ts">
 import { getMonsterForLesson } from '~/data/monsters'
 import { getLessonStreetHouses, getStreetLessons } from '~/data/aiworld'
+import { getAvatarOption } from '~/data/avatar-options'
+import AiworldScene from '~/components/aiworld/AiworldScene.client.vue'
 
 definePageMeta({ layout: 'game' })
 
@@ -284,6 +194,8 @@ const canAdvanceToNextStreet = computed(
 )
 
 const completedHousesCount = computed(() => streetHouses.value.filter((h) => progressStore.isHouseCompleted(h.id)).length)
+const completedHouseIds = computed(() => streetHouses.value.filter((h) => progressStore.isHouseCompleted(h.id)).map((h) => h.id))
+const avatarImage = computed(() => getAvatarOption(userStore.avatar).image)
 
 const guideText = computed(() => {
   if (barrierOpen.value) {
@@ -310,13 +222,6 @@ const streetAdvanceMessage = computed(() => {
 
   return '¡Listo para la siguiente calle!'
 })
-
-// Función auxiliar para verificar si una casa está cerca
-function isNearbyHouse(houseId: string): boolean {
-  const house = streetHouses.value.find((h) => h.id === houseId)
-  if (!house) return false
-  return Math.abs(house.position - characterPosition.value) <= 6
-}
 
 // Mover el personaje con límites
 function clampPosition(nextPosition: number): number {
