@@ -173,7 +173,9 @@ const characterPosition = ref(19) // 0-100% del mundo
 const selectedHouseId = ref<string | null>(null)
 const selectedHouseDetailsOpen = ref(false)
 
-const activeLesson = computed(() => streetLessons[activeStreetIndex.value] ?? streetLessons[streetLessons.length - 1])
+const activeLesson = computed<ReturnType<typeof getStreetLessons>[number]>(
+  () => streetLessons[activeStreetIndex.value] ?? streetLessons[streetLessons.length - 1]!,
+)
 const streetHouses = computed(() => getLessonStreetHouses(activeLesson.value))
 const hostMonster = computed(() => getMonsterForLesson(activeLesson.value.id))
 const completedLessons = computed(() => progressStore.completedLessons.length)
@@ -227,7 +229,7 @@ const streetAdvanceMessage = computed(() => {
 function clampPosition(nextPosition: number): number {
   let max = 94
   if (!barrierOpen.value) {
-    max = 85 // Barrera está al 96%, bloquear antes
+    max = 92 // Barrera está al 96%, permitir acercarse justo antes
   }
   return Math.min(max, Math.max(2, nextPosition))
 }
@@ -271,18 +273,23 @@ function advanceStreet() {
 function handleKeydown(event: KeyboardEvent) {
   if (event.key === 'ArrowLeft') moveCharacter(-6)
   if (event.key === 'ArrowRight') moveCharacter(6)
-  if (event.key === 'Enter') enterNearbyHouse()
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    enterNearbyHouse()
+  }
 }
 
 watch(activeLesson, () => {
-  if (!selectedHouseId.value && streetHouses.value.length) {
-    selectedHouseId.value = streetHouses.value[0].id
+  const firstHouse = streetHouses.value[0]
+  if (!selectedHouseId.value && firstHouse) {
+    selectedHouseId.value = firstHouse.id
   }
 })
 
 onMounted(() => {
-  if (streetHouses.value.length) {
-    selectedHouseId.value = streetHouses.value[0].id
+  const firstHouse = streetHouses.value[0]
+  if (firstHouse) {
+    selectedHouseId.value = firstHouse.id
   }
   window.addEventListener('keydown', handleKeydown)
 })

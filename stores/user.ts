@@ -8,7 +8,7 @@ const LEVEL_THRESHOLDS = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200, 4
 export function getLevelFromXp(xp: number): number {
   let level = 1
   for (let i = 1; i < LEVEL_THRESHOLDS.length; i++) {
-    if (xp >= LEVEL_THRESHOLDS[i]) level = i + 1
+    if (xp >= LEVEL_THRESHOLDS[i]!) level = i + 1
     else break
   }
   return level
@@ -19,7 +19,7 @@ export function getXpFloorForLevel(level: number): number {
 }
 
 export function getXpCeilForLevel(level: number): number {
-  return LEVEL_THRESHOLDS[Math.min(level, LEVEL_THRESHOLDS.length - 1)] ?? LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1]
+  return LEVEL_THRESHOLDS[Math.min(level, LEVEL_THRESHOLDS.length - 1)] ?? LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1]!
 }
 
 function todayStr(): string {

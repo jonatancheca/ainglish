@@ -52,7 +52,7 @@
           v-for="(lesson, i) in a1Lessons"
           :key="lesson.id"
           :lesson="lesson"
-          :locked="i > 0 && !progressStore.isCompleted(a1Lessons[i - 1].id)"
+          :locked="i > 0 && !progressStore.isCompleted(a1Lessons[i - 1]?.id ?? '')"
           :completed="progressStore.isCompleted(lesson.id)"
           :stars="progressStore.getStars(lesson.id)"
           @click="navigateTo(`/lesson/${lesson.id}`)"

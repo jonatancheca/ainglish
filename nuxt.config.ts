@@ -6,7 +6,6 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/google-fonts',
-    '@tresjs/nuxt',
   ],
 
   piniaPluginPersistedstate: {

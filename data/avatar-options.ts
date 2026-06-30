@@ -48,16 +48,16 @@ export const AVATAR_OPTIONS: AvatarOption[] = avatarNumbers.map((number) => {
 const avatarOptionById = new Map(AVATAR_OPTIONS.map((option) => [option.value, option]))
 
 export function createDefaultAvatar(): CharacterAvatar {
-  return { id: AVATAR_OPTIONS[0].value }
+  return { id: AVATAR_OPTIONS[0]!.value }
 }
 
 export function getAvatarOption(avatar?: { id?: string } | null): AvatarOption {
   const avatarId = normalizeAvatarId(avatar?.id)
-  return avatarOptionById.get(avatarId) ?? AVATAR_OPTIONS[0]
+  return avatarOptionById.get(avatarId) ?? AVATAR_OPTIONS[0]!
 }
 
 function normalizeAvatarId(id?: string): AvatarId {
   if (id && avatarOptionById.has(id as AvatarId)) return id as AvatarId
   if (id && legacyAvatarIds[id]) return legacyAvatarIds[id]
-  return AVATAR_OPTIONS[0].value
+  return AVATAR_OPTIONS[0]!.value
 }

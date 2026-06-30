@@ -1,10 +1,10 @@
 <template>
   <TresSprite
     v-if="texture"
-    :scale="[width, props.height, 1]"
+    :scale="[width, height, 1]"
     :center="[0.5, 0]"
-    :position="props.position"
-    :render-order="props.renderOrder"
+    :position="position"
+    :render-order="renderOrder"
   >
     <TresSpriteMaterial
       :map="texture"
@@ -18,31 +18,29 @@
 <script setup lang="ts">
 import { SRGBColorSpace, type Texture, TextureLoader } from 'three'
 
-const props = withDefaults(
-  defineProps<{
-    src: string
-    position?: [number, number, number]
-    height?: number
-    renderOrder?: number
-  }>(),
-  {
-    position: () => [0, 0, 0],
-    height: 2.4,
-    renderOrder: 1,
-  },
-)
+const {
+  src,
+  position = [0, 0, 0],
+  height = 2.4,
+  renderOrder = 1,
+} = defineProps<{
+  src: string
+  position?: [number, number, number]
+  height?: number
+  renderOrder?: number
+}>()
 
 const texture = shallowRef<Texture | null>(null)
 const aspect = ref(1)
-const width = computed(() => props.height * aspect.value)
+const width = computed(() => height * aspect.value)
 
 let current: Texture | null = null
 
 watch(
-  () => props.src,
-  (src) => {
-    if (!src) return
-    new TextureLoader().load(src, (tex) => {
+  () => src,
+  (nextSrc) => {
+    if (!nextSrc) return
+    new TextureLoader().load(nextSrc, (tex) => {
       tex.colorSpace = SRGBColorSpace
       const img = tex.image as { width?: number, height?: number } | undefined
       if (img?.width && img?.height) {

@@ -11,8 +11,10 @@
           nglish
         </NuxtLink>
         <div class="flex items-center gap-3">
-          <StreakBadge :streak="userStore.streak" />
-          <LevelBadge :level="userStore.level" />
+          <ClientOnly>
+            <StreakBadge :streak="userStore.streak" />
+            <LevelBadge :level="userStore.level" />
+          </ClientOnly>
         </div>
       </div>
     </header>

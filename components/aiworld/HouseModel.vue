@@ -1,6 +1,6 @@
 <template>
   <TresGroup
-    :position="[props.x, 0, 0]"
+    :position="[x, 0, 0]"
     :scale="groupScale"
   >
     <!-- Pared -->
@@ -51,7 +51,7 @@
     </TresMesh>
 
     <LabelSprite
-      :text="props.house.words.join(' + ')"
+      :text="house.words.join(' + ')"
       :position="[0, 3.75, 0]"
       :variant="labelVariant"
     />
@@ -62,18 +62,17 @@
 import type { StreetHouse } from '~/data/aiworld'
 import LabelSprite from './LabelSprite.vue'
 
-const props = withDefaults(
-  defineProps<{
-    house: StreetHouse
-    x: number
-    completed?: boolean
-    nearby?: boolean
-  }>(),
-  {
-    completed: false,
-    nearby: false,
-  },
-)
+const {
+  house,
+  x,
+  completed = false,
+  nearby = false,
+} = defineProps<{
+  house: StreetHouse
+  x: number
+  completed?: boolean
+  nearby?: boolean
+}>()
 
 const emit = defineEmits<{ click: [] }>()
 
@@ -95,23 +94,23 @@ function muteHex(hex: string, amount: number): string {
 }
 
 const wallColor = computed(() =>
-  props.completed ? muteHex(props.house.palette.wallHex, 0.55) : props.house.palette.wallHex,
+  completed ? muteHex(house.palette.wallHex, 0.55) : house.palette.wallHex,
 )
 const roofColor = computed(() =>
-  props.completed ? muteHex(props.house.palette.roofHex, 0.55) : props.house.palette.roofHex,
+  completed ? muteHex(house.palette.roofHex, 0.55) : house.palette.roofHex,
 )
 const doorColor = computed(() =>
-  props.completed ? muteHex(props.house.palette.doorHex, 0.55) : props.house.palette.doorHex,
+  completed ? muteHex(house.palette.doorHex, 0.55) : house.palette.doorHex,
 )
-const windowEmissive = computed(() => (props.completed ? '#000000' : '#7dd3fc'))
+const windowEmissive = computed(() => (completed ? '#000000' : '#7dd3fc'))
 
 const groupScale = computed<[number, number, number]>(() =>
-  props.nearby ? [1.07, 1.07, 1.07] : [1, 1, 1],
+  nearby ? [1.07, 1.07, 1.07] : [1, 1, 1],
 )
 
 const labelVariant = computed<'default' | 'nearby' | 'completed'>(() => {
-  if (props.completed) return 'completed'
-  if (props.nearby) return 'nearby'
+  if (completed) return 'completed'
+  if (nearby) return 'nearby'
   return 'default'
 })
 

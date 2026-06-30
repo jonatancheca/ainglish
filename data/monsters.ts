@@ -20,7 +20,7 @@ const transparentMonster = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAA
 
 function getMonsterImage(index: number): string {
   if (!sortedMonsterImages.length) return transparentMonster
-  return sortedMonsterImages[index % sortedMonsterImages.length]
+  return sortedMonsterImages[index % sortedMonsterImages.length]!
 }
 
 export const KAWAII_MONSTERS: KawaiiMonster[] = [
@@ -143,5 +143,5 @@ export function getMonsterForLesson(lessonId: string): KawaiiMonster {
     .split('')
     .reduce((total, char) => total + char.charCodeAt(0), 0)
 
-  return KAWAII_MONSTERS[numericSeed % KAWAII_MONSTERS.length]
+  return KAWAII_MONSTERS[numericSeed % KAWAII_MONSTERS.length]!
 }

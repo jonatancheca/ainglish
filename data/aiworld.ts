@@ -54,7 +54,7 @@ function questionMatchesWords(question: Question, enWords: string[], esWords: st
     : question.options[question.correctIndex].toLowerCase()
 
   for (let i = 0; i < enWords.length; i++) {
-    const en = enWords[i].toLowerCase()
+    const en = enWords[i]?.toLowerCase() ?? ''
     const es = esWords[i]?.toLowerCase() ?? ''
     if (text.includes(en) || text.includes(es) || correctText.includes(en) || correctText.includes(es)) {
       return true
@@ -73,7 +73,7 @@ function matchQuestionsToHouses(lesson: Lesson, houses: StreetHouse[]): void {
     for (const question of lesson.questions) {
       for (const house of houses) {
         const enWords = house.words
-        const esWords = house.vocabIndices.map((i) => lesson.vocabulary![i].es)
+        const esWords = house.vocabIndices.map((i) => lesson.vocabulary![i]?.es ?? '')
         if (questionMatchesWords(question, enWords, esWords)) {
           house.questionIds.push(question.id)
           assigned.add(question.id)
@@ -85,14 +85,14 @@ function matchQuestionsToHouses(lesson: Lesson, houses: StreetHouse[]): void {
     let robin = 0
     for (const question of lesson.questions) {
       if (!assigned.has(question.id)) {
-        houses[robin % houses.length].questionIds.push(question.id)
+        houses[robin % houses.length]!.questionIds.push(question.id)
         robin++
       }
     }
   } else {
     let robin = 0
     for (const question of lesson.questions) {
-      houses[robin % houses.length].questionIds.push(question.id)
+      houses[robin % houses.length]!.questionIds.push(question.id)
       robin++
     }
   }
@@ -116,7 +116,7 @@ export function getLessonStreetHouses(lesson: Lesson): StreetHouse[] {
       vocabIndices,
       questionIds: [],
       position: 30 + index * (40 / Math.max(safeGroups.length - 1, 1)),
-      palette: HOUSE_PALETTES[index % HOUSE_PALETTES.length],
+      palette: HOUSE_PALETTES[index % HOUSE_PALETTES.length]!,
     }
   })
 

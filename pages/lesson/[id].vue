@@ -368,13 +368,13 @@ const exerciseSequence = computed<ExerciseStep[]>(() => {
   for (let qi = 0; qi < qs.length; qi++) {
     const targetVocab = Math.round((qi + 1) * ratio)
     while (vocabIdx < targetVocab && vocabIdx < words.length) {
-      steps.push({ type: 'vocab', word: words[vocabIdx], index: vocabIdx })
+      steps.push({ type: 'vocab', word: words[vocabIdx]!, index: vocabIdx })
       vocabIdx++
     }
-    steps.push({ type: 'question', question: qs[qi], questionIndex: qi })
+    steps.push({ type: 'question', question: qs[qi]!, questionIndex: qi })
   }
   while (vocabIdx < words.length) {
-    steps.push({ type: 'vocab', word: words[vocabIdx], index: vocabIdx })
+    steps.push({ type: 'vocab', word: words[vocabIdx]!, index: vocabIdx })
     vocabIdx++
   }
 
@@ -460,7 +460,7 @@ function optionClass(i: number): string {
   if (!answered.value) {
     return 'border-slate-200 hover:border-sky-400 hover:bg-sky-50'
   }
-  if (i === currentQuestion.value.correctIndex) {
+  if (currentQuestion.value.type === 'multiple-choice' && i === currentQuestion.value.correctIndex) {
     return 'border-emerald-400 bg-emerald-50 text-emerald-700'
   }
   if (i === selectedIndex.value) {

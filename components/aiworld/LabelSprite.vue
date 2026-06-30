@@ -1,9 +1,9 @@
 <template>
   <TresSprite
     v-if="texture"
-    :scale="[width, props.worldHeight, 1]"
+    :scale="[width, worldHeight, 1]"
     :center="[0.5, 0.5]"
-    :position="props.position"
+    :position="position"
     :render-order="6"
   >
     <TresSpriteMaterial
@@ -18,19 +18,17 @@
 <script setup lang="ts">
 import { CanvasTexture, SRGBColorSpace, type Texture } from 'three'
 
-const props = withDefaults(
-  defineProps<{
-    text: string
-    position?: [number, number, number]
-    variant?: 'default' | 'nearby' | 'completed'
-    worldHeight?: number
-  }>(),
-  {
-    position: () => [0, 0, 0],
-    variant: 'default',
-    worldHeight: 0.62,
-  },
-)
+const {
+  text,
+  position = [0, 0, 0],
+  variant = 'default',
+  worldHeight = 0.62,
+} = defineProps<{
+  text: string
+  position?: [number, number, number]
+  variant?: 'default' | 'nearby' | 'completed'
+  worldHeight?: number
+}>()
 
 const PALETTES = {
   default: { bg: '#ffffff', border: '#1e293b', text: '#475569' },
@@ -40,7 +38,7 @@ const PALETTES = {
 
 const texture = shallowRef<Texture | null>(null)
 const ratio = ref(3)
-const width = computed(() => props.worldHeight * ratio.value)
+const width = computed(() => worldHeight * ratio.value)
 
 let current: CanvasTexture | null = null
 
@@ -69,7 +67,7 @@ function draw() {
   const fontSize = 40 * dpr
   const padX = 30 * dpr
   const padY = 20 * dpr
-  const label = props.variant === 'completed' ? `\u2713 ${props.text}` : props.text
+  const label = variant === 'completed' ? `\u2713 ${text}` : text
 
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
@@ -88,7 +86,7 @@ function draw() {
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
 
-  const colors = PALETTES[props.variant]
+  const colors = PALETTES[variant]
   const stroke = 6 * dpr
   ctx.fillStyle = colors.bg
   ctx.strokeStyle = colors.border
@@ -108,6 +106,6 @@ function draw() {
   texture.value = tex
 }
 
-watch(() => [props.text, props.variant], draw, { immediate: true })
+watch(() => [text, variant], draw, { immediate: true })
 onBeforeUnmount(() => current?.dispose())
 </script>

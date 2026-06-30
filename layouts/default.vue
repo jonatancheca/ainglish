@@ -14,12 +14,14 @@
 
         <!-- Stats: streak + level + xp -->
         <div class="flex items-center gap-3">
-          <StreakBadge :streak="userStore.streak" />
-          <LevelBadge :level="userStore.level" />
-          <div class="hidden sm:flex items-center gap-1.5 text-sm font-bold text-slate-600">
-            <span class="text-sky-500">⚡</span>
-            {{ userStore.xp }} XP
-          </div>
+          <ClientOnly>
+            <StreakBadge :streak="userStore.streak" />
+            <LevelBadge :level="userStore.level" />
+            <div class="hidden sm:flex items-center gap-1.5 text-sm font-bold text-slate-600">
+              <span class="text-sky-500">⚡</span>
+              {{ userStore.xp }} XP
+            </div>
+          </ClientOnly>
         </div>
       </div>
     </header>
